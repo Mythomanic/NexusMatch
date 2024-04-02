@@ -68,11 +68,7 @@ function EditProfile({ navigation }) {
                         </TouchableOpacity>
 
                         <TouchableOpacity style={{ width: 110, height: 110, borderRadius: 100, borderColor: "darkgrey", backgroundColor: "white", borderWidth: 1, alignItems: "center", justifyContent: "center" }}>
-                            <Image
-                                source={require("../img/kız.jpg")}
-                                style={{ width: "100%", height: "100%", borderRadius: 100, alignItems: "center", justifyContent: "center", }}
-                                resizeMode='cover'
-                            />
+                            
                         </TouchableOpacity>
 
                     </View>

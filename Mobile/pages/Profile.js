@@ -94,11 +94,7 @@ function Profile({ navigation }) {
     function GalleryComponent({ imageLink }) {
         return (
             <View style={{ width: "47%", alignItems: "center", justifyContent: "center", height: 150, borderRadius: 10, borderWidth: 1, borderColor: "#afafaf" }}>
-                <Image
-                    source={require("../img/kız.jpg")}
-                    resizeMode='cover'
-                    style={{ width: "100%", height: "100%", alignItems: "center", justifyContent: "center", borderRadius: 10 }}
-                />
+                
             </View>
         )
     }
@@ -123,11 +119,7 @@ function Profile({ navigation }) {
                     <View style={{ width: "100%", flex: 1, borderBottomLeftRadius: 100, borderBottomRightRadius: 100, alignItems: "center", justifyContent: "center", paddingHorizontal: 20,  }}>
 
                         <TouchableOpacity style={{ width: 110, height: 110, borderRadius: 100, borderColor: "darkgrey", borderWidth: 1, alignItems: "center", justifyContent: "center" }}>
-                            <Image
-                                source={require("img/kız.jpg")}
-                                style={{ width: "100%", height: "100%", borderRadius: 100, alignItems: "center", justifyContent: "center", }}
-                                resizeMode='cover'
-                            />
+                           
 
                             {/* <MaterialCommunityIcons name="camera-plus-outline" size={40} /> */}
                         </TouchableOpacity>
