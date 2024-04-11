@@ -52,8 +52,6 @@ class UserController extends Controller
         }
     }
     
-
-    //deneme
     /**
      * Display the specified resource.
      */
@@ -62,6 +60,12 @@ class UserController extends Controller
         $user = User::where("id",$id)->first();
         if (!$user)
             return response()->json(['message' => 'There is no user with this id']);
+        return $user;
+    }
+
+    public function showAll()
+    {
+        $user = User::all();
         return $user;
     }
 
