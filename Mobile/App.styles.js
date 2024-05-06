@@ -344,6 +344,41 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
   },
 
+  CategoryListItemContainer: {
+    width: "100%",
+    maxHeight: 135,
+    flex: 1,
+    flexWrap: "wrap",
+    backgroundColor: "#6badc999",
+    borderRadius: 10,
+    minHeight: 80,
+    flexDirection: "row",
+    columnGap: 10,
+    paddingHorizontal: 15,
+    padding: 10,
+    alignItems: "center",
+    justifyContent: "center"
+
+
+  },
+
+  CategoryListItemContainerExpanded: {
+    width: "100%",
+    height: 140,
+    flex: 1,
+    flexWrap: "wrap",
+    backgroundColor: "#6badc999",
+    borderRadius: 10,
+    flexDirection: "row",
+    paddingHorizontal: 10,
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 10,
+
+
+  },
+
+
 
 });
 

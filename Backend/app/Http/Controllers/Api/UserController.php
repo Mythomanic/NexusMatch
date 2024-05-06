@@ -11,12 +11,12 @@ use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
-    
+
     public function create(Request $request)
     {
         try {
             //Validated
-            $validateUser = Validator::make($request->all(), 
+            $validateUser = Validator::make($request->all(),
             [
                 'name' => 'required',
                 'email' => 'required|email|unique:users,email',
@@ -51,7 +51,7 @@ class UserController extends Controller
             ], 500);
         }
     }
-    
+
     /**
      * Display the specified resource.
      */
@@ -60,7 +60,7 @@ class UserController extends Controller
         $user = User::where("id",$id)->first();
         if (!$user)
             return response()->json(['message' => 'There is no user with this id']);
-        return $user;
+        return response()->json($user, 200);
     }
 
     public function showAll()
@@ -72,26 +72,27 @@ class UserController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Request $request ,string $id)
+    public function edit(Request $request, string $id)
     {
-
-        $validateUser = Validator::make(request()->all(),[
+        $validateUser = Validator::make($request->all(), [
             "name" => "required",
             "email"=> "required|email|unique:users,email,".$id,
             "password"=> "required|confirmed",
             "password_confirmation" => "required",
         ]);
-        if($validateUser->fails()){
+
+        if ($validateUser->fails()) {
             return response()->json([
                 'status' => false,
-                'message' => 'validation error',
+                'message' => 'Validation error',
                 'errors' => $validateUser->errors()
-            ], 401);
+            ], 400);
         }
 
-        $user = User::where('id', $id)->first();
-        if (!$user)
-            return response()->json(['message' => 'There is no user with this id']);
+        $user = User::find($id);
+        if (!$user) {
+            return response()->json(['message' => 'There is no user with this id'], 404);
+        }
 
         $user->name = $request->name;
         $user->email = $request->email;
@@ -100,7 +101,7 @@ class UserController extends Controller
 
         return response()->json([
             'status' => true,
-            'message' => 'User Editted Successfully',
+            'message' => 'User edited successfully',
         ], 200);
     }
     /**
@@ -119,7 +120,7 @@ class UserController extends Controller
     public function login(Request $request)
     {
         try {
-            $validateUser = Validator::make($request->all(), 
+            $validateUser = Validator::make($request->all(),
             [
                 'email' => 'required|email',
                 'password' => 'required'
@@ -156,5 +157,5 @@ class UserController extends Controller
         }
     }
 
-    
+
 }

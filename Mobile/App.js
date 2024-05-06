@@ -24,6 +24,11 @@ import SearchJobs from './searchtabs/SearchJobs';
 import SearchEvent from './searchtabs/SearchEvent';
 import SearchDate from './searchtabs/SearchDate';
 import Search from './pages/Search';
+import Joblist from './pages/JobList';
+import DateList from './pages/DateList';
+import EventList from './pages/EventList';
+import JobList from './pages/JobList';
+
 
 export default function App({ navigation }) {
 
@@ -173,6 +178,9 @@ export default function App({ navigation }) {
             <Stack.Screen name="Profile" component={Profile} />
             <Stack.Screen name="EditProfile" component={EditProfile} />
             <Stack.Screen name="Search" component={TabSearchStack} />
+            <Stack.Screen name="JobList" component={JobList} />
+            <Stack.Screen name="DateList" component={DateList} />
+            <Stack.Screen name="EventList" component={EventList} />
 
           </Stack.Navigator>
 
