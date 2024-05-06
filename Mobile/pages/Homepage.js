@@ -135,7 +135,7 @@ function Homepage({ navigation }) {
 
                 <View style={styles.MainCategoriesContainer}>
 
-                    <TouchableOpacity activeOpacity={0.65} style={styles.TouchableMainCategory}>
+                    <TouchableOpacity onPress={()=>{navigation.navigate("JobList")}} activeOpacity={0.65} style={styles.TouchableMainCategory}>
                         <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} colors={["#3F51B5dd", "#03A9F4bb"]} style={styles.MainCategories}>
 
                             <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
@@ -153,7 +153,7 @@ function Homepage({ navigation }) {
                         </LinearGradient>
                     </TouchableOpacity>
 
-                    <TouchableOpacity activeOpacity={0.65} style={styles.TouchableMainCategory}>
+                    <TouchableOpacity onPress={()=>{navigation.navigate("DateList")}} activeOpacity={0.65} style={styles.TouchableMainCategory}>
                         <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} colors={["#FF6B6B", "#FFD166"]} style={styles.MainCategories}>
 
                             <View style={{ flex: 1, alignItems: "center", justifyContent: "center", rowGap: 10 }}>
@@ -171,7 +171,7 @@ function Homepage({ navigation }) {
 
 
 
-                    <TouchableOpacity activeOpacity={0.65} style={styles.TouchableMainCategory}>
+                    <TouchableOpacity onPress={()=>{navigation.navigate("EventList")}} activeOpacity={0.65} style={styles.TouchableMainCategory}>
                         <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} colors={["#4CAF50", "#8BC34A"]} style={styles.MainCategories}>
                             <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
                                 <Image source={require("../event.jpg")} style={{ width: "100%", height: "100%", borderRadius: 10 }} />
