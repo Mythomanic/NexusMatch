@@ -1,4 +1,8 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Dimensions } from 'react-native';
+import { SafeAreaProvider, SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
+
+screenHeight = Dimensions.get('window').height;
+
 
 const styles = StyleSheet.create({
 
@@ -188,7 +192,16 @@ const styles = StyleSheet.create({
   SearchBarHomepage: {
     width: "100%",
     marginHorizontal: 10,
-    padding: 15
+    padding: 15,
+  },
+
+  SearchBarCategories: {
+    width: "100%",
+    padding: 15,
+    paddingHorizontal: 30,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between"
   },
 
   MainCategoriesContainer: {
@@ -378,6 +391,87 @@ const styles = StyleSheet.create({
 
   },
 
+  ChatScreen: {
+    flex: 1,
+    padding: 15,
+    width: "100%",
+    alignItems: "center",
+
+  },
+
+  ChatInput: {
+    width: "99%",
+    borderWidth: 1,
+    height: 40,
+    alignItems: "center",
+    flexDirection: "row",
+    columnGap: 10,
+    paddingHorizontal: 10,
+    borderRadius: 100,
+    bottom: 5,
+    alignSelf: "center"
+  },
+
+  container2: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+
+  },
+  card2: {
+    borderRadius: 4,
+    borderWidth: 2,
+    borderColor: "#E8E8E8",
+    justifyContent: "center",
+    backgroundColor: "white",
+    height: screenHeight * 0.8,
+    marginVertical: 20,
+  },
+  text2: {
+    textAlign: "center",
+    fontSize: 50,
+    backgroundColor: "transparent"
+  },
+
+  cardContainer: {
+    backgroundColor: 'white',
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: '#ddd',
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    height: screenHeight * 0.8,
+    marginTop: "5%",
+    paddingTop: 10,
+
+  },
+  companyLogo: {
+    width: 120,
+    height: 120,
+    borderRadius: 100,
+    marginBottom: 20,
+  },
+  companyInfo: {
+    alignItems: 'center',
+
+  },
+  companyName: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 10,
+    color: '#333',
+  },
+  companyDescription: {
+    fontSize: 13,
+    textAlign: 'center',
+    color: '#666',
+    paddingHorizontal: 10,
+  },
 
 
 });
