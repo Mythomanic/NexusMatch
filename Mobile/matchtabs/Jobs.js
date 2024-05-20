@@ -61,19 +61,19 @@ function Jobs({ navigation }) {
 
                     <ScrollView contentContainerStyle={{ alignItems: "center", }} style={{ flex: 1, width: "100%", padding: 5 }} showsVerticalScrollIndicator={false}>
 
-                        <MessageComponent personName={"Necati"} messageDate={"20.02.2024"} backColor={"#3F51B511"}></MessageComponent>
-                        <MessageComponent personName={"Necati"} messageDate={"20.02.2024"} backColor={"#3F51B511"}></MessageComponent>
-                        <MessageComponent personName={"Necati"} messageDate={"20.02.2024"} backColor={"#3F51B511"}></MessageComponent>
-                        <MessageComponent personName={"Necati"} messageDate={"20.02.2024"} backColor={"#3F51B511"}></MessageComponent>
-                        <MessageComponent personName={"Necati"} messageDate={"20.02.2024"} backColor={"#3F51B511"}></MessageComponent>
-                        <MessageComponent personName={"Necati"} messageDate={"20.02.2024"} backColor={"#3F51B511"}></MessageComponent>
-                        <MessageComponent personName={"Necati"} messageDate={"20.02.2024"} backColor={"#3F51B511"}></MessageComponent>
-                        <MessageComponent personName={"Necati"} messageDate={"20.02.2024"} backColor={"#3F51B511"}></MessageComponent>
-                        <MessageComponent personName={"Necati"} messageDate={"20.02.2024"} backColor={"#3F51B511"}></MessageComponent>
-                        <MessageComponent personName={"Necati"} messageDate={"20.02.2024"} backColor={"#3F51B511"}></MessageComponent>
-                        <MessageComponent personName={"Necati"} messageDate={"20.02.2024"} backColor={"#3F51B511"}></MessageComponent>
-                        <MessageComponent personName={"Necati"} messageDate={"20.02.2024"} backColor={"#3F51B511"}></MessageComponent>
-                        <MessageComponent personName={"Necati"} messageDate={"20.02.2024"} backColor={"#3F51B511"}></MessageComponent>
+                        <MessageComponent navigation={navigation} personName={"Necati"} messageDate={"20.02.2024"} backColor={"#3F51B511"}></MessageComponent>
+                        <MessageComponent navigation={navigation} personName={"Necati"} messageDate={"20.02.2024"} backColor={"#3F51B511"}></MessageComponent>
+                        <MessageComponent navigation={navigation} personName={"Necati"} messageDate={"20.02.2024"} backColor={"#3F51B511"}></MessageComponent>
+                        <MessageComponent navigation={navigation} personName={"Necati"} messageDate={"20.02.2024"} backColor={"#3F51B511"}></MessageComponent>
+                        <MessageComponent navigation={navigation} personName={"Necati"} messageDate={"20.02.2024"} backColor={"#3F51B511"}></MessageComponent>
+                        <MessageComponent navigation={navigation} personName={"Necati"} messageDate={"20.02.2024"} backColor={"#3F51B511"}></MessageComponent>
+                        <MessageComponent navigation={navigation} personName={"Necati"} messageDate={"20.02.2024"} backColor={"#3F51B511"}></MessageComponent>
+                        <MessageComponent navigation={navigation} personName={"Necati"} messageDate={"20.02.2024"} backColor={"#3F51B511"}></MessageComponent>
+                        <MessageComponent navigation={navigation} personName={"Necati"} messageDate={"20.02.2024"} backColor={"#3F51B511"}></MessageComponent>
+                        <MessageComponent navigation={navigation} personName={"Necati"} messageDate={"20.02.2024"} backColor={"#3F51B511"}></MessageComponent>
+                        <MessageComponent navigation={navigation} personName={"Necati"} messageDate={"20.02.2024"} backColor={"#3F51B511"}></MessageComponent>
+                        <MessageComponent navigation={navigation} personName={"Necati"} messageDate={"20.02.2024"} backColor={"#3F51B511"}></MessageComponent>
+                        <MessageComponent navigation={navigation} personName={"Necati"} messageDate={"20.02.2024"} backColor={"#3F51B511"}></MessageComponent>
 
                     </ScrollView>
 

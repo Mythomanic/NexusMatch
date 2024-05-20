@@ -7,9 +7,10 @@ import { Ionicons, Fontisto, FontAwesome, FontAwesome5, Entypo, EvilIcons, Feath
 import { LinearGradient } from 'expo-linear-gradient';
 import { Carousel } from 'react-native-basic-carousel'
 import styles from './App.styles';
+import MessageScreen from './pages/MessageScreen';
 
 
-function MessageComponent({ personName, messageDate, backColor }) {
+function MessageComponent({ personName, messageDate, backColor,navigation }) {
 
     const [showPassword, setShowPassword] = useState(true);
 
@@ -47,7 +48,7 @@ function MessageComponent({ personName, messageDate, backColor }) {
 
     return (
 
-        <TouchableOpacity activeOpacity={0.60} style={[styles.MessageComponentContainer, { backgroundColor: backColor }]}>
+        <TouchableOpacity onPress={()=>{navigation.navigate("MessageScreen")}} activeOpacity={0.60} style={[styles.MessageComponentContainer, { backgroundColor: backColor }]}>
 
             <View style={styles.MessageImageContainer}>
                 <Image

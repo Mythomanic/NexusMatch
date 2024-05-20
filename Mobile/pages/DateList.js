@@ -9,12 +9,27 @@ import TopBar from './TopBar';
 import BottomBar from './BottomBar';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Carousel } from 'react-native-basic-carousel'
+import Collapsible from 'react-native-collapsible';
+import JobListItem from './JobListItemComponent';
+import { Swiper } from 'react-native-deck-swiper';
+
+import { useAtom } from 'jotai';
+import { refreshAtom } from '../JotaiAtoms';
+import DateListItem from './DateListItemComponent';
 
 function DateList({ navigation }) {
 
     const [showPassword, setShowPassword] = useState(true);
 
     const screenWidth = Dimensions.get('window').width;
+
+    const [refreshKey, setRefreshKey] = useAtom(refreshAtom); // State to manage the refresh key
+
+    const handleRefresh = () => {
+        // Update the refresh key to trigger a re-render of the Swiper component
+        setRefreshKey(prevKey => prevKey + 1);
+    };
+
 
     const [fontsLoaded] = useFonts({
         'Kaushan': require('../assets/fonts/KaushanScript-Regular.ttf'),
@@ -45,27 +60,36 @@ function DateList({ navigation }) {
         return null;
     }
 
-
     return (
 
         <SafeAreaView style={styles.SafeAreaView}>
 
             <TopBar title={"İlişkiler"} titleFont={"Montserrat-SemiBold"} navigation={navigation} backColor={"#FF6B6B"}></TopBar>
 
-            <View style={{ width: "100%", flex: 1, alignItems: "center" }}>
+            <View style={{ width: "100%", flex: 1, alignItems: "center", }}>
 
-                <View style={styles.SearchBarHomepage}>
-                    <View style={{ position: "absolute", width: 35, alignItems: "center", justifyContent: "center", top: 0, bottom: 0, left: 0, zIndex: 2, marginHorizontal: 15 }}>
-                        <Fontisto size={20} name={"search"} />
-                    </View>
+                <View style={styles.SearchBarCategories}>
+                    <TouchableOpacity style={{ width: 35, alignItems: "center", justifyContent: "center", flexDirection: "row", columnGap: 7 }}>
+                        <Ionicons size={21} name={"filter"} />
+                        <Text style={{ fontSize: 13}}>Filter</Text>
 
-                    <TextInput placeholderTextColor={"black"} style={{ width: "100%", borderRadius: 100, backgroundColor: "#9f9f9faa", fontSize: 11, minHeight: 35, paddingHorizontal: 35 }} placeholder='Arama Yapın...' />
+                    </TouchableOpacity>
+
+                    <TouchableOpacity style={{ alignItems: "center", justifyContent: "center", flexDirection: "row", columnGap: 7 }} onPress={handleRefresh}>
+                        <Text style={{ fontSize: 13}}>Refresh</Text>
+                        <FontAwesome size={18} name="refresh"></FontAwesome>
+
+                    </TouchableOpacity>
+                </View>
+
+                <View style={{ flex: 1, width: "100%", }}>
+
+                    <DateListItem navigation={navigation} />
                 </View>
 
             </View>
+
         </SafeAreaView>
-
-
 
     )
 

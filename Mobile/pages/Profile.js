@@ -1,5 +1,5 @@
 import React, { useState, useCallback, Component } from 'react'
-import { View, Image, ImageBackground, Text, ScrollView, TouchableOpacity, Dimensions } from 'react-native'
+import { View, Image, ImageBackground, Text, ScrollView, TouchableOpacity, Dimensions ,LayoutAnimation } from 'react-native'
 import { SafeAreaProvider, SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import styles from '../App.styles';
 import { TextInput } from 'react-native';
@@ -22,6 +22,8 @@ function Profile({ navigation }) {
     const [galleryModalVisible, setGalleryModalVisible] = useState(false);
     const [galleryModalVisible2, setGalleryModalVisible2] = useState(false);
     const [galleryModalVisible3, setGalleryModalVisible3] = useState(false);
+
+
 
     const { heightScreen, widthScreen } = Dimensions.get("window");
 
@@ -94,7 +96,7 @@ function Profile({ navigation }) {
     function GalleryComponent({ imageLink }) {
         return (
             <View style={{ width: "47%", alignItems: "center", justifyContent: "center", height: 150, borderRadius: 10, borderWidth: 1, borderColor: "#afafaf" }}>
-                
+
             </View>
         )
     }
@@ -107,6 +109,12 @@ function Profile({ navigation }) {
     ]
 
 
+    // Function to animate layout changes
+    const animateLayout = () => {
+        LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    };
+
+
     return (
         <SafeAreaProvider>
 
@@ -116,16 +124,16 @@ function Profile({ navigation }) {
 
                 <ImageBackground source={profileType === 0 ? require("../jobbgprofile.png") : profileType === 1 ? require("../lovebgprofile2.png") : require("../profilebg.png")} resizeMode='cover' style={{ width: "100%", flex: 1, alignItems: "center", }}>
 
-                    <View style={{ width: "100%", flex: 1, borderBottomLeftRadius: 100, borderBottomRightRadius: 100, alignItems: "center", justifyContent: "center", paddingHorizontal: 20,  }}>
+                    <View style={{ width: "100%", flex: 1, borderBottomLeftRadius: 100, borderBottomRightRadius: 100, alignItems: "center", justifyContent: "center", paddingHorizontal: 20, }}>
 
                         <TouchableOpacity style={{ width: 110, height: 110, borderRadius: 100, borderColor: "darkgrey", borderWidth: 1, alignItems: "center", justifyContent: "center" }}>
-                           
+
 
                             {/* <MaterialCommunityIcons name="camera-plus-outline" size={40} /> */}
                         </TouchableOpacity>
 
-                        <TouchableOpacity onPress={()=>{navigation.navigate("EditProfile")}}
-                        style={{ position: "absolute", right: 0, top: 0,  alignItems: "center", justifyContent: "center", margin: 20 }}>
+                        <TouchableOpacity onPress={() => { navigation.navigate("EditProfile") }}
+                            style={{ position: "absolute", right: 0, top: 0, alignItems: "center", justifyContent: "center", margin: 20 }}>
                             <FontAwesome name="cog" size={30} />
                         </TouchableOpacity>
 
@@ -249,15 +257,15 @@ function Profile({ navigation }) {
 
                     <View style={{ flex: 1.25, width: "100%", flexDirection: "row", paddingVertical: 10, paddingHorizontal: 20, zIndex: 1 }}>
 
-                        <TouchableOpacity onPress={() => { setProfileType(0) }} style={{ width: profileType === 0 ? "65%" : "17.5%", }}>
+                        <TouchableOpacity onPress={() => { setProfileType(0); animateLayout(); }} style={{ width: profileType === 0 ? "65%" : "17.5%", }}>
                             <Image style={{ width: "100%", height: "100%", borderTopLeftRadius: 15, borderBottomLeftRadius: 15 }} source={require("../jobwork.jpg")}></Image>
                         </TouchableOpacity>
 
-                        <TouchableOpacity onPress={() => { setProfileType(1) }} style={{ width: profileType === 1 ? "65%" : "17.5%", }}>
+                        <TouchableOpacity onPress={() => { setProfileType(1); animateLayout(); }} style={{ width: profileType === 1 ? "65%" : "17.5%", }}>
                             <Image style={{ width: "100%", height: "100%", }} source={require("../heart.jpg")}></Image>
                         </TouchableOpacity>
 
-                        <TouchableOpacity onPress={() => { setProfileType(2) }} style={{ width: profileType === 2 ? "65%" : "17.5%", }}>
+                        <TouchableOpacity onPress={() => { setProfileType(2); animateLayout(); }} style={{ width: profileType === 2 ? "65%" : "17.5%", }}>
                             <Image style={{ width: "100%", height: "100%", borderTopRightRadius: 15, borderBottomRightRadius: 15 }} source={require("../event.jpg")}></Image>
                         </TouchableOpacity>
 
