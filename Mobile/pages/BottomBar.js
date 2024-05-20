@@ -85,7 +85,7 @@ function BottomBar({ navigation, selectMenu, topbarColor }) {
                     }
                 </TouchableOpacity>
 
-                <TouchableOpacity onPress={() => { }} style={{ alignItems: "center", justifyContent: "center", flex: 1 }}>
+                <TouchableOpacity onPress={() => { navigation.navigate("Create")}} style={{ alignItems: "center", justifyContent: "center", flex: 1 }}>
 
                     {selectMenu === 2 ? (
                         <>

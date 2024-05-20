@@ -28,6 +28,13 @@ import Joblist from './pages/JobList';
 import DateList from './pages/DateList';
 import EventList from './pages/EventList';
 import JobList from './pages/JobList';
+import JobsRequester from './matchtabs/JobsRequester';
+import DateRequester from './matchtabs/DateRequester';
+import EventRequester from './matchtabs/EventRequester';
+import MessageScreen from './pages/MessageScreen';
+import Create from './pages/Create';
+import { Provider } from 'jotai';
+
 
 
 export default function App({ navigation }) {
@@ -125,9 +132,9 @@ export default function App({ navigation }) {
         </SafeAreaView>
 
         <Tab.Navigator tabBar={props => <MyTabBar {...props} />}>
-          <Tab.Screen name="İş" component={Jobs} />
-          <Tab.Screen name="İlişki" component={Date} />
-          <Tab.Screen name="Etkinlik" component={Event} />
+          <Tab.Screen name="İş" component={JobsRequester} />
+          <Tab.Screen name="İlişki" component={DateRequester} />
+          <Tab.Screen name="Etkinlik" component={EventRequester} />
         </Tab.Navigator>
       </>
     );
@@ -157,38 +164,42 @@ export default function App({ navigation }) {
   }
 
   return (
-    <PaperProvider>
-      <SafeAreaProvider>
+    <Provider>
+      <PaperProvider>
+        <SafeAreaProvider>
 
-        <NavigationContainer>
-          <Stack.Navigator screenOptions={
-            {
-              headerShown: false,
-              cardStyle: {} // Set the background color here
-            }
-          } initialRouteName='SplashScreen'>
+          <NavigationContainer>
+            <Stack.Navigator screenOptions={
+              {
+                headerShown: false,
+                cardStyle: {} // Set the background color here
+              }
+            } initialRouteName='SplashScreen'>
 
-            <Stack.Screen name="SplashScreen" component={SplashScreen} />
-            <Stack.Screen name="Login" component={Login} />
-            <Stack.Screen name="SignUp" component={SignUp} />
-            <Stack.Screen name="Homepage" component={Homepage} />
-            <Stack.Screen name="Requester" component={Tab1Stack} />
-            <Stack.Screen name="Creator" component={Tab2Stack} />
-            <Stack.Screen name="Matches" component={Matches} />
-            <Stack.Screen name="Profile" component={Profile} />
-            <Stack.Screen name="EditProfile" component={EditProfile} />
-            <Stack.Screen name="Search" component={TabSearchStack} />
-            <Stack.Screen name="JobList" component={JobList} />
-            <Stack.Screen name="DateList" component={DateList} />
-            <Stack.Screen name="EventList" component={EventList} />
+              <Stack.Screen name="SplashScreen" component={SplashScreen} />
+              <Stack.Screen name="Login" component={Login} />
+              <Stack.Screen name="SignUp" component={SignUp} />
+              <Stack.Screen name="Homepage" component={Homepage} />
+              <Stack.Screen name="Requester" component={Tab1Stack} />
+              <Stack.Screen name="Creator" component={Tab2Stack} />
+              <Stack.Screen name="Matches" component={Matches} />
+              <Stack.Screen name="Profile" component={Profile} />
+              <Stack.Screen name="EditProfile" component={EditProfile} />
+              <Stack.Screen name="Search" component={TabSearchStack} />
+              <Stack.Screen name="JobList" component={JobList} />
+              <Stack.Screen name="DateList" component={DateList} />
+              <Stack.Screen name="EventList" component={EventList} />
+              <Stack.Screen name="MessageScreen" component={MessageScreen} />
+              <Stack.Screen name="Create" component={Create} />
 
-          </Stack.Navigator>
+            </Stack.Navigator>
 
 
 
-        </NavigationContainer>
-      </SafeAreaProvider>
-    </PaperProvider>
+          </NavigationContainer>
+        </SafeAreaProvider>
+      </PaperProvider>
+    </Provider>
 
 
   )
