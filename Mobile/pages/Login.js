@@ -8,26 +8,29 @@ import { useFonts } from 'expo-font';
 import { Ionicons, FontAwesome, FontAwesome5, Entypo, EvilIcons, Feather, MaterialCommunityIcons, MaterialIcons, AntDesign } from "react-native-vector-icons"
 import axios from 'axios';
 import { signup } from './apiService';
+import { login } from './apiService';
+import { Alert } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 function Login({ navigation }) {
 
-   /*  const [users, setUsers] = useState([])
-
-    const BASE_URL = 'https://nexusmain.onrender.com/api/user';
-
-    useEffect(() => {
-        async function fetchUser() {
-            try {
-                const response = await axios.get(BASE_URL);
-                setUsers(response.data);
-            } catch (error) {
-                console.error('Error fetching users:', error);
-            }
-        }
-
-        fetchUser();
-    }, []);
- */
+    /*  const [users, setUsers] = useState([])
+ 
+     const BASE_URL = 'https://nexusmain.onrender.com/api/user';
+ 
+     useEffect(() => {
+         async function fetchUser() {
+             try {
+                 const response = await axios.get(BASE_URL);
+                 setUsers(response.data);
+             } catch (error) {
+                 console.error('Error fetching users:', error);
+             }
+         }
+ 
+         fetchUser();
+     }, []);
+  */
 
     /* {users.map(user => (
         <Text key={user.id}>{user.name}</Text>
@@ -42,6 +45,23 @@ function Login({ navigation }) {
      }, [requestType]);
   */
 
+
+
+    const [email, setEmail] = useState("")
+    const [password, setPassword] = useState("")
+
+    const handleLogin = async () => {
+        const response = await login(email, password);
+        if (response.status === true) {
+            console.log('User Logged In Successfully');
+            await AsyncStorage.setItem('usertoken', response.token);
+            navigation.navigate("Homepage")
+
+        } else {
+            Alert.alert("Yanlış kullanıcı adı veya şifre")
+            console.log(response.message);
+        }
+    };
 
     const [fontsLoaded] = useFonts({
         'Kaushan': require('../assets/fonts/KaushanScript-Regular.ttf'),
@@ -115,14 +135,15 @@ function Login({ navigation }) {
 
                         <View style={styles.LoginInputContainer}>
                             <Feather name="mail" style={{ fontSize: 20, color: requestType === 1 ? "#1161a8" : "#a6026b" }} />
-                            <TextInput id='girisemail' keyboardType='email-address' placeholder='E-posta' placeholderTextColor={requestType === 1 ? "#1161a8" : "#a6026b"} style={{ width: "100%" }} />
+                            <TextInput value={email} onChangeText={setEmail} id='girisemail' keyboardType='email-address' placeholder='E-posta' placeholderTextColor={requestType === 1 ? "#1161a8" : "#a6026b"} style={{ width: "100%" }} />
 
                         </View>
+                       {/*  <TouchableOpacity onPress={() => { console.log(password) }}><Text>TESTBUTON</Text></TouchableOpacity> */}
 
                         <View style={styles.LoginInputContainer}>
                             <Feather name="lock" style={{ fontSize: 20, color: requestType === 1 ? "#1161a8" : "#a6026b" }} />
 
-                            <TextInput id='girissifre' secureTextEntry={showPassword} keyboardType='default' placeholder='Şifre' placeholderTextColor={requestType === 1 ? "#1161a8" : "#a6026b"} style={{ width: "100%" }} />
+                            <TextInput value={password} onChangeText={setPassword} id='girissifre' secureTextEntry={showPassword} keyboardType='default' placeholder='Şifre' placeholderTextColor={requestType === 1 ? "#1161a8" : "#a6026b"} style={{ width: "100%" }} />
 
                             <TouchableOpacity onPress={() => { setShowPassword(!showPassword) }} style={{ position: "absolute", width: 25, height: 25, alignItems: "center", justifyContent: "center", right: 0, }}>
                                 <Entypo style={{ fontSize: 20, color: requestType === 1 ? "#1161a8" : "#a6026b" }} name={showPassword === true ? "eye-with-line" : "eye"} />
@@ -163,7 +184,7 @@ function Login({ navigation }) {
 
 
                     <View style={styles.LoginButtonContainer}>
-                        <TouchableOpacity onPress={() => { navigation.navigate("Homepage") }} style={[styles.LoginButton, { backgroundColor: requestType === 1 ? "#0386d0" : "#7c0150" }]}>
+                        <TouchableOpacity onPress={handleLogin} style={[styles.LoginButton, { backgroundColor: requestType === 1 ? "#0386d0" : "#7c0150" }]}>
                             <Text style={{ color: "white", fontSize: 16, fontFamily: "Montserrat-Medium" }}>Giriş Yap</Text>
                         </TouchableOpacity>
 

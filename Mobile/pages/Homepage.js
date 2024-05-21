@@ -9,6 +9,7 @@ import TopBar from './TopBar';
 import BottomBar from './BottomBar';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Carousel } from 'react-native-basic-carousel'
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 function Homepage({ navigation }) {
 
@@ -83,7 +84,7 @@ function Homepage({ navigation }) {
                             source={require("../img/kız.jpg")}
                             style={{ width: "100%", height: "100%", borderRadius: 10, alignItems: "center", justifyContent: "center" }}
                         /> */}
-                        <View style={{ width: "100%", height: "100%", borderRadius: 10, alignItems: "center", justifyContent: "center", backgroundColor:"white" }}>
+                        <View style={{ width: "100%", height: "100%", borderRadius: 10, alignItems: "center", justifyContent: "center", backgroundColor: "white" }}>
 
                         </View>
 
@@ -104,6 +105,17 @@ function Homepage({ navigation }) {
         );
     };
 
+    const getData = async () => {
+        try {
+          const value = await AsyncStorage.getItem('usertoken');
+          if (value !== null) {
+            // value previously stored
+            console.log(value)
+          }
+        } catch (e) {
+          // error reading value
+        }
+      };
 
     return (
 
@@ -132,10 +144,13 @@ function Homepage({ navigation }) {
                         autoplayDelay={4500}
                     />
                 </View>
+{/* 
+                <TouchableOpacity onPress={getData}><Text fontSize="xs">TESTTOKENBUTON</Text>
+                </TouchableOpacity> */}
 
                 <View style={styles.MainCategoriesContainer}>
 
-                    <TouchableOpacity onPress={()=>{navigation.navigate("JobList")}} activeOpacity={0.65} style={styles.TouchableMainCategory}>
+                    <TouchableOpacity onPress={() => { navigation.navigate("JobList") }} activeOpacity={0.65} style={styles.TouchableMainCategory}>
                         <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} colors={["#3F51B5dd", "#03A9F4bb"]} style={styles.MainCategories}>
 
                             <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
@@ -153,7 +168,7 @@ function Homepage({ navigation }) {
                         </LinearGradient>
                     </TouchableOpacity>
 
-                    <TouchableOpacity onPress={()=>{navigation.navigate("DateList")}} activeOpacity={0.65} style={styles.TouchableMainCategory}>
+                    <TouchableOpacity onPress={() => { navigation.navigate("DateList") }} activeOpacity={0.65} style={styles.TouchableMainCategory}>
                         <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} colors={["#FF6B6B", "#FFD166"]} style={styles.MainCategories}>
 
                             <View style={{ flex: 1, alignItems: "center", justifyContent: "center", rowGap: 10 }}>
@@ -171,7 +186,7 @@ function Homepage({ navigation }) {
 
 
 
-                    <TouchableOpacity onPress={()=>{navigation.navigate("EventList")}} activeOpacity={0.65} style={styles.TouchableMainCategory}>
+                    <TouchableOpacity onPress={() => { navigation.navigate("EventList") }} activeOpacity={0.65} style={styles.TouchableMainCategory}>
                         <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} colors={["#4CAF50", "#8BC34A"]} style={styles.MainCategories}>
                             <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
                                 <Image source={require("../event.jpg")} style={{ width: "100%", height: "100%", borderRadius: 10 }} />
