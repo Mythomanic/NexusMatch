@@ -6,19 +6,41 @@ import styles from '../App.styles';
 import { TextInput } from 'react-native';
 import { useFonts } from 'expo-font';
 import { Ionicons, FontAwesome, FontAwesome5, Entypo, EvilIcons, Feather, MaterialCommunityIcons, MaterialIcons, AntDesign } from "react-native-vector-icons"
+import axios from 'axios';
+import { signup } from './apiService';
 
 function Login({ navigation }) {
 
+   /*  const [users, setUsers] = useState([])
 
+    const BASE_URL = 'https://nexusmain.onrender.com/api/user';
+
+    useEffect(() => {
+        async function fetchUser() {
+            try {
+                const response = await axios.get(BASE_URL);
+                setUsers(response.data);
+            } catch (error) {
+                console.error('Error fetching users:', error);
+            }
+        }
+
+        fetchUser();
+    }, []);
+ */
+
+    /* {users.map(user => (
+        <Text key={user.id}>{user.name}</Text>
+    ))} */
 
     const [showPassword, setShowPassword] = useState(true);
     const [rememberCheckbox, setRememberCheckbox] = useState(false);
     const [requestType, setRequestType] = useState(1);
 
-   /*  useEffect(() => {
-        console.log(requestType);
-    }, [requestType]);
- */
+    /*  useEffect(() => {
+         console.log(requestType);
+     }, [requestType]);
+  */
 
 
     const [fontsLoaded] = useFonts({
@@ -65,14 +87,14 @@ function Login({ navigation }) {
 
                 <View style={styles.SozlesmeBar}>
                     <Text style={{ fontSize: 12, color: requestType === 1 ? "#1161a8" : "#a6026b", fontFamily: "Montserrat-MediumItalic" }}>Giriş yaparak </Text>
-                    <TouchableOpacity><Text style={{ fontSize: 12, color: "#003366", fontFamily: "Montserrat-MediumItalic", textDecorationLine: "underline" }}>Kullanıcı Sözleşmesi </Text>
+                    <TouchableOpacity><Text style={{ fontSize: 12, color: "#003366", fontFamily: "Montserrat-MediumItalic", textDecorationLine: "underline" }}>Kullanıcı Sözleşmesi</Text>
                     </TouchableOpacity>
                     <Text style={{ fontSize: 12, color: requestType === 1 ? "#1161a8" : "#a6026b", fontFamily: "Montserrat-MediumItalic" }}> ve </Text>
                     <TouchableOpacity><Text style={{ fontSize: 12, color: "#003366", fontFamily: "Montserrat-MediumItalic", textDecorationLine: "underline" }}>Gizlilik Politikası</Text>
                     </TouchableOpacity>
                     <Text style={{ fontSize: 12, color: requestType === 1 ? "#1161a8" : "#a6026b", fontFamily: "Montserrat-MediumItalic" }}>'nı kabul edersiniz.</Text>
                 </View>
-{/* 
+                {/* 
                 <View style={styles.HizmetTipiStateBar}>
 
                     <TouchableOpacity style={{ width: "35%", alignItems: "center", justifyContent: "center", borderRadius: 5, backgroundColor: requestType === 1 ? "#0386d0" : "white", padding: 2 }} onPress={() => { [setRequestType(1), console.log(requestType)] }}>
@@ -141,7 +163,7 @@ function Login({ navigation }) {
 
 
                     <View style={styles.LoginButtonContainer}>
-                        <TouchableOpacity onPress={()=>{navigation.navigate("Homepage")}} style={[styles.LoginButton, { backgroundColor: requestType === 1 ? "#0386d0" : "#7c0150" }]}>
+                        <TouchableOpacity onPress={() => { navigation.navigate("Homepage") }} style={[styles.LoginButton, { backgroundColor: requestType === 1 ? "#0386d0" : "#7c0150" }]}>
                             <Text style={{ color: "white", fontSize: 16, fontFamily: "Montserrat-Medium" }}>Giriş Yap</Text>
                         </TouchableOpacity>
 
