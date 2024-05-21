@@ -6,17 +6,58 @@ import styles from '../App.styles';
 import { TextInput } from 'react-native';
 import { useFonts } from 'expo-font';
 import { Ionicons, FontAwesome, FontAwesome5, Entypo, EvilIcons, Feather, MaterialCommunityIcons, MaterialIcons, AntDesign } from "react-native-vector-icons"
+import { signup } from './apiService';
+
 
 function SignUp({ navigation, route }) {
+
+    const BASE_URL = 'https://nexusmain.onrender.com/api';
+
+
+    const [name, setName] = useState();
+    const [email, setEmail] = useState();
+    const [password, setPassword] = useState();
+    const [passwordConfirmation, setPasswordConfirmation] = useState();
+    const [message, setMessage] = useState();
+
+    const handleSignup = async () => {
+        const response = await signup(name, email, password, passwordConfirmation);
+        if (response.status == 200) {
+            setMessage('User Created Successfully');
+            // Handle successful signup (e.g., navigate to another screen)
+            console.log('User Created Successfully');
+            navigation.navigate("Login");
+        } else {
+            setMessage(response.message);
+            console.log(response.message);
+        }
+    };
+
+    /*  <View>
+     <TextInput
+       placeholder="Name"
+       value={name}
+       onChangeText={setName}
+     />
+     <TextInput
+       placeholder="Email"
+       value={email}
+       onChangeText={setEmail}
+     />
+     <TextInput
+       placeholder="Password"
+       value={password}
+       onChangeText={setPassword}
+       secureTextEntry */
 
     const [rememberCheckbox, setRememberCheckbox] = useState(false);
     const { requestType } = route.params;
 
-    const EyeNoEye = ({ placeholder, id }) => {
+    const EyeNoEye = ({ placeholder, id, onChangeTextFunction, value }) => {
         const [showPassword, setShowPassword] = useState(true);
         return (
             <>
-                <TextInput multiline={false} id={id} secureTextEntry={showPassword} keyboardType='default' placeholder={placeholder} placeholderTextColor={requestType === 1 ? "#1161a8" : "#a6026b"} style={{ width: "75%" }} />
+                <TextInput value={value} onChangeText={() => { onChangeTextFunction }} multiline={false} id={id} secureTextEntry={showPassword} keyboardType='default' placeholder={placeholder} placeholderTextColor={requestType === 1 ? "#1161a8" : "#a6026b"} style={{ width: "75%" }} />
 
                 <TouchableOpacity onPress={() => { setShowPassword(!showPassword) }} style={{ position: "absolute", width: 25, height: 25, alignItems: "center", justifyContent: "center", right: 0, }}>
                     <Entypo style={{ fontSize: 20, color: requestType === 1 ? "#1161a8" : "#a6026b" }} name={showPassword === true ? "eye-with-line" : "eye"} />
@@ -82,19 +123,19 @@ function SignUp({ navigation, route }) {
 
                     <View style={styles.SignupInputContainer}>
                         <Feather name="mail" style={{ fontSize: 20, color: requestType === 1 ? "#1161a8" : "#a6026b" }} />
-                        <TextInput onChangeText={() => { }} id='kayitemail' keyboardType='email-address' placeholder='E-posta' placeholderTextColor={requestType === 1 ? "#1161a8" : "#a6026b"} style={{ width: "100%" }} />
+                        <TextInput value={email} onChangeText={() => { setEmail }} id='kayitemail' keyboardType='email-address' placeholder='E-posta' placeholderTextColor={requestType === 1 ? "#1161a8" : "#a6026b"} style={{ width: "100%" }} />
                     </View>
 
                     <View style={styles.SignupInputContainer}>
                         <Feather name="user" style={{ fontSize: 20, color: requestType === 1 ? "#1161a8" : "#a6026b" }} />
-                        <TextInput id='kayitnick' keyboardType='default' placeholder='Kullanıcı Adı' placeholderTextColor={requestType === 1 ? "#1161a8" : "#a6026b"} style={{ width: "100%" }} />
+                        <TextInput value={name} onChangeText={() => { setName }} id='kayitnick' keyboardType='default' placeholder='Kullanıcı Adı' placeholderTextColor={requestType === 1 ? "#1161a8" : "#a6026b"} style={{ width: "100%" }} />
                     </View>
 
                     <View style={styles.SignupInputContainer}>
                         <Feather name="lock" style={{ fontSize: 20, color: requestType === 1 ? "#1161a8" : "#a6026b" }} />
 
 
-                        <EyeNoEye placeholder={"Şifre"} id={"kayitsifre"} />
+                        <EyeNoEye value={password} onChangeTextFunction={setPassword} placeholder={"Şifre"} id={"kayitsifre"} />
 
                         {/* <TouchableOpacity onPress={() => { setShowPassword(!showPassword) }} style={{ position: "absolute", width: 25, height: 25, alignItems: "center", justifyContent: "center", right: 0, }}>
                             <Entypo style={{ fontSize: 20, color: requestType === 1 ? "#1161a8" : "#a6026b" }} name={showPassword === true ? "eye-with-line" : "eye"} />
@@ -106,7 +147,7 @@ function SignUp({ navigation, route }) {
 
                         {/*                         <TextInput id='kayitsifretekrar' secureTextEntry={showPassword} keyboardType='default' placeholder='Şifre Tekrar' placeholderTextColor={requestType === 1 ? "#1161a8" : "#a6026b"} style={{ width: "100%" }} />
  */}
-                        <EyeNoEye placeholder={"Şifre Tekrar"} id={"kayitsifretekrar"} />
+                        <EyeNoEye value={passwordConfirmation} onChangeTextFunction={setPasswordConfirmation} placeholder={"Şifre Tekrar"} id={"kayitsifretekrar"} />
 
                         {/* <TouchableOpacity onPress={() => { setShowPassword(!showPassword) }} style={{ position: "absolute", width: 25, height: 25, alignItems: "center", justifyContent: "center", right: 0, }}>
                             <Entypo style={{ fontSize: 20, color: requestType === 1 ? "#1161a8" : "#a6026b" }} name={showPassword === true ? "eye-with-line" : "eye"} />
@@ -116,7 +157,7 @@ function SignUp({ navigation, route }) {
                 </View>
 
                 <View style={styles.SignUpButtonContainer}>
-                    <TouchableOpacity onPress={() => { navigation.navigate("Login") }} style={[styles.LoginButton, { backgroundColor: requestType === 1 ? "#0386d0" : "#7c0150" }]}>
+                    <TouchableOpacity onPress={() => { handleSignup() }} style={[styles.LoginButton, { backgroundColor: requestType === 1 ? "#0386d0" : "#7c0150" }]}>
                         <Text style={{ color: "white", fontSize: 16, fontFamily: "Montserrat-Medium" }}>Kayıt Ol</Text>
                     </TouchableOpacity>
 
