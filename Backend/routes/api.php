@@ -70,6 +70,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/update-profile/edit-email/{user}', [UserController::class, 'editEmail']);
     Route::put('/update-profile/edit-password/{user}', [UserController::class, 'editPassword']);
     Route::put('/update-profile/add-tag/{user}', [UserController::class, 'addTag']);
+    Route::delete('/update-profile/remove-tag/{user}/tag', [UserController::class, 'removeTag']);
+    Route::get('/user/{user}/tags', [UserController::class, 'getTags']);
+
 });
 
 

@@ -193,7 +193,63 @@ class UserController extends Controller
             'message' => 'Tag added successfully',
             'tags' => $user->tags
         ], 200);
+    }
 
+
+    public function removeTag(Request $request, User $user){
+        $validateTag = Validator::make($request->all(), [
+            "tag" => "required",
+        ]);
+        if ($validateTag->fails()) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Validation error',
+                'errors' => $validateTag->errors()
+            ], 400);
+        }
+        
+        $tags = $user->tags;
+        
+        // Remove quotes from tags
+        $tags = array_map(function($tag) {
+            return trim($tag, "'");
+        }, $tags);
+    
+        // Debugging purposes
+        $searchTag = $request->input('tag');
+        $key = array_search($searchTag, $tags);
+    
+        if ($key !== false) {
+            unset($tags[$key]);
+        } else {
+            return response()->json([
+                'status' => false,
+                'message' => 'Tag not found',
+                'debug' => [
+                    'searchTag' => $searchTag,
+                    'tags' => $tags,
+                    'key' => $key,
+                ]
+            ], 404);
+        }
+    
+        // Reindex the array to avoid any issues with array structure
+        $user->tags = array_values($tags);
+        $user->save();
+    
+        return response()->json([
+            'status' => true,
+            'message' => 'Tag removed successfully',
+            'tags' => $user->tags
+        ], 200);
+    }
+
+    public function getTags(User $user)
+    {
+        return response()->json([
+            'status' => true,
+            'tags' => $user->tags
+        ], 200);
     }
 
     
@@ -237,6 +293,7 @@ class UserController extends Controller
             $user = User::where('email', $request->email)->first();
 
             return response()->json([
+                'id' => $user->id,
                 'status' => true,
                 'message' => 'User Logged In Successfully',
                 'token' => $user->createToken("API TOKEN")->plainTextToken
