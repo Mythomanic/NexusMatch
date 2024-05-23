@@ -26,7 +26,7 @@ Route::post('/auth/login', [UserController::class, 'login'])->name('login');
 
 Route::post('messages', [ChatController::class, 'message']);
 
-Route::get('/user/{id}', [UserController::class,'show'])->name('get.user');
+Route::get('/userjob/{id}', [UserController::class,'show'])->name('get.user');
 Route::get('/user', [UserController::class,'showAll'])->name('getAll.user');
 Route::post('/user/edit/{id}', [UserController::class,'edit'])->name('edit.user');
 Route::delete('/user/delete/{id}', [UserController::class,'destroy'])->name('delete.user');
@@ -72,6 +72,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/update-profile/add-tag/{user}', [UserController::class, 'addTag']);
     Route::delete('/update-profile/remove-tag/{user}/tag', [UserController::class, 'removeTag']);
     Route::get('/user/{user}/tags', [UserController::class, 'getTags']);
+    Route::get('/user/{user}/job-profile', [UserController::class, 'getJobProfile']);
+
 
 });
 

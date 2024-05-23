@@ -334,4 +334,26 @@ class UserController extends Controller
         $user = User::find(1); // ID'si 1 olan kullanıcıyı çek
         return view('usercontrol', compact('user'));
     }
+
+    public function getJobProfile($id)
+    {
+        // Kullanıcıyı ID ile bul
+        $user = User::find($id);
+
+        // Kullanıcı bulunamazsa 404 döndür
+        if (!$user) {
+            return response()->json([
+                'status' => false,
+                'message' => 'User not found'
+            ], 404);
+        }
+
+        // İlgili kolonları seç
+        $jobProfile = $user->only(['name', 'avatarJob', 'tagsJob', 'descriptionJob', 'userJob', 'jobGallery']);
+
+        return response()->json([
+            'status' => true,
+            'jobProfile' => $jobProfile
+        ], 200);
+    }
 }
