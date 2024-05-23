@@ -5,6 +5,9 @@ import TinderCards from "./TinderCards";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Login from "./components/Login";
 import Register from "./components/Register";
+import CreateJob from "./components/CreateJob";
+import UpdateJob from "./components/UpdateJob";
+import Profile from "./components/Profile";
 
 function App() {
   return (
@@ -23,6 +26,9 @@ function App() {
           />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/create-job" element={<CreateJob />} />
+          <Route path="/update-job/:id" element={<UpdateJob />} />
+          <Route path="/profile" element={<Profile />} />
           <Route
             path="/"
             element={
