@@ -52,210 +52,13 @@ class UserController extends Controller
             ], 500);
         }
     }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        $user = User::where("id",$id)->first();
-        if (!$user)
-            return response()->json(['message' => 'There is no user with this id']);
-        return response()->json($user, 200);
-    }
-
-    public function showAll()
-    {
-        $user = User::all();
-        return $user;
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Request $request, string $id)
-    {
-        $validateUser = Validator::make($request->all(), [
-            "name" => "required",
-            "email"=> "required|email|unique:users,email,".$id,
-            "password"=> "required|confirmed",
-            "password_confirmation" => "required",
-        ]);
-
-        if ($validateUser->fails()) {
-            return response()->json([
-                'status' => false,
-                'message' => 'Validation error',
-                'errors' => $validateUser->errors()
-            ], 400);
-        }
-
-        $user = User::find($id);
-        if (!$user) {
-            return response()->json(['message' => 'There is no user with this id'], 404);
-        }
-
-        $user->name = $request->name;
-        $user->email = $request->email;
-        $user->password = Hash::make($request->password);
-        $user->save();
-
-        return response()->json([
-            'status' => true,
-            'message' => 'User edited successfully',
-        ], 200);
-    }
-
-    public function editName(Request $request, User $user){
-        $validateName = Validator::make($request->all(), [
-            "name" => "required",
-        ]);
-
-        if ($validateName->fails()) {
-            return response()->json([
-                'status' => false,
-                'message' => 'Validation error',
-                'errors' => $validateName->errors()
-            ], 400);
-        }
-
-        $user->name = $request->name;
-        $user->save();
-
-        return response()->json([
-            'status' => true,
-            'message' => 'User edited successfully',
-        ], 200);
-    }
-    public function editEmail(Request $request, User $user){
-        $validateEmail = Validator::make($request->all(), [
-            "email" => "required",
-        ]);
-
-        if ($validateEmail->fails()) {
-            return response()->json([
-                'status' => false,
-                'message' => 'Validation error',
-                'errors' => $validateEmail->errors()
-            ], 400);
-        }
-
-        $user->email = $request->email;
-        $user->save();
-
-        return response()->json([
-            'status' => true,
-            'message' => 'User edited successfully',
-        ], 200);
-    }
-    public function editPassword(Request $request, User $user){
-        $validatePassword = Validator::make($request->all(), [
-            "password" => "required|confirmed",
-            "password_confirmation" => "required",
-        ]);
-
-        if ($validatePassword->fails()) {
-            return response()->json([
-                'status' => false,
-                'message' => 'Validation error',
-                'errors' => $validatePassword->errors()
-            ], 400);
-        }
-
-        $user->email = $request->email;
-        $user->save();
-
-        return response()->json([
-            'status' => true,
-            'message' => 'User edited successfully',
-        ], 200);
-    }
-
-    public function addTag(Request $request, User $user){
-        $validateTag = Validator::make($request->all(), [
-            "tag" => "required",
-        ]);
-        if ($validateTag->fails()) {
-            return response()->json([
-                'status' => false,
-                'message' => 'Validation error',
-                'errors' => $validateTag->errors()
-            ], 400);
-        }
-        $tags = $user->tags; 
-
-        $tags[] = $request->input('tag');
-        $user->tags = $tags;
-        $user->save();
-
-        return response()->json([
-            'status' => true,
-            'message' => 'Tag added successfully',
-            'tags' => $user->tags
-        ], 200);
-    }
-
-
-    public function removeTag(Request $request, User $user){
-        $validateTag = Validator::make($request->all(), [
-            "tag" => "required",
-        ]);
-        if ($validateTag->fails()) {
-            return response()->json([
-                'status' => false,
-                'message' => 'Validation error',
-                'errors' => $validateTag->errors()
-            ], 400);
-        }
-        
-        $tags = $user->tags;
-        
-        // Remove quotes from tags
-        $tags = array_map(function($tag) {
-            return trim($tag, "'");
-        }, $tags);
-    
-        // Debugging purposes
-        $searchTag = $request->input('tag');
-        $key = array_search($searchTag, $tags);
-    
-        if ($key !== false) {
-            unset($tags[$key]);
-        } else {
-            return response()->json([
-                'status' => false,
-                'message' => 'Tag not found',
-                'debug' => [
-                    'searchTag' => $searchTag,
-                    'tags' => $tags,
-                    'key' => $key,
-                ]
-            ], 404);
-        }
-    
-        // Reindex the array to avoid any issues with array structure
-        $user->tags = array_values($tags);
-        $user->save();
-    
-        return response()->json([
-            'status' => true,
-            'message' => 'Tag removed successfully',
-            'tags' => $user->tags
-        ], 200);
-    }
-
     public function getTags(User $user)
     {
         return response()->json([
             'status' => true,
             'tags' => $user->tags
         ], 200);
-    }
-
-    
-    /**
-     * Remove the specified resource from storage.
-     */
+    }    
     public function destroy(string $id)
     {
         $user = User::find($id);
@@ -265,7 +68,6 @@ class UserController extends Controller
         User::destroy($id);
         return response()->json(["message" => "User deleted successfully"]);
     }
-
     public function login(Request $request)
     {
         try {
@@ -306,7 +108,23 @@ class UserController extends Controller
             ], 500);
         }
     }
+    public function logout(Request $request)
+    {
+        try {
+            // Kullanıcının tüm tokenlarını iptal et
+            $request->user()->tokens()->delete();
 
+            return response()->json([
+                'status' => true,
+                'message' => 'User Logged Out Successfully',
+            ], 200);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => false,
+                'message' => $th->getMessage()
+            ], 500);
+        }
+    }
     public function updateAvatar(Request $request, User $user){
         $request->validate([
             'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
@@ -334,7 +152,6 @@ class UserController extends Controller
         $user = User::find(1); // ID'si 1 olan kullanıcıyı çek
         return view('usercontrol', compact('user'));
     }
-
     public function getJobProfile($id)
     {
         // Kullanıcıyı ID ile bul
@@ -354,6 +171,117 @@ class UserController extends Controller
         return response()->json([
             'status' => true,
             'jobProfile' => $jobProfile
+        ], 200);
+    }
+    public function updateUserProfile(Request $request, User $user)
+    {
+        // Validate the request data
+        $validateData = Validator::make($request->all(), [
+            "name" => "sometimes|required|string",
+            "email" => "sometimes|required|email",
+            "password" => "sometimes|required|confirmed",
+            "password_confirmation" => "sometimes|required_with:password",
+            "avatarJob" => "sometimes|nullable|string",
+            "tagsJob" => "sometimes|nullable|array",
+            "descriptionJob" => "sometimes|nullable|string",
+            "userJob" => "sometimes|nullable|string",
+            "jobGallery" => "sometimes|nullable|array",
+            "tag" => "sometimes|required|string",
+            "removeTag" => "sometimes|required|string",
+        ]);
+
+        if ($validateData->fails()) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Validation error',
+                'errors' => $validateData->errors()
+            ], 400);
+        }
+        // Update the user's fields based on the request inputs
+        if ($request->has('name')) {
+            $user->name = $request->input('name');
+        }
+        if ($request->has('email')) {
+            $user->email = $request->input('email');
+        }
+        if ($request->has('password')) {
+            $user->password = Hash::make($request->input('password'));
+        }
+        if ($request->has('avatarJob')) {
+            $user->avatarJob = $request->input('avatarJob');
+        }
+        if ($request->has('tagsJob')) {
+            $user->tagsJob = $request->input('tagsJob');
+        }
+        if ($request->has('descriptionJob')) {
+            $user->descriptionJob = $request->input('descriptionJob');
+        }
+        if ($request->has('userJob')) {
+            $user->userJob = $request->input('userJob');
+        }
+        if ($request->has('jobGallery')) {
+            $user->jobGallery = $request->input('jobGallery');
+        }
+
+        // Adding a tag
+        if ($request->has('tag') && !$request->has('removeTag')) {
+            $tags = $user->tags; 
+
+            $tags[] = $request->input('tag');
+            $user->tags = $tags;
+            $user->save();
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Tag added successfully',
+                'tags' => $user->tags
+            ], 200);
+        }
+
+        // Removing a tag
+        if ($request->has('removeTag')) {            
+            $tags = $user->tags;
+            
+            // Remove quotes from tags
+            $tags = array_map(function($tag) {
+                return trim($tag, "'");
+            }, $tags);
+        
+            // Debugging purposes
+            $searchTag = $request->input('removeTag');
+            $key = array_search($searchTag, $tags);
+        
+            if ($key !== false) {
+                unset($tags[$key]);
+            } else {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Tag not found',
+                    'debug' => [
+                        'searchTag' => $searchTag,
+                        'tags' => $tags,
+                        'key' => $key,
+                    ]
+                ], 404);
+            }
+        
+            // Reindex the array to avoid any issues with array structure
+            $user->tags = array_values($tags);
+            $user->save();
+        
+            return response()->json([
+                'status' => true,
+                'message' => 'Tag removed successfully',
+                'tags' => $user->tags
+            ], 200);
+        }
+
+        $user->save();
+
+        return response()->json([
+            'status' => true,
+            'message' => 'User profile updated successfully',
+            'user' => $user->password
         ], 200);
     }
 }
