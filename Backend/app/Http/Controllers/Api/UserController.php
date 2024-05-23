@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
 {
@@ -104,6 +105,98 @@ class UserController extends Controller
             'message' => 'User edited successfully',
         ], 200);
     }
+
+    public function editName(Request $request, User $user){
+        $validateName = Validator::make($request->all(), [
+            "name" => "required",
+        ]);
+
+        if ($validateName->fails()) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Validation error',
+                'errors' => $validateName->errors()
+            ], 400);
+        }
+
+        $user->name = $request->name;
+        $user->save();
+
+        return response()->json([
+            'status' => true,
+            'message' => 'User edited successfully',
+        ], 200);
+    }
+    public function editEmail(Request $request, User $user){
+        $validateEmail = Validator::make($request->all(), [
+            "email" => "required",
+        ]);
+
+        if ($validateEmail->fails()) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Validation error',
+                'errors' => $validateEmail->errors()
+            ], 400);
+        }
+
+        $user->email = $request->email;
+        $user->save();
+
+        return response()->json([
+            'status' => true,
+            'message' => 'User edited successfully',
+        ], 200);
+    }
+    public function editPassword(Request $request, User $user){
+        $validatePassword = Validator::make($request->all(), [
+            "password" => "required|confirmed",
+            "password_confirmation" => "required",
+        ]);
+
+        if ($validatePassword->fails()) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Validation error',
+                'errors' => $validatePassword->errors()
+            ], 400);
+        }
+
+        $user->email = $request->email;
+        $user->save();
+
+        return response()->json([
+            'status' => true,
+            'message' => 'User edited successfully',
+        ], 200);
+    }
+
+    public function addTag(Request $request, User $user){
+        $validateTag = Validator::make($request->all(), [
+            "tag" => "required",
+        ]);
+        if ($validateTag->fails()) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Validation error',
+                'errors' => $validateTag->errors()
+            ], 400);
+        }
+        $tags = $user->tags; 
+
+        $tags[] = $request->input('tag');
+        $user->tags = $tags;
+        $user->save();
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Tag added successfully',
+            'tags' => $user->tags
+        ], 200);
+
+    }
+
+    
     /**
      * Remove the specified resource from storage.
      */
@@ -157,5 +250,31 @@ class UserController extends Controller
         }
     }
 
+    public function updateAvatar(Request $request, User $user){
+        $request->validate([
+            'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+        
+        if ($request->hasFile('avatar')) {
+            // Delete the old profile picture if exists
+            if ($user->avatar) {
+                Storage::delete('public/avatars/' . $user->avatar);
+            }
+    
+            // Store the new profile picture
+            $filename = $request->file('avatar')->store('avatars', 'public');
+            $user->avatar = basename($filename);
+        }
+    
+        $user->save();
+        
+        return redirect()->back()->with('success', 'Profile updated successfully.');
+    
+    }
 
+    public function showUser()
+    {
+        $user = User::find(1); // ID'si 1 olan kullanıcıyı çek
+        return view('usercontrol', compact('user'));
+    }
 }
