@@ -51,35 +51,15 @@ function Create({ navigation }) {
         return null;
     }
 
-    /*  const [username, setUsername] = useState('');
-     const [password, setPassword] = useState('');
-   
-     const handleSubmit = async () => {
-       try {
-         const response = await fetch('http://your-laravel-api-endpoint/api/login', {
-           method: 'POST',
-           headers: {
-             'Content-Type': 'application/json',
-           },
-           body: JSON.stringify({
-             username: username,
-             password: password,
-           }),
-         });
-   
-         const data = await response.json();
-         
-         if (response.ok) {
-           // Handle successful response
-           Alert.alert('Success', 'Login successful!');
-         } else {
-           // Handle errors
-           Alert.alert('Error', data.message || 'Something went wrong');
-         }
-       } catch (error) {
-         Alert.alert('Error', error.message || 'Network error');
-       }
-     }; */
+    //İş Stateleri
+
+    const [companyName, setcompanyName] = useState();
+    const [jobPosition, setjobPosition] = useState();
+    const [skills, setskills] = useState([]);
+    const [experience, setexperience] = useState();
+    const [jobwage, setjobwage] = useState();
+    const [workingstyle, setworkingstyle] = useState();
+
 
     return (
 
@@ -115,42 +95,39 @@ function Create({ navigation }) {
 
                 {createCategory == 0 ? (
 
-                    <View style={{ flex: 1, width: "100%", }}>
+                    <View style={{ flex: 1, width: "100%", margin: 10 }}>
 
                         <ScrollView contentContainerStyle={{ width: "100%", alignItems: "center", padding: 10, rowGap: 15, }} showsVerticalScrollIndicator={false}>
 
-                            <View style={{ width: "95%", borderWidth: 1, justifyContent: "center", borderRadius: 10, padding: 2 }}>
+                            <View style={styles.CreateContentContainer}>
                                 <TextInput style={{ width: "100%", paddingHorizontal: 10, fontSize: 13 }} placeholder='Şirket adı'></TextInput>
                             </View>
 
-                            <View style={{ width: "95%", borderWidth: 1, justifyContent: "center", borderRadius: 10, padding: 2 }}>
+                            <View style={styles.CreateContentContainer}>
                                 <TextInput style={{ width: "100%", paddingHorizontal: 10, fontSize: 13 }} placeholder='Aday iş pozisyonu adı (Örn: Yazılımcı)'></TextInput>
                             </View>
 
-                            <View style={{ width: "95%", borderWidth: 1, justifyContent: "center", borderRadius: 10, padding: 2 }}>
+                            <View style={styles.CreateContentContainer}>
                                 <TextInput style={{ width: "100%", paddingHorizontal: 10, fontSize: 13 }} placeholder='Aranılan yetenekler'></TextInput>
                             </View>
 
-                            <View style={{ width: "95%", borderWidth: 1, justifyContent: "center", borderRadius: 10, padding: 2 }}>
+                            <View style={styles.CreateContentContainer}>
                                 <TextInput style={{ width: "100%", paddingHorizontal: 10, fontSize: 13 }} placeholder='Aranılan Deneyim'></TextInput>
                             </View>
 
-                            <View style={{ width: "95%", borderWidth: 1, justifyContent: "center", borderRadius: 10, padding: 2 }}>
+                            <View style={styles.CreateContentContainer}>
                                 <TextInput style={{ width: "100%", paddingHorizontal: 10, fontSize: 13 }} placeholder='Maaş aralığı'></TextInput>
                             </View>
 
-                            <View style={{ width: "95%", borderWidth: 1, justifyContent: "center", borderRadius: 10, padding: 2 }}>
+                            <View style={styles.CreateContentContainer}>
                                 <TextInput style={{ width: "100%", paddingHorizontal: 10, fontSize: 13 }} placeholder='Çalışma stili (Ofis / Hibrit / Remote)'></TextInput>
                             </View>
 
                             <TouchableOpacity onPress={() => { }} style={{ padding: 10, paddingHorizontal: 25, borderRadius: 15, alignItems: "center", justifyContent: "center", borderWidth: 2, borderColor: "#03A9F4bb" }}>
-                                <Text style={{color:"#03A9F4bb",fontWeight:"bold"}} fontSize="xs">Oluştur</Text>
+                                <Text style={{ color: "#03A9F4bb", fontWeight: "bold" }} fontSize="xs">Oluştur</Text>
                             </TouchableOpacity>
 
                         </ScrollView>
-
-
-
 
 
 
@@ -158,13 +135,81 @@ function Create({ navigation }) {
 
                 ) : createCategory == 1 ? (
 
-                    <View style={{}}>
-                        <Text fontSize="xs">İlişki kategori</Text>
+                    <View style={{ flex: 1, width: "100%", margin: 10 }}>
+
+                        <ScrollView contentContainerStyle={{ width: "100%", alignItems: "center", padding: 10, rowGap: 15, }} showsVerticalScrollIndicator={false}>
+
+                            <View style={styles.CreateContentContainer}>
+                                <TextInput style={{ width: "100%", paddingHorizontal: 10, fontSize: 13 }} placeholder='Şirket adı'></TextInput>
+                            </View>
+
+                            <View style={styles.CreateContentContainer}>
+                                <TextInput style={{ width: "100%", paddingHorizontal: 10, fontSize: 13 }} placeholder='Aday iş pozisyonu adı (Örn: Yazılımcı)'></TextInput>
+                            </View>
+
+                            <View style={styles.CreateContentContainer}>
+                                <TextInput style={{ width: "100%", paddingHorizontal: 10, fontSize: 13 }} placeholder='Aranılan yetenekler'></TextInput>
+                            </View>
+
+                            <View style={styles.CreateContentContainer}>
+                                <TextInput style={{ width: "100%", paddingHorizontal: 10, fontSize: 13 }} placeholder='Aranılan Deneyim'></TextInput>
+                            </View>
+
+                            <View style={styles.CreateContentContainer}>
+                                <TextInput style={{ width: "100%", paddingHorizontal: 10, fontSize: 13 }} placeholder='Maaş aralığı'></TextInput>
+                            </View>
+
+                            <View style={styles.CreateContentContainer}>
+                                <TextInput style={{ width: "100%", paddingHorizontal: 10, fontSize: 13 }} placeholder='Çalışma stili (Ofis / Hibrit / Remote)'></TextInput>
+                            </View>
+
+                            <TouchableOpacity onPress={() => { }} style={{ padding: 10, paddingHorizontal: 25, borderRadius: 15, alignItems: "center", justifyContent: "center", borderWidth: 2, borderColor: "#FF6B6Bbb" }}>
+                                <Text style={{ color: "#FF6B6Bbb", fontWeight: "bold" }} fontSize="xs">Oluştur</Text>
+                            </TouchableOpacity>
+
+                        </ScrollView>
+
+
+
                     </View>
 
                 ) : (
-                    <View style={{}}>
-                        <Text fontSize="xs">Etkinlik kategori</Text>
+                    <View style={{ flex: 1, width: "100%", margin: 10 }}>
+
+                        <ScrollView contentContainerStyle={{ width: "100%", alignItems: "center", padding: 10, rowGap: 15, }} showsVerticalScrollIndicator={false}>
+
+                            <View style={styles.CreateContentContainer}>
+                                <TextInput style={{ width: "100%", paddingHorizontal: 10, fontSize: 13 }} placeholder='Şirket adı'></TextInput>
+                            </View>
+
+                            <View style={styles.CreateContentContainer}>
+                                <TextInput style={{ width: "100%", paddingHorizontal: 10, fontSize: 13 }} placeholder='Aday iş pozisyonu adı (Örn: Yazılımcı)'></TextInput>
+                            </View>
+
+                            <View style={styles.CreateContentContainer}>
+                                <TextInput style={{ width: "100%", paddingHorizontal: 10, fontSize: 13 }} placeholder='Aranılan yetenekler'></TextInput>
+                            </View>
+
+                            <View style={styles.CreateContentContainer}>
+                                <TextInput style={{ width: "100%", paddingHorizontal: 10, fontSize: 13 }} placeholder='Aranılan Deneyim'></TextInput>
+                            </View>
+
+                            <View style={styles.CreateContentContainer}>
+                                <TextInput style={{ width: "100%", paddingHorizontal: 10, fontSize: 13 }} placeholder='Maaş aralığı'></TextInput>
+                            </View>
+
+                            <View style={styles.CreateContentContainer}>
+                                <TextInput style={{ width: "100%", paddingHorizontal: 10, fontSize: 13 }} placeholder='Çalışma stili (Ofis / Hibrit / Remote)'></TextInput>
+                            </View>
+
+                            <TouchableOpacity onPress={() => { }} style={{ padding: 10, paddingHorizontal: 25, borderRadius: 15, alignItems: "center", justifyContent: "center", borderWidth: 2, borderColor: "#4CAF50bb" }}>
+                                <Text style={{ color: "#4CAF50bb", fontWeight: "bold" }} fontSize="xs">Oluştur</Text>
+                            </TouchableOpacity>
+
+                        </ScrollView>
+
+
+
                     </View>
                 )
                 }

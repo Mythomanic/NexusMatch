@@ -54,7 +54,8 @@ function Login({ navigation }) {
         const response = await login(email, password);
         if (response.status === true) {
             console.log('User Logged In Successfully');
-            await AsyncStorage.setItem('usertoken', response.token);
+            await AsyncStorage.setItem('usertoken',`Bearer ${response.token}`);
+            await AsyncStorage.setItem('userid', JSON.stringify(response.id));
             navigation.navigate("Homepage")
 
         } else {

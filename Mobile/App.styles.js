@@ -473,6 +473,15 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
   },
 
+  CreateContentContainer: {
+    width: "95%",
+    borderWidth: 1,
+    justifyContent: "center",
+    borderRadius: 10,
+    padding: 5
+
+  },
+
 
 });
 
