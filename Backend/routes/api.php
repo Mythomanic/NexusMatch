@@ -66,11 +66,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('swipes', SwipeController::class);
     Route::apiResource('matches', MatchController::class);
     Route::apiResource('filters', JobFilterController::class);
-
+    Route::put('/update-profile/edit-name/{user}', [UserController::class, 'editName']);
+    Route::put('/update-profile/edit-email/{user}', [UserController::class, 'editEmail']);
+    Route::put('/update-profile/edit-password/{user}', [UserController::class, 'editPassword']);
+    Route::put('/update-profile/add-tag/{user}', [UserController::class, 'addTag']);
 });
 
-Route::put('/update-profile/edit-name/{user}', [UserController::class, 'editName']);
-Route::put('/update-profile/edit-email/{user}', [UserController::class, 'editEmail']);
-Route::put('/update-profile/edit-password/{user}', [UserController::class, 'editPassword']);
-Route::put('/update-profile/add-tag/{user}', [UserController::class, 'addTag']);
+
 
