@@ -13,9 +13,6 @@
         <p>{{ session('success') }}</p>
     @endif
     
-    @if($user->avatar)
-        <img src="{{ asset('storage/avatars/' . $user->avatar) }}" alt="Profile Picture">
-    @endif
     
 
     <form action="{{ route('profile.update') }}" method="POST" enctype="multipart/form-data">
