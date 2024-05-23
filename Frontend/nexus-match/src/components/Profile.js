@@ -23,7 +23,6 @@ const Profile = () => {
   const [tags, setTags] = useState([]);
   const [message, setMessage] = useState(null);
   const [userId, setUserId] = useState(null);
-  const [jobProfile, setJobProfile] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -33,8 +32,8 @@ const Profile = () => {
       profileService
         .getJobProfile(user.id)
         .then((profile) => {
-          setJobProfile(profile);
           setName(profile.name);
+          setEmail(profile.email);
           setTags(profile.tagsJob || []);
         })
         .catch(console.error);
@@ -43,42 +42,32 @@ const Profile = () => {
     }
   }, [navigate]);
 
-  const handleNameUpdate = async () => {
+  const handleUpdate = async (updateData) => {
     try {
-      await profileService.updateName(userId, name);
-      setMessage("Name updated successfully");
+      await profileService.updateUserProfile(userId, updateData);
+      setMessage("Profile updated successfully");
     } catch (error) {
-      setMessage("Failed to update name");
+      setMessage("Failed to update profile");
     }
   };
 
-  const handleEmailUpdate = async () => {
-    try {
-      await profileService.updateEmail(userId, email);
-      setMessage("Email updated successfully");
-    } catch (error) {
-      setMessage("Failed to update email");
-    }
+  const handleNameUpdate = () => {
+    handleUpdate({ name });
   };
 
-  const handlePasswordUpdate = async () => {
-    try {
-      await profileService.updatePassword(
-        userId,
-        password,
-        passwordConfirmation
-      );
-      setMessage("Password updated successfully");
-    } catch (error) {
-      setMessage("Failed to update password");
-    }
+  const handleEmailUpdate = () => {
+    handleUpdate({ email });
+  };
+
+  const handlePasswordUpdate = () => {
+    handleUpdate({ password, password_confirmation: passwordConfirmation });
   };
 
   const handleAddTag = async () => {
     try {
-      const response = await profileService.addTag(userId, tag);
-      setTags(response.tags);
-      setMessage("Tag added successfully");
+      await handleUpdate({ tag });
+      setTags([...tags, tag]);
+      setTag("");
     } catch (error) {
       setMessage("Failed to add tag");
     }
@@ -86,8 +75,8 @@ const Profile = () => {
 
   const handleRemoveTag = async (tagToRemove) => {
     try {
-      const response = await profileService.removeTag(userId, tagToRemove);
-      setTags(response.tags);
+      await handleUpdate({ removeTag: tagToRemove });
+      setTags(tags.filter((t) => t !== tagToRemove));
       setMessage("Tag removed successfully");
     } catch (error) {
       setMessage("Failed to remove tag");
@@ -209,7 +198,16 @@ const Profile = () => {
                       alignItems: "center",
                     }}
                   >
-                    <span>{t}</span>
+                    <TextField
+                      margin="normal"
+                      fullWidth
+                      id="tags"
+                      label="Tags"
+                      name="tags"
+                      autoComplete="tags"
+                      value={t}
+                      disabled
+                    />
                     <Button
                       variant="contained"
                       color="secondary"

@@ -20,7 +20,7 @@ function Header() {
       </IconButton>
       <IconButton
         variant="contained"
-        color="primary"
+        color="white"
         href="/profile"
         className="header__icon"
       >
