@@ -166,7 +166,7 @@ class UserController extends Controller
         }
 
         // İlgili kolonları seç
-        $jobProfile = $user->only(['name', 'avatarJob', 'tagsJob', 'descriptionJob', 'userJob', 'jobGallery']);
+        $jobProfile = $user->only(['name', 'email', 'avatarJob', 'tagsJob', 'descriptionJob', 'userJob', 'jobGallery']);
 
         return response()->json([
             'status' => true,
@@ -281,7 +281,7 @@ class UserController extends Controller
         return response()->json([
             'status' => true,
             'message' => 'User profile updated successfully',
-            'user' => $user->password
+            'user' => $user
         ], 200);
     }
 }
