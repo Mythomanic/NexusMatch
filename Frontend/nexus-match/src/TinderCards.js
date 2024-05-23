@@ -6,11 +6,11 @@ function TinderCards() {
   const [people, setPeople] = useState([
     {
         name: 'Elon Musk',
-        url: 'https://picsum.photos/200'
+        url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/34/Elon_Musk_Royal_Society_%28crop2%29.jpg/330px-Elon_Musk_Royal_Society_%28crop2%29.jpg'
     },
     {
         name: 'Jeff Bezos',
-        url: 'https://picsum.photos/201'
+        url: 'https://hips.hearstapps.com/hmg-prod/images/jeff-bezos-attends-the-lord-of-the-rings-the-rings-of-power-news-photo-1684851576.jpg?crop=1.00xw:0.861xh;0,0.0205xh&resize=1200:*'
     }
   ]);
 
