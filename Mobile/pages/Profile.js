@@ -1,5 +1,5 @@
-import React, { useState, useCallback, Component } from 'react'
-import { View, Image, ImageBackground, Text, ScrollView, TouchableOpacity, Dimensions ,LayoutAnimation } from 'react-native'
+import React, { useState, useCallback, Component, useEffect } from 'react'
+import { View, Image, ImageBackground, Text, ScrollView, TouchableOpacity, Dimensions, LayoutAnimation } from 'react-native'
 import { SafeAreaProvider, SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import styles from '../App.styles';
 import { TextInput } from 'react-native';
@@ -14,6 +14,7 @@ import Accordion from 'react-native-collapsible/Accordion';
 import { Tag } from 'react-native-btr';
 import { Dialog } from 'react-native-ui-lib';
 import Modal from "react-native-modal";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 function Profile({ navigation }) {
 
@@ -23,14 +24,11 @@ function Profile({ navigation }) {
     const [galleryModalVisible2, setGalleryModalVisible2] = useState(false);
     const [galleryModalVisible3, setGalleryModalVisible3] = useState(false);
 
-
-
     const { heightScreen, widthScreen } = Dimensions.get("window");
 
     const screenWidth = Dimensions.get('window').width;
 
     const insets = useSafeAreaInsets();
-
     const [fontsLoaded] = useFonts({
         'Kaushan': require('../assets/fonts/KaushanScript-Regular.ttf'),
         "Allura": require('../assets/fonts/Allura-Regular.ttf'),
@@ -60,8 +58,182 @@ function Profile({ navigation }) {
         return null;
     }
 
+    const API_URL = 'https://nexusmain.onrender.com/update-profile';
 
-    function TagComponent({ TagText }) {
+    // API_PROFILE_DETAILS_URL LINK IS SUBJECT TO CHANGE 
+    const API_PROFILE_DETAILS_URL = 'https://nexusmain.onrender.com/api/user';
+    const [userToken, setUserToken] = useState()
+    const [userId, setUserId] = useState()
+    const [loggedInUserJobInfo, setloggedInUserJobInfo] = useState({})
+
+    const getData = async () => {
+        try {
+            const userTokenValue = await AsyncStorage.getItem('usertoken');
+            const userIdValue = await AsyncStorage.getItem('userid');
+            if (userTokenValue !== null && userIdValue !== null) {
+                setUserToken(userTokenValue)
+                setUserId(userIdValue)
+            }
+        } catch (e) {
+            // error reading value
+        }
+    };
+
+    const getLoggedInUser = async () => {
+        try {
+            if (userToken !== null && userId !== null) {
+                const response = await fetch(`${API_PROFILE_DETAILS_URL}/${userId}/job-profile`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `${userToken}` // Corrected Authorization header
+                    }
+                });
+
+                if (!response.ok) {
+                    console.log(response);
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                if (data.status) {
+                    setloggedInUserJobInfo(data.jobProfile);
+                }
+            }
+        } catch (e) {
+            console.error('Error fetching profile details:', e);
+        }
+    };
+
+
+    useEffect(() => {
+        getData();
+    }, []);
+
+    useEffect(() => {
+        if (userToken && userId) {
+            getLoggedInUser();
+            console.log(userToken);
+            console.log(userId);
+        }
+    }, [userToken, userId]);
+
+
+
+    const fetchJobUser = async () => {
+        try {
+            const response = await fetch(`${API_PROFILE_DETAILS_URL}/job-profile`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `${userToken}`
+                }
+            });
+            const data = await response.json();
+            if (response.ok) {
+                console.log('Users fetched successfully', data);
+                return data; // Return the fetched data
+            } else {
+                console.log('Error fetching users', data);
+                return null;
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            return null;
+        }
+    };
+
+    const updateName = async (userId, newName) => {
+        try {
+            const response = await fetch(`${API_URL}/edit-name/${userId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `${userToken}`
+                },
+                body: JSON.stringify({ name: newName })
+            });
+            const data = await response.json();
+            if (response.ok) {
+                console.log('Name updated successfully', data);
+            } else {
+                console.log('Error updating name', data);
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    };
+
+    const updateEmail = async (userId, newEmail) => {
+        try {
+            const response = await fetch(`${API_URL}/edit-email/${userId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `${userToken}`
+                },
+                body: JSON.stringify({ email: newEmail })
+            });
+            const data = await response.json();
+            if (response.ok) {
+                console.log('Email updated successfully', data);
+            } else {
+                console.log('Error updating email', data);
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    };
+
+    const updatePassword = async (userId, newPassword, passwordConfirmation) => {
+        try {
+            const response = await fetch(`${API_URL}/edit-password/${userId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `${userToken}`
+                },
+                body: JSON.stringify({
+                    password: newPassword,
+                    password_confirmation: passwordConfirmation
+                })
+            });
+            const data = await response.json();
+            if (response.ok) {
+                console.log('Password updated successfully', data);
+            } else {
+                console.log('Error updating password', data);
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    };
+
+    const addTag = async (userId, newTag) => {
+        try {
+            const response = await fetch(`${API_URL}/add-tag/${userId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `${userToken}`
+                },
+                body: JSON.stringify({ tag: newTag })
+            });
+            const data = await response.json();
+            if (response.ok) {
+                console.log('Tag added successfully', data);
+            } else {
+                console.log('Error adding tag', data);
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    };
+
+
+
+    function TagComponent({ TagText, JobDateEventUrl }) {
+
         return (
             <View style={{ padding: 10, alignItems: "center", justifyContent: "center", backgroundColor: profileType === 0 ? "lightblue" : profileType === 1 ? "pink" : profileType === 2 ? "lightgreen" : null, borderRadius: 10, flexGrow: 1, margin: 5, borderWidth: 1, borderColor: profileType === 0 ? "lightseagreen" : profileType === 1 ? "hotpink" : profileType === 2 ? "mediumaquamarine" : null }}>
                 <Text style={{ fontSize: 12 }} fontSize="xs">{TagText}</Text>
@@ -80,7 +252,7 @@ function Profile({ navigation }) {
     function BioText({ text }) {
         return (
             <View style={{ width: "100%", alignItems: "center", justifyContent: "center", }}>
-                <Text style={{ fontSize: 14, color: "black", textAlign: "justify" }} fontSize="xs">{text}</Text>
+                <Text style={{ fontSize: 13.5, color: "black", textAlign: "justify" }} fontSize="xs">{text}</Text>
             </View>
         )
     }
@@ -128,8 +300,14 @@ function Profile({ navigation }) {
 
                         <TouchableOpacity style={{ width: 110, height: 110, borderRadius: 100, borderColor: "darkgrey", borderWidth: 1, alignItems: "center", justifyContent: "center" }}>
 
+                            <Image
+                                style={{ width: "100%", height: "100%", borderRadius: 100 }}
+                                source={{
+                                    uri: "https://wallpaperaccess.com/full/317501.jpg"
+                                }}
 
-                            {/* <MaterialCommunityIcons name="camera-plus-outline" size={40} /> */}
+                            />
+
                         </TouchableOpacity>
 
                         <TouchableOpacity onPress={() => { navigation.navigate("EditProfile") }}
@@ -157,10 +335,14 @@ function Profile({ navigation }) {
                                         <TagComponent TagText={"Kotlin"} />
                                         <TagComponent TagText={"React Native"} />
                                         <TagComponent TagText={"Laravel"} />
+                                        {/* <Text fontSize="xs">{loggedInUserJobInfo.name}</Text>
+ */}
                                     </View>
 
                                     <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ alignItems: "center", }}>
                                         <BioText text={BioTextArray[0].text} />
+
+
                                     </ScrollView>
                                 </>
 
