@@ -18,17 +18,26 @@ const Profile = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [passwordConfirmation, setPasswordConfirmation] = useState("");
   const [tag, setTag] = useState("");
+  const [tags, setTags] = useState([]);
   const [message, setMessage] = useState(null);
   const [userId, setUserId] = useState(null);
+  const [jobProfile, setJobProfile] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
     const user = authService.getCurrentUser();
-    if (user) {
+    if (user && user.token) {
       setUserId(user.id);
-      setName(user.name);
-      setEmail(user.email);
+      profileService
+        .getJobProfile(user.id)
+        .then((profile) => {
+          setJobProfile(profile);
+          setName(profile.name);
+          setTags(profile.tagsJob || []);
+        })
+        .catch(console.error);
     } else {
       navigate("/login");
     }
@@ -54,7 +63,11 @@ const Profile = () => {
 
   const handlePasswordUpdate = async () => {
     try {
-      await profileService.updatePassword(userId, password);
+      await profileService.updatePassword(
+        userId,
+        password,
+        passwordConfirmation
+      );
       setMessage("Password updated successfully");
     } catch (error) {
       setMessage("Failed to update password");
@@ -63,10 +76,21 @@ const Profile = () => {
 
   const handleAddTag = async () => {
     try {
-      await profileService.addTag(userId, tag);
+      const response = await profileService.addTag(userId, tag);
+      setTags(response.tags);
       setMessage("Tag added successfully");
     } catch (error) {
       setMessage("Failed to add tag");
+    }
+  };
+
+  const handleRemoveTag = async (tagToRemove) => {
+    try {
+      const response = await profileService.removeTag(userId, tagToRemove);
+      setTags(response.tags);
+      setMessage("Tag removed successfully");
+    } catch (error) {
+      setMessage("Failed to remove tag");
     }
   };
 
@@ -137,6 +161,17 @@ const Profile = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
+            <TextField
+              margin="normal"
+              fullWidth
+              name="passwordConfirmation"
+              label="Confirm Password"
+              type="password"
+              id="passwordConfirmation"
+              autoComplete="new-password"
+              value={passwordConfirmation}
+              onChange={(e) => setPasswordConfirmation(e.target.value)}
+            />
             <Button
               fullWidth
               variant="contained"
@@ -163,6 +198,28 @@ const Profile = () => {
             >
               Add Tag
             </Button>
+            <div>
+              {Array.isArray(tags) &&
+                tags.map((t) => (
+                  <div
+                    key={t}
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                    }}
+                  >
+                    <span>{t}</span>
+                    <Button
+                      variant="contained"
+                      color="secondary"
+                      onClick={() => handleRemoveTag(t)}
+                    >
+                      Remove
+                    </Button>
+                  </div>
+                ))}
+            </div>
           </Box>
         </Box>
       </Container>

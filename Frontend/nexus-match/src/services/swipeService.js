@@ -1,7 +1,7 @@
 import axios from "axios";
 import authService from "./authService";
 
-const API_URL = "https://nexus1.onrender.com/api/";
+const API_URL = "https://nexusmain.onrender.com/api/";
 
 const swipeJob = async (jobId, direction) => {
   const headers = authService.authHeader();
