@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import jobService from "../services/jobService";
-import { useNavigate } from "react-router-dom";
+import authService from "../services/authService";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -20,7 +20,26 @@ const CreateJob = () => {
   const [salary, setSalary] = useState("");
   const [requirements, setRequirements] = useState("");
   const [error, setError] = useState(null);
-  const navigate = useNavigate();
+  const [successMessage, setSuccessMessage] = useState(null);
+  const [jobs, setJobs] = useState([]);
+  const [userId, setUserId] = useState(null);
+
+  useEffect(() => {
+    const user = authService.getCurrentUser();
+    if (user && user.token) {
+      setUserId(user.id);
+      fetchJobs(user.id);
+    }
+  }, []);
+
+  const fetchJobs = async (userId) => {
+    try {
+      const response = await jobService.getJobsByUser(userId);
+      setJobs(response.data);
+    } catch (error) {
+      console.error("Error fetching jobs:", error);
+    }
+  };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -34,11 +53,36 @@ const CreateJob = () => {
 
     try {
       setError(null);
+      setSuccessMessage(null);
       await jobService.createJob(jobData);
-      navigate("/"); // İlan oluşturulduktan sonra ana sayfaya yönlendirme
+      setSuccessMessage("Job created successfully!");
+      setTitle("");
+      setDescription("");
+      setLocation("");
+      setSalary("");
+      setRequirements("");
+      fetchJobs(userId); // İlanları yeniden yükle
     } catch (error) {
       setError("Job creation failed. Please try again.");
       console.error("Job creation error:", error);
+    }
+  };
+
+  const handleDelete = async (jobId) => {
+    try {
+      await jobService.deleteJob(jobId);
+      setJobs(jobs.filter((job) => job.id !== jobId));
+    } catch (error) {
+      console.error("Error deleting job:", error);
+    }
+  };
+
+  const handleUpdate = async (jobId, updatedJob) => {
+    try {
+      await jobService.updateJob(jobId, updatedJob);
+      fetchJobs(userId); // İlanları yeniden yükle
+    } catch (error) {
+      console.error("Error updating job:", error);
     }
   };
 
@@ -61,6 +105,9 @@ const CreateJob = () => {
             Create Job
           </Typography>
           {error && <Typography color="error">{error}</Typography>}
+          {successMessage && (
+            <Typography color="primary">{successMessage}</Typography>
+          )}
           <Box
             component="form"
             onSubmit={handleSubmit}
@@ -131,6 +178,44 @@ const CreateJob = () => {
             >
               Create Job
             </Button>
+          </Box>
+          <Box sx={{ mt: 5 }}>
+            <Typography component="h2" variant="h6">
+              Your Jobs
+            </Typography>
+            {jobs.map((job) => (
+              <Box key={job.id} sx={{ mt: 2 }}>
+                <Typography variant="h6">{job.title}</Typography>
+                <Typography>{job.description}</Typography>
+                <Typography>{job.location}</Typography>
+                <Typography>{job.salary}</Typography>
+                <Typography>{job.requirements}</Typography>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  sx={{ mt: 1, mr: 1 }}
+                  onClick={() =>
+                    handleUpdate(job.id, {
+                      title: job.title,
+                      description: job.description,
+                      location: job.location,
+                      salary: job.salary,
+                      requirements: job.requirements,
+                    })
+                  }
+                >
+                  Edit
+                </Button>
+                <Button
+                  variant="contained"
+                  color="secondary"
+                  sx={{ mt: 1 }}
+                  onClick={() => handleDelete(job.id)}
+                >
+                  Delete
+                </Button>
+              </Box>
+            ))}
           </Box>
         </Box>
       </Container>

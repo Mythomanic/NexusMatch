@@ -1,12 +1,27 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import "./Header.css";
 import PersonIcon from "@mui/icons-material/Person";
 import ChatIcon from "@mui/icons-material/Chat";
 import LinkIcon from "@mui/icons-material/Link";
+import LogoutIcon from "@mui/icons-material/Logout";
 import IconButton from "@mui/material/IconButton";
-import AccountBoxIcon from "@mui/icons-material/AccountBox";
+import authService from "./services/authService";
 
-function Header() {
+function Header({ showSnackbar }) {
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    try {
+      await authService.logout();
+      showSnackbar("Logout successful!", "success");
+      navigate("/login");
+    } catch (error) {
+      console.error("Logout error:", error);
+      showSnackbar("Logout failed!", "error");
+    }
+  };
+
   return (
     <div className="header">
       <IconButton>
@@ -18,13 +33,8 @@ function Header() {
       <IconButton>
         <ChatIcon className="header__icon" />
       </IconButton>
-      <IconButton
-        variant="contained"
-        color="white"
-        href="/profile"
-        className="header__icon"
-      >
-        <AccountBoxIcon />
+      <IconButton onClick={handleLogout}>
+        <LogoutIcon className="header__icon" />
       </IconButton>
     </div>
   );

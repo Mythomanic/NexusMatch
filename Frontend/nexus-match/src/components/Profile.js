@@ -11,6 +11,7 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import Header from "../Header"; // Header bileşenini import ediyoruz
 
 const defaultTheme = createTheme();
 
@@ -66,7 +67,7 @@ const Profile = () => {
   const handleAddTag = async () => {
     try {
       await handleUpdate({ tag });
-      setTags([...tags, tag]);
+      setTags((prevTags) => [...prevTags, tag]);
       setTag("");
     } catch (error) {
       setMessage("Failed to add tag");
@@ -76,7 +77,7 @@ const Profile = () => {
   const handleRemoveTag = async (tagToRemove) => {
     try {
       await handleUpdate({ removeTag: tagToRemove });
-      setTags(tags.filter((t) => t !== tagToRemove));
+      setTags((prevTags) => prevTags.filter((t) => t !== tagToRemove));
       setMessage("Tag removed successfully");
     } catch (error) {
       setMessage("Failed to remove tag");
@@ -87,6 +88,7 @@ const Profile = () => {
     <ThemeProvider theme={defaultTheme}>
       <Container component="main" maxWidth="xs">
         <CssBaseline />
+        <Header />
         <Box
           sx={{
             marginTop: 8,
@@ -188,7 +190,7 @@ const Profile = () => {
               Add Tag
             </Button>
             <div>
-              {Array.isArray(tags) &&
+              {tags.length > 0 ? (
                 tags.map((t) => (
                   <div
                     key={t}
@@ -216,7 +218,10 @@ const Profile = () => {
                       Remove
                     </Button>
                   </div>
-                ))}
+                ))
+              ) : (
+                <Typography>No tags available</Typography>
+              )}
             </div>
           </Box>
         </Box>

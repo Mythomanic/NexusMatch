@@ -1,5 +1,6 @@
 import axios from "axios";
 import authService from "./authService";
+import authHeader from "./authService";
 
 const API_URL = "https://nexusmain.onrender.com/api/";
 
@@ -58,6 +59,10 @@ const deleteJob = async (id) => {
     console.error("Error deleting job:", error);
     throw error;
   }
+};
+
+const getJobsByUser = async (userId) => {
+  return axios.get(API_URL + `user/${userId}/jobs`, { headers: authHeader() });
 };
 
 export default {
