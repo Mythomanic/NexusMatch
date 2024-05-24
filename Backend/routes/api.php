@@ -72,6 +72,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user/{user}/tags', [UserController::class, 'getTags']);
     Route::get('/user/{user}/job-profile', [UserController::class, 'getJobProfile']);
     Route::post('/user/logout', [UserController::class, 'logout']);
+    Route::post('/user/{user}/update-avatar', [UserController::class, 'updateAvatar']);
+
 });
 
 

@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::table('users', function (Blueprint $table) {
             $table->string('avatarJob')->nullable()->default('defaultpp');
             $table->string('userJob')->nullable()->default('my job');
-            $table->string('tagsJob')->nullable()->default('my tags');
+            $table->string('tagsJob')->nullable();
             $table->string('descriptionJob')->nullable()->default('my description');
             $table->string('jobGallery')->nullable();
 

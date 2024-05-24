@@ -126,24 +126,32 @@ class UserController extends Controller
         }
     }
     public function updateAvatar(Request $request, User $user){
-        $request->validate([
-            'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-        ]);
+        {
+            $request->validate([
+                'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            ]);
         
-        if ($request->hasFile('avatar')) {
-            // Delete the old profile picture if exists
-            if ($user->avatar) {
-                Storage::delete('public/avatars/' . $user->avatar);
+            $user = Auth::user();
+        
+            if ($request->hasFile('avatar')) {
+                // Eski avatarı sil
+                if ($user->avatar) {
+                    Storage::delete('public/avatars/' . $user->avatar);
+                }
+        
+                // Yeni avatarı kaydet
+                $filename = $request->file('avatar')->store('avatars', 'public');
+                $user->avatar = basename($filename);
             }
-    
-            // Store the new profile picture
-            $filename = $request->file('avatar')->store('avatars', 'public');
-            $user->avatar = basename($filename);
-        }
-    
-        $user->save();
         
-        return redirect()->back()->with('success', 'Profile updated successfully.');
+            $user->save();
+        
+            return response()->json([
+                'status' => true,
+                'message' => 'Profile updated successfully.',
+                'avatar' => $user->avatar
+            ], 200);
+        }
     
     }
 
