@@ -152,9 +152,7 @@ class UserController extends Controller
                 'avatar' => $user->avatar
             ], 200);
         }
-    
     }
-
     public function showUser()
     {
         $user = User::find(1); // ID'si 1 olan kullanıcıyı çek
@@ -190,7 +188,7 @@ class UserController extends Controller
             "password" => "sometimes|required|confirmed",
             "password_confirmation" => "sometimes|required_with:password",
             "avatarJob" => "sometimes|nullable|string",
-            "tagsJob" => "sometimes|nullable|array",
+            "tagJob" => "sometimes|nullable|string",
             "descriptionJob" => "sometimes|nullable|string",
             "userJob" => "sometimes|nullable|string",
             "jobGallery" => "sometimes|nullable|array",
@@ -218,8 +216,53 @@ class UserController extends Controller
         if ($request->has('avatarJob')) {
             $user->avatarJob = $request->input('avatarJob');
         }
-        if ($request->has('tagsJob')) {
-            $user->tagsJob = $request->input('tagsJob');
+        if ($request->has('tagJob')) {
+            $tagsJob = $user->tagsJob; 
+
+            $tagsJob[] = $request->input('tagJob');
+            $user->tagsJob = $tagsJob;
+            $user->save();
+            return response()->json([
+                'status' => true,
+                'message' => 'Tag added successfully',
+                'tagsJob' => $user->tagsJob
+            ], 200);
+        }
+        if ($request->has('removeTagJob')) {            
+            $tagsJob = $user->tagstagsJob;
+            
+            // Remove quotes from tags
+            $tagsJob = array_map(function($tag) {
+                return trim($tag, "'");
+            }, $tagsJob);
+        
+            // Debugging purposes
+            $searchTag = $request->input('removeTagJob');
+            $key = array_search($searchTag, $tagsJob);
+        
+            if ($key !== false) {
+                unset($tagsJob[$key]);
+            } else {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Tag not found',
+                    'debug' => [
+                        'searchTag' => $searchTag,
+                        'tagsJob' => $tagsJob,
+                        'key' => $key,
+                    ]
+                ], 404);
+            }
+        
+            // Reindex the array to avoid any issues with array structure
+            $user->tagsJob = array_values($tagsJob);
+            $user->save();
+        
+            return response()->json([
+                'status' => true,
+                'message' => 'Tag removed successfully',
+                'tagsJob' => $user->tagsJob
+            ], 200);
         }
         if ($request->has('descriptionJob')) {
             $user->descriptionJob = $request->input('descriptionJob');
