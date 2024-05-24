@@ -22,6 +22,7 @@ class User extends Authenticatable
         'email',
         'password',
         'tags',
+        'tagsJob',
         'avatar',
         'jobGallery'
     ];
@@ -45,6 +46,7 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
         'tags'=>'array',
+        'tagsJob'=>'array',
         'jobGallery'=>'array',
     ];
 }
