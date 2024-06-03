@@ -20,4 +20,4 @@ Route::get('/chat', [PusherController::class, "index"])->name("chatPage");
 Route::post('/broadcast', [PusherController::class, 'broadcast']);
 Route::post('/receive', [PusherController::class ,'receive']);
 Route::get('/profile', [UserController::class, 'showUser'])->name('profile.show');
-Route::put('/profile', [UserController::class, 'updateAvatar'])->name('profile.update');
+Route::put('/profile/{user}', [UserController::class, 'updateAvatar'])->name('profile.update');

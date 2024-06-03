@@ -15,7 +15,7 @@
     
     
 
-    <form action="{{ route('profile.update') }}" method="POST" enctype="multipart/form-data">
+    <form action="{{ route('profile.update', 1) }}" method="POST" enctype="multipart/form-data">
         @csrf
         @method('PUT')
         <div>

@@ -153,6 +153,36 @@ class UserController extends Controller
             ], 200);
         }
     }
+
+
+    public function updateAvatarJob(Request $request, User $user){
+        {
+            $request->validate([
+                'avatarJob' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            ]);
+        
+            $user = Auth::user();
+        
+            if ($request->hasFile('avatarJob')) {
+                // Eski avatarı sil
+                if ($user->avatarJob) {
+                    Storage::delete('public/avatars/' . $user->avatarJob);
+                }
+        
+                // Yeni avatarı kaydet
+                $filename = $request->file('avatarJob')->store('avatars', 'public');
+                $user->avatarJob = basename($filename);
+            }
+        
+            $user->save();
+        
+            return response()->json([
+                'status' => true,
+                'message' => 'Profile updated successfully.',
+                'avatarJob' => $user->avatarJob
+            ], 200);
+        }
+    }
     public function showUser()
     {
         $user = User::find(1); // ID'si 1 olan kullanıcıyı çek
