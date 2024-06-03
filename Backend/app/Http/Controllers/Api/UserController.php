@@ -259,7 +259,7 @@ class UserController extends Controller
             ], 200);
         }
         if ($request->has('removeTagJob')) {            
-            $tagsJob = $user->tagstagsJob;
+            $tagsJob = $user->tagsJob;
             
             // Remove quotes from tags
             $tagsJob = array_map(function($tag) {

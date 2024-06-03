@@ -15,8 +15,7 @@ use App\Http\Controllers\Api\UserController;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
-Route::view('/', 'usercontrol')->name("chatPage");
-Route::get('/chat', [PusherController::class, "index"])->name("chatPage");
+Route::get('/', [PusherController::class, "index"])->name("chatPage");
 Route::post('/broadcast', [PusherController::class, 'broadcast']);
 Route::post('/receive', [PusherController::class ,'receive']);
 Route::get('/profile', [UserController::class, 'showUser'])->name('profile.show');

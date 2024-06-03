@@ -67,8 +67,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('matches', MatchController::class);
     Route::apiResource('filters', JobFilterController::class);
     Route::put('/user/{user}/update-profile', [UserController::class, 'updateUserProfile']);
-    Route::put('/update-profile/add-tag/{user}', [UserController::class, 'addTag']);
-    Route::delete('/update-profile/remove-tag/{user}/tag', [UserController::class, 'removeTag']);
     Route::get('/user/{user}/tags', [UserController::class, 'getTags']);
     Route::get('/user/{user}/job-profile', [UserController::class, 'getJobProfile']);
     Route::post('/user/logout', [UserController::class, 'logout']);
