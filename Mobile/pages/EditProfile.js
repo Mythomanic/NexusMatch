@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react'
+import React, { useState, useCallback,useEffect } from 'react'
 import { View, Image, ImageBackground, Text, ScrollView, TouchableOpacity, Dimensions } from 'react-native'
 import { SafeAreaProvider, SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import styles from '../App.styles';
@@ -11,7 +11,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { Carousel } from 'react-native-basic-carousel'
 import MessageComponent from '../MessageComponent';
 import { CollapsibleCard } from "react-native-btr";
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 function EditProfile({ navigation }) {
 
@@ -20,6 +20,22 @@ function EditProfile({ navigation }) {
     const screenWidth = Dimensions.get('window').width;
 
     const insets = useSafeAreaInsets();
+
+    const [userToken, setUserToken] = useState()
+    const [userId, setUserId] = useState()
+
+    const getData = async () => {
+        try {
+            const userTokenValue = await AsyncStorage.getItem('usertoken');
+            const userIdValue = await AsyncStorage.getItem('userid');
+            if (userTokenValue !== null && userIdValue !== null) {
+                setUserToken(userTokenValue)
+                setUserId(userIdValue)
+            }
+        } catch (e) {
+            // error reading value
+        }
+    };
 
     const [fontsLoaded] = useFonts({
         'Kaushan': require('../assets/fonts/KaushanScript-Regular.ttf'),
@@ -75,7 +91,7 @@ function EditProfile({ navigation }) {
 
                     <View style={styles.ProfileOptionsContainerEdit}>
 
-                        <TouchableOpacity style={[styles.EditProfileOptions, { borderWidth: 1 }]}>
+                        <TouchableOpacity onPress={()=>{navigation.navigate("ProfileSettings")}} style={[styles.EditProfileOptions, { borderWidth: 1 }]}>
                             <View style={{ flexDirection: "row" }}>
                                 <View style={{ alignItems: "center", justifyContent: "center", minWidth: 25 }}>
                                     <FontAwesome size={18} name="edit" />

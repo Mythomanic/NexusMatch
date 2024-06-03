@@ -1,5 +1,5 @@
 import React, { useState, useCallback, Component, useEffect } from 'react'
-import { View, Image, ImageBackground, Text, ScrollView, TouchableOpacity, Dimensions, LayoutAnimation } from 'react-native'
+import { View, Image, ImageBackground, Text, ScrollView, TouchableOpacity, Dimensions, LayoutAnimation, FlatList, Button, Alert } from 'react-native'
 import { SafeAreaProvider, SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import styles from '../App.styles';
 import { TextInput } from 'react-native';
@@ -15,6 +15,9 @@ import { Tag } from 'react-native-btr';
 import { Dialog } from 'react-native-ui-lib';
 import Modal from "react-native-modal";
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as ImagePicker from 'expo-image-picker';
+import axios from 'axios';
+import mime from 'mime';
 
 function Profile({ navigation }) {
 
@@ -23,6 +26,8 @@ function Profile({ navigation }) {
     const [galleryModalVisible, setGalleryModalVisible] = useState(false);
     const [galleryModalVisible2, setGalleryModalVisible2] = useState(false);
     const [galleryModalVisible3, setGalleryModalVisible3] = useState(false);
+    /* const [avatarUrl, setAvatarUrl] = useState(null); */
+    const [selectedImage, setSelectedImage] = useState(null);
 
     const { heightScreen, widthScreen } = Dimensions.get("window");
 
@@ -58,6 +63,7 @@ function Profile({ navigation }) {
         return null;
     }
 
+
     const API_URL = 'https://nexusmain.onrender.com/update-profile';
 
     // API_PROFILE_DETAILS_URL LINK IS SUBJECT TO CHANGE 
@@ -65,6 +71,8 @@ function Profile({ navigation }) {
     const [userToken, setUserToken] = useState()
     const [userId, setUserId] = useState()
     const [loggedInUserJobInfo, setloggedInUserJobInfo] = useState({})
+    const [loggedInUserJobTags, setloggedInUserJobTags] = useState([])
+
 
     const getData = async () => {
         try {
@@ -86,18 +94,18 @@ function Profile({ navigation }) {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Authorization': `${userToken}` // Corrected Authorization header
+                        'Authorization': `Bearer ${userToken}` // Corrected Authorization header
                     }
                 });
 
                 if (!response.ok) {
-                    console.log(response);
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
 
                 const data = await response.json();
                 if (data.status) {
                     setloggedInUserJobInfo(data.jobProfile);
+                    setloggedInUserJobTags(data.jobProfile.tagsJob);
                 }
             }
         } catch (e) {
@@ -113,130 +121,58 @@ function Profile({ navigation }) {
     useEffect(() => {
         if (userToken && userId) {
             getLoggedInUser();
-            console.log(userToken);
-            console.log(userId);
         }
+
     }, [userToken, userId]);
 
 
-
-    const fetchJobUser = async () => {
+    const handleImagePickAndUpload = async () => {
         try {
-            const response = await fetch(`${API_PROFILE_DETAILS_URL}/job-profile`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `${userToken}`
+            const result = await ImagePicker.launchImageLibraryAsync({
+                mediaTypes: ImagePicker.MediaTypeOptions.Images,
+                allowsEditing: true,
+                aspect: [4, 3],
+                quality: 1,
+            });
+
+
+            if (!result.canceled && result.assets && result.assets.length > 0) {
+                const imageUri = result.assets[0].uri;
+                const newImageUri = "file:///" + imageUri.split("file:/").join("");
+
+                setSelectedImage(newImageUri);
+
+                const formData = new FormData();
+                formData.append('avatarJob', {
+                    uri: newImageUri,
+                    type: mime.getType(newImageUri),
+                    name: newImageUri.split("/").pop(),
+                });
+
+                const response = await axios.post(`https://nexusmain.onrender.com/api/user/${userId}/update-avatar-job`, formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                        'Authorization': `Bearer ${userToken}`
+                    },
+                });
+
+                if (!response.data.status) {
+                    Alert.alert('Error', 'Failed to update profile.');
+                    console.log(response.data.status);
                 }
-            });
-            const data = await response.json();
-            if (response.ok) {
-                console.log('Users fetched successfully', data);
-                return data; // Return the fetched data
-            } else {
-                console.log('Error fetching users', data);
-                return null;
-            }
+            } 
         } catch (error) {
-            console.error('Error:', error);
-            return null;
+            console.error('Error uploading image:', error);
+            Alert.alert('Error', 'Failed to update profile. Please try again later.');
         }
     };
 
-    const updateName = async (userId, newName) => {
-        try {
-            const response = await fetch(`${API_URL}/edit-name/${userId}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `${userToken}`
-                },
-                body: JSON.stringify({ name: newName })
-            });
-            const data = await response.json();
-            if (response.ok) {
-                console.log('Name updated successfully', data);
-            } else {
-                console.log('Error updating name', data);
-            }
-        } catch (error) {
-            console.error('Error:', error);
-        }
-    };
-
-    const updateEmail = async (userId, newEmail) => {
-        try {
-            const response = await fetch(`${API_URL}/edit-email/${userId}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `${userToken}`
-                },
-                body: JSON.stringify({ email: newEmail })
-            });
-            const data = await response.json();
-            if (response.ok) {
-                console.log('Email updated successfully', data);
-            } else {
-                console.log('Error updating email', data);
-            }
-        } catch (error) {
-            console.error('Error:', error);
-        }
-    };
-
-    const updatePassword = async (userId, newPassword, passwordConfirmation) => {
-        try {
-            const response = await fetch(`${API_URL}/edit-password/${userId}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `${userToken}`
-                },
-                body: JSON.stringify({
-                    password: newPassword,
-                    password_confirmation: passwordConfirmation
-                })
-            });
-            const data = await response.json();
-            if (response.ok) {
-                console.log('Password updated successfully', data);
-            } else {
-                console.log('Error updating password', data);
-            }
-        } catch (error) {
-            console.error('Error:', error);
-        }
-    };
-
-    const addTag = async (userId, newTag) => {
-        try {
-            const response = await fetch(`${API_URL}/add-tag/${userId}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `${userToken}`
-                },
-                body: JSON.stringify({ tag: newTag })
-            });
-            const data = await response.json();
-            if (response.ok) {
-                console.log('Tag added successfully', data);
-            } else {
-                console.log('Error adding tag', data);
-            }
-        } catch (error) {
-            console.error('Error:', error);
-        }
-    };
-
-
-
-    function TagComponent({ TagText, JobDateEventUrl }) {
+    function TagComponent({ tag }) {
 
         return (
+
             <View style={{ padding: 10, alignItems: "center", justifyContent: "center", backgroundColor: profileType === 0 ? "lightblue" : profileType === 1 ? "pink" : profileType === 2 ? "lightgreen" : null, borderRadius: 10, flexGrow: 1, margin: 5, borderWidth: 1, borderColor: profileType === 0 ? "lightseagreen" : profileType === 1 ? "hotpink" : profileType === 2 ? "mediumaquamarine" : null }}>
-                <Text style={{ fontSize: 12 }} fontSize="xs">{TagText}</Text>
+                <Text style={{ fontSize: 12 }} fontSize="xs">{tag}</Text>
             </View>
         )
     }
@@ -286,6 +222,37 @@ function Profile({ navigation }) {
         LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
     };
 
+    const ProfileTags = ({ tags = [] }) => {
+        const renderItem = ({ item }) => (
+            <View
+                style={{
+                    padding: 10,
+                    alignItems: "center",
+                    justifyContent: "center",
+                    backgroundColor: profileType === 0 ? "lightblue" : profileType === 1 ? "pink" : profileType === 2 ? "lightgreen" : null,
+                    borderRadius: 10,
+                    flexGrow: 1,
+                    margin: 5,
+                    borderWidth: 1,
+                    borderColor: profileType === 0 ? "lightseagreen" : profileType === 1 ? "hotpink" : profileType === 2 ? "mediumaquamarine" : null
+                }}
+            >
+                <Text style={{ fontSize: 12 }}>{item}</Text>
+            </View>
+        );
+
+        return (
+            <FlatList
+                data={tags}
+                renderItem={renderItem}
+                keyExtractor={(item, index) => index.toString()}
+                contentContainerStyle={{ alignItems: "center", flexDirection: "row", }}
+                horizontal={false}
+                numColumns={3} // Adjust number of columns based on your design requirements
+            />
+        );
+    };
+
 
     return (
         <SafeAreaProvider>
@@ -298,15 +265,11 @@ function Profile({ navigation }) {
 
                     <View style={{ width: "100%", flex: 1, borderBottomLeftRadius: 100, borderBottomRightRadius: 100, alignItems: "center", justifyContent: "center", paddingHorizontal: 20, }}>
 
-                        <TouchableOpacity style={{ width: 110, height: 110, borderRadius: 100, borderColor: "darkgrey", borderWidth: 1, alignItems: "center", justifyContent: "center" }}>
+                        <TouchableOpacity onPress={handleImagePickAndUpload} style={{ width: 110, height: 110, borderRadius: 100, borderColor: "darkgrey", borderWidth: 1, alignItems: "center", justifyContent: "center" }}>
 
-                            <Image
-                                style={{ width: "100%", height: "100%", borderRadius: 100 }}
-                                source={{
-                                    uri: "https://wallpaperaccess.com/full/317501.jpg"
-                                }}
-
-                            />
+                            {selectedImage && (
+                                <Image source={{ uri: selectedImage }} style={{ width: "100%", height: "100%", borderRadius: 100 }} />
+                            )}
 
                         </TouchableOpacity>
 
@@ -314,7 +277,6 @@ function Profile({ navigation }) {
                             style={{ position: "absolute", right: 0, top: 0, alignItems: "center", justifyContent: "center", margin: 20 }}>
                             <FontAwesome name="cog" size={30} />
                         </TouchableOpacity>
-
 
                     </View>
 
@@ -325,19 +287,11 @@ function Profile({ navigation }) {
                                 <>
                                     <BioName name={"Necati Doğrul"} />
                                     <BioTitle title={"Software Developer"} />
+                                    <TouchableOpacity onPress={() => { console.log(loggedInUserJobInfo) }}><Text fontSize="xs">TAGLERİ GÖR</Text>
+                                    </TouchableOpacity>
 
-                                    <View style={{ alignItems: "center", flexDirection: "row", flexWrap: "wrap", }}>
-                                        <TagComponent TagText={"Angular"} />
-                                        <TagComponent TagText={"Javascript"} />
-                                        <TagComponent TagText={"Java"} />
-                                        <TagComponent TagText={"HTML"} />
-                                        <TagComponent TagText={"CSS"} />
-                                        <TagComponent TagText={"Kotlin"} />
-                                        <TagComponent TagText={"React Native"} />
-                                        <TagComponent TagText={"Laravel"} />
-                                        {/* <Text fontSize="xs">{loggedInUserJobInfo.name}</Text>
- */}
-                                    </View>
+                                    <ProfileTags tags={loggedInUserJobTags}></ProfileTags>
+
 
                                     <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ alignItems: "center", }}>
                                         <BioText text={BioTextArray[0].text} />
@@ -417,7 +371,11 @@ function Profile({ navigation }) {
 
                     </View> */}
 
+
+
+
                     <View style={{ width: "100%", paddingHorizontal: 20, alignItems: "center", marginVertical: 5 }}>
+
                         <TouchableOpacity onPress={() => { setGalleryModalVisible(true) }} style={[styles.ProfileOptions, { backgroundColor: profileType === 0 ? "lightblue" : profileType === 1 ? "pink" : profileType === 2 ? "lightgreen" : null, borderColor: profileType === 0 ? "lightseagreen" : profileType === 1 ? "hotpink" : profileType === 2 ? "mediumaquamarine" : null, borderWidth: 1 }]}>
                             <View style={{ flexDirection: "row" }}>
                                 <View style={{ alignItems: "center", justifyContent: "center", minWidth: 25 }}>
@@ -452,6 +410,7 @@ function Profile({ navigation }) {
                         </TouchableOpacity>
 
                     </View>
+
 
                     {profileType == 0 ? (
                         <Modal style={{ alignItems: "center", justifyContent: "flex-end", margin: 0, }}
@@ -575,7 +534,7 @@ function Profile({ navigation }) {
 
 
 
-            </SafeAreaView>
+            </SafeAreaView >
         </SafeAreaProvider >
 
 

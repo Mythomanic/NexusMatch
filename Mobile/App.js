@@ -34,7 +34,7 @@ import EventRequester from './matchtabs/EventRequester';
 import MessageScreen from './pages/MessageScreen';
 import Create from './pages/Create';
 import { Provider } from 'jotai';
-
+import ProfileSettings from './pages/ProfileSettings';
 
 
 export default function App({ navigation }) {
@@ -191,6 +191,7 @@ export default function App({ navigation }) {
               <Stack.Screen name="EventList" component={EventList} />
               <Stack.Screen name="MessageScreen" component={MessageScreen} />
               <Stack.Screen name="Create" component={Create} />
+              <Stack.Screen name="ProfileSettings" component={ProfileSettings} />
 
             </Stack.Navigator>
 
