@@ -132,7 +132,7 @@ class UserController extends Controller
             ]);
         
             $user = Auth::user();
-        
+            $path = "";
             if ($request->hasFile('avatar')) {
                 // Eski avatarı sil
                 if ($user->avatar) {
@@ -141,15 +141,15 @@ class UserController extends Controller
         
                 // Yeni avatarı kaydet
                 $filename = $request->file('avatar')->store('avatars', 'public');
-                $user->avatar = basename($filename);
+                $path = Storage::url($filename);
+                $user->avatar = $path;
             }
-        
             $user->save();
         
             return response()->json([
                 'status' => true,
                 'message' => 'Profile updated successfully.',
-                'avatar' => $user->avatar
+                'avatar' => $path
             ], 200);
         }
     }

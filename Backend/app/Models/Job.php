@@ -16,10 +16,17 @@ class Job extends Model
         'location',
         'salary',
         'requirements',
+        'likes',
+        'dislikes',
     ];
 
     public function user()
     {
         return $this->belongsTo(User::class);
     }
+
+    protected $casts = [
+        'likes'=>'array',
+        'dislikes'=>'array',
+    ];
 }
