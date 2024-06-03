@@ -22,8 +22,10 @@ const Profile = () => {
   const [passwordConfirmation, setPasswordConfirmation] = useState("");
   const [tag, setTag] = useState("");
   const [tags, setTags] = useState([]);
+  const [avatar, setAvatar] = useState("");
   const [message, setMessage] = useState(null);
   const [userId, setUserId] = useState(null);
+  const [selectedAvatar, setSelectedAvatar] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -36,6 +38,7 @@ const Profile = () => {
           setName(profile.name);
           setEmail(profile.email);
           setTags(profile.tagsJob || []);
+          setAvatar(profile.avatarJob); // Fetch avatar URL
         })
         .catch(console.error);
     } else {
@@ -84,6 +87,19 @@ const Profile = () => {
     }
   };
 
+  const handleAvatarUpload = async () => {
+    const formData = new FormData();
+    formData.append("avatarJob", selectedAvatar);
+
+    try {
+      const response = await profileService.updateUserAvatar(userId, formData);
+      setAvatar(response.avatarJob); // Update avatar URL
+      setMessage("Avatar updated successfully");
+    } catch (error) {
+      setMessage("Failed to update avatar");
+    }
+  };
+
   return (
     <ThemeProvider theme={defaultTheme}>
       <Container component="main" maxWidth="xs">
@@ -97,9 +113,13 @@ const Profile = () => {
             alignItems: "center",
           }}
         >
-          <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
-            <LockOutlinedIcon />
-          </Avatar>
+          {avatar && (
+            <img
+              src={`https://nexusmain.onrender.com/storage/avatars/${avatar}`}
+              alt="Avatar"
+              style={{ width: "100px", height: "100px", borderRadius: "50%" }}
+            />
+          )}
           <Typography component="h1" variant="h5">
             Profile
           </Typography>
@@ -223,6 +243,20 @@ const Profile = () => {
                 <Typography>No tags available</Typography>
               )}
             </div>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={(e) => setSelectedAvatar(e.target.files[0])}
+            />
+            <Button
+              fullWidth
+              variant="contained"
+              component="label"
+              sx={{ mt: 2, mb: 2 }}
+              onClick={handleAvatarUpload}
+            >
+              Save Avatar
+            </Button>
           </Box>
         </Box>
       </Container>

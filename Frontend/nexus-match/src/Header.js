@@ -22,18 +22,29 @@ function Header({ showSnackbar }) {
     }
   };
 
+  const handleProfileClick = () => {
+    navigate("/profile");
+  };
+
+  const handleCreateJobClick = () => {
+    navigate("/create-job");
+  };
+
   return (
     <div className="header">
-      <IconButton>
+      <IconButton onClick={handleProfileClick}>
+        <h3>Profile</h3>
         <PersonIcon className="header__icon" />
       </IconButton>
-      <IconButton>
-        <LinkIcon className="header__icon" fontSize="large" />
+      <IconButton onClick={handleCreateJobClick}>
+        <h4>Create job</h4>
+        <LinkIcon className="header__icon" />
       </IconButton>
       <IconButton>
         <ChatIcon className="header__icon" />
       </IconButton>
       <IconButton onClick={handleLogout}>
+        <h3>Logout</h3>
         <LogoutIcon className="header__icon" />
       </IconButton>
     </div>
