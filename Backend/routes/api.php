@@ -87,5 +87,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
 });
 Route::get('/job/{job}/likes', [JobController::class, 'getLikedUsers']);
+Route::get('/user/{id}/jobs', [UserController::class, 'getUserJobs']);
+
 
 

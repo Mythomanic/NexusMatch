@@ -28,6 +28,7 @@ class JobController extends Controller
             'location' => 'required|string|max:255',
             'salary' => 'required|numeric',
             'requirements' => 'required|string',
+            'position' => 'required|string',
         ]);
 
         $userId = auth()->id();
@@ -39,6 +40,7 @@ class JobController extends Controller
             'location' => $request->location,
             'salary' => $request->salary,
             'requirements' => $request->requirements,
+            'position' =>$request->position,
             ]
         );
 
@@ -64,6 +66,7 @@ class JobController extends Controller
             'location' => 'string|max:255',
             'salary' => 'numeric',
             'requirements' => 'string',
+            'position'=>'string',
         ]);
 
         $job->update($request->all());
@@ -94,12 +97,16 @@ class JobController extends Controller
                 'message' => 'Job not found'
             ], 404);
         }
+        
+        if (is_null($job->likes)) {
+            $likedUsers = [];
+        }
+        else {
+            $likedUserIds = $job->likes; // Assuming likes is an array
+            // Bu ID'lere sahip kullanıcıları sorgula
+            $likedUsers = User::whereIn('id', $likedUserIds)->get();
+        }
     
-        // Likes dizisini al
-        $likedUserIds = $job->likes; // Assuming likes is an array
-    
-        // Bu ID'lere sahip kullanıcıları sorgula
-        $likedUsers = User::whereIn('id', $likedUserIds)->get(['id', 'name', 'email', 'avatarJob']);
     
         return response()->json([
             'status' => true,

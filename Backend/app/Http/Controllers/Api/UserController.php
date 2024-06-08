@@ -394,4 +394,35 @@ class UserController extends Controller
 
         return response()->json(['message' => 'Swipe updated successfully.']);
     }
+
+    public function getUserJobs($userId)
+{
+    // Kullanıcıyı ID ile bul
+    $user = User::find($userId);
+
+    // Kullanıcı bulunamazsa 404 döndür
+    if (!$user) {
+        return response()->json([
+            'status' => false,
+            'message' => 'User not found'
+        ], 404);
+    }
+
+    // Kullanıcı tarafından oluşturulan işleri al
+    $jobs = Job::where('user_id', $userId)->get();
+
+    // Eğer kullanıcı hiç iş oluşturmadıysa
+    if ($jobs->isEmpty()) {
+        return response()->json([
+            'status' => false,
+            'message' => 'No jobs found for this user'
+        ], 404);
+    }
+
+    // İşleri JSON formatında döndür
+    return response()->json([
+        'status' => true,
+        'jobs' => $jobs
+    ], 200);
+}
 }

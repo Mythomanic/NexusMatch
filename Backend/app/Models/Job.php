@@ -18,6 +18,7 @@ class Job extends Model
         'requirements',
         'likes',
         'dislikes',
+        'position'
     ];
 
     public function user()
