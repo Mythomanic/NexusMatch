@@ -38,7 +38,7 @@ const Profile = () => {
           setName(profile.name);
           setEmail(profile.email);
           setTags(profile.tagsJob || []);
-          setAvatar(profile.avatarJob); // Fetch avatar URL
+          setAvatar(profile.avatarJob);
         })
         .catch(console.error);
     } else {
@@ -93,7 +93,7 @@ const Profile = () => {
 
     try {
       const response = await profileService.updateUserAvatar(userId, formData);
-      setAvatar(response.avatarJob); // Update avatar URL
+      setAvatar(response.avatarJob);
       setMessage("Avatar updated successfully");
     } catch (error) {
       setMessage("Failed to update avatar");
@@ -104,7 +104,6 @@ const Profile = () => {
     <ThemeProvider theme={defaultTheme}>
       <Container component="main" maxWidth="xs">
         <CssBaseline />
-        <Header />
         <Box
           sx={{
             marginTop: 8,
