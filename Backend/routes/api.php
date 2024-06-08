@@ -72,7 +72,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/user/logout', [UserController::class, 'logout']);
     Route::post('/user/{user}/update-avatar', [UserController::class, 'updateAvatar']);
     Route::post('/user/{user}/update-avatar-job', [UserController::class, 'updateAvatarJob']);
-
+    Route::post('/user/{user}/jobs/{jobId}/swipe', [UserController::class, 'swipe']);
 
 });
 

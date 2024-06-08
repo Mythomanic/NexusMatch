@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Models\User;
+use App\Models\Job;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -132,7 +133,7 @@ class UserController extends Controller
             ]);
         
             $user = Auth::user();
-            $path = "";
+        
             if ($request->hasFile('avatar')) {
                 // Eski avatarı sil
                 if ($user->avatar) {
@@ -141,15 +142,15 @@ class UserController extends Controller
         
                 // Yeni avatarı kaydet
                 $filename = $request->file('avatar')->store('avatars', 'public');
-                $path = Storage::url($filename);
-                $user->avatar = $path;
+                $user->avatar = basename($filename);
             }
+        
             $user->save();
         
             return response()->json([
                 'status' => true,
                 'message' => 'Profile updated successfully.',
-                'avatar' => $path
+                'avatar' => $user->avatar
             ], 200);
         }
     }
@@ -364,5 +365,37 @@ class UserController extends Controller
             'message' => 'User profile updated successfully',
             'user' => $user
         ], 200);
+    }
+
+
+    public function swipe(Request $request, User $user, $jobId)
+    {
+        // İstekten kullanıcı ID'sini ve swipe yönünü alıyoruz
+        $userId = $user->id;
+        $direction = $request->input('direction'); // "like" veya "dislike"
+
+        // İlgili işi buluyoruz
+        $job = Job::findOrFail($jobId);
+
+        if ($direction === 'like') {
+            // Kullanıcı ID'sini likes array'ine ekle
+            $likes = $job->likes ?? [];
+            if (!in_array($userId, $likes)) {
+                $likes[] = $userId;
+                $job->likes = $likes;
+            }
+        } elseif ($direction === 'dislike') {
+            // Kullanıcı ID'sini dislikes array'ine ekle
+            $dislikes = $job->dislikes ?? [];
+            if (!in_array($userId, $dislikes)) {
+                $dislikes[] = $userId;
+                $job->dislikes = $dislikes;
+            }
+        }
+
+        // Değişiklikleri kaydet
+        $job->save();
+
+        return response()->json(['message' => 'Swipe updated successfully.']);
     }
 }
