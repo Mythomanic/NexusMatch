@@ -80,4 +80,30 @@ class JobController extends Controller
 
         return response()->json(null, 204);
     }
+
+
+    public function getLikedUsers($jobId)
+    {
+        // İşi jobs tablosunda ID ile bul
+        $job = Job::find($jobId);
+    
+        // İş bulunamazsa 404 döndür
+        if (!$job) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Job not found'
+            ], 404);
+        }
+    
+        // Likes dizisini al
+        $likedUserIds = $job->likes; // Assuming likes is an array
+    
+        // Bu ID'lere sahip kullanıcıları sorgula
+        $likedUsers = User::whereIn('id', $likedUserIds)->get(['id', 'name', 'email', 'avatarJob']);
+    
+        return response()->json([
+            'status' => true,
+            'likedUsers' => $likedUsers
+        ], 200);
+    }
 }

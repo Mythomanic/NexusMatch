@@ -154,8 +154,6 @@ class UserController extends Controller
             ], 200);
         }
     }
-
-
     public function updateAvatarJob(Request $request, User $user){
         {
             $request->validate([
@@ -366,8 +364,6 @@ class UserController extends Controller
             'user' => $user
         ], 200);
     }
-
-
     public function swipe(Request $request, User $user, $jobId)
     {
         // İstekten kullanıcı ID'sini ve swipe yönünü alıyoruz

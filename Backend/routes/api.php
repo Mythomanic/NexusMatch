@@ -60,6 +60,15 @@ https://nexus1.onrender.com//api/jobs/1 -> id'si 1 olan job'u değiştirir
 Method DELETE
 https://nexus1.onrender.com//api/jobs/1 -> id'si 1 olan job'u siler
 
+https://nexusmain.onrender.com/storage/avatars/resminismi.png -> resmi çekmek için url
+
+https://nexus1.onrender.com//api/user/{userid}/jobs/{jobId}/swipe
+
+body
+{
+            "direction" : "dislike"
+}
+
 */
 Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('jobs', JobController::class);
@@ -73,8 +82,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/user/{user}/update-avatar', [UserController::class, 'updateAvatar']);
     Route::post('/user/{user}/update-avatar-job', [UserController::class, 'updateAvatarJob']);
     Route::post('/user/{user}/jobs/{jobId}/swipe', [UserController::class, 'swipe']);
+    
+
 
 });
-
+Route::get('/job/{job}/likes', [JobController::class, 'getLikedUsers']);
 
 
