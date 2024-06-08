@@ -50,24 +50,30 @@ GET, DELETE methodlularda body'ye ve "Content-Type: application/json"'a gerek yo
 
 örnek endpoint kullanımı: 
 Method: POST
-https://nexus1.onrender.com//api/jobs -> yeni job ekler
+https://nexusmain.onrender.com/api/jobs -> yeni job ekler
 Method: GET
-https://nexus1.onrender.com//api/jobs -> Bütün job'ları çeker
+https://nexusmain.onrender.com/api/jobs -> Bütün job'ları çeker
 Method: GET
-https://nexus1.onrender.com//api/jobs/1 -> id'si 1 olan job'u çeker
+https://nexusmain.onrender.com/api/jobs/1 -> id'si 1 olan job'u çeker
 Method PUT
-https://nexus1.onrender.com//api/jobs/1 -> id'si 1 olan job'u değiştirir
+https://nexusmain.onrender.com/api/jobs/1 -> id'si 1 olan job'u değiştirir
 Method DELETE
-https://nexus1.onrender.com//api/jobs/1 -> id'si 1 olan job'u siler
+https://nexusmain.onrender.com/api/jobs/1 -> id'si 1 olan job'u siler
 
 https://nexusmain.onrender.com/storage/avatars/resminismi.png -> resmi çekmek için url
 
-https://nexus1.onrender.com//api/user/{userid}/jobs/{jobId}/swipe
+https://nexusmain.onrender.com/api/user/{userid}/jobs/{jobId}/swipe
 
 body
 {
             "direction" : "dislike"
 }
+
+job'u like'layanları çekmek için
+https://nexusmain.onrender.com/api/job/jobid/likes 
+
+user'ın oluşturduğu jobları çekmek için
+https://nexusmain.onrender.com/api/user/userid/jobs 
 
 */
 Route::middleware('auth:sanctum')->group(function () {
@@ -82,12 +88,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/user/{user}/update-avatar', [UserController::class, 'updateAvatar']);
     Route::post('/user/{user}/update-avatar-job', [UserController::class, 'updateAvatarJob']);
     Route::post('/user/{user}/jobs/{jobId}/swipe', [UserController::class, 'swipe']);
-    
-
-
+    Route::get('/job/{job}/likes', [JobController::class, 'getLikedUsers']);
+    Route::get('/user/{id}/jobs', [UserController::class, 'getUserJobs']);
 });
-Route::get('/job/{job}/likes', [JobController::class, 'getLikedUsers']);
-Route::get('/user/{id}/jobs', [UserController::class, 'getUserJobs']);
+
 
 
 
