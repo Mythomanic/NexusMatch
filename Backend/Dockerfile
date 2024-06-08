@@ -4,6 +4,12 @@ COPY . .
 
 COPY custom-php.ini /usr/local/etc/php/conf.d/
 
+# Install Composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
+# Run Composer install
+RUN composer install --no-dev --optimize-autoloader
+
 # Image config
 ENV SKIP_COMPOSER 1
 ENV WEBROOT /var/www/html/public
