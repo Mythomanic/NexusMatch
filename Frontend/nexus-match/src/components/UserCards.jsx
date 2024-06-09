@@ -29,7 +29,7 @@ function UserCards() {
 
     try {
       await swipeService.swipeJob(user.id, userId, direction);
-      if (direction === "right") {
+      if (direction === "like") {
         const isMatch = await swipeService.checkMatch(user.id, userId);
         if (isMatch) {
           alert("Match!");
@@ -79,8 +79,8 @@ function UserCards() {
         ))}
       </div>
       <div className="buttons">
-        <button onClick={() => swipe("left")}>Dislike</button>
-        <button onClick={() => swipe("right")}>Like</button>
+        <button onClick={() => swipe("dislike")}>Dislike</button>
+        <button onClick={() => swipe("like")}>Like</button>
       </div>
     </div>
   );

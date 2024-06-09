@@ -11,9 +11,10 @@ const swipeJob = async (userId, jobId, direction) => {
       { direction },
       { headers }
     );
+    console.log("Swipe response:", response.data); // Başarıyla tamamlandığında konsola yazdır
     return response.data;
   } catch (error) {
-    console.error("Error swiping job:", error);
+    console.error("Error swiping job:", error); // Hata durumunda konsola yazdır
     throw error;
   }
 };
@@ -21,13 +22,14 @@ const swipeJob = async (userId, jobId, direction) => {
 const checkMatch = async (userId, jobId) => {
   const headers = authService.authHeader();
   try {
-    const response = await axios.get(
-      `${API_URL}matches/check?user_id=${userId}&job_id=${jobId}`,
-      { headers }
-    );
-    return response.data.isMatch;
+    const response = await axios.get(`${API_URL}job/${jobId}/likes`, {
+      headers,
+    });
+    const likedUsers = response.data.likedUsers;
+    console.log("Check match response:", likedUsers); // Başarıyla tamamlandığında konsola yazdır
+    return likedUsers.some((user) => user.id === userId);
   } catch (error) {
-    console.error("Error checking match:", error);
+    console.error("Error checking match:", error); // Hata durumunda konsola yazdır
     throw error;
   }
 };
