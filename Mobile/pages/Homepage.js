@@ -47,108 +47,53 @@ function Homepage({ navigation }) {
     }
 
 
-    const data = [0, 1, 2];
-
-    /*   const imageLinkArray = [
-          {
-              link: require("../img/kız.jpg")
-          },
-          {
-              link: require("../img/coworkimg.jpg")
-          },
-          {
-              link: require("../img/nexuslogo.png")
-          }
-      ]
-  
-      const imageLinkArray = [
-          {
-              link: require("img/coworkimg.png")
-          },
-          {
-              link: require("img/kız.jpg")
-          },
-          {
-              link: require("img/nexuslogo.png")
-          }
-      ] */
-
-    const renderCarouselItem = ({ item, index, imagelink }) => {
-        return (
-            <>
-
-                <TouchableOpacity activeOpacity={0.5} style={[styles.childView, { width: screenWidth }]}>
-
-                    <View style={{ flex: 3, alignItems: "center", justifyContent: "center", height: "100%", borderRadius: 10, paddingVertical: 10 }}>
-                        {/* <Image
-                            source={require("../img/kız.jpg")}
-                            style={{ width: "100%", height: "100%", borderRadius: 10, alignItems: "center", justifyContent: "center" }}
-                        /> */}
-                        <View style={{ width: "100%", height: "100%", borderRadius: 10, alignItems: "center", justifyContent: "center", backgroundColor: "white" }}>
-
-                        </View>
-
-
-                    </View>
-
-                    <View style={{ flex: 3, alignItems: "center", justifyContent: "center", height: "100%", }}>
-                        <Text style={[styles.text, { fontFamily: "Montserrat-Bold", textAlign: 'center' }]}>Recommended Event </Text>
-                        <Text numberOfLines={5} style={{ fontSize: 12, textAlign: 'center', color: "#3f3f3f" }}>Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                            Duis finibus velit in orci fringilla aliquet.
-                            Ut aliquet semper efficitur. In viverra varius. </Text>
-                    </View>
-
-                </TouchableOpacity>
-
-            </>
-
-        );
-    };
-
     const getData = async () => {
         try {
-          const value = await AsyncStorage.getItem('usertoken');
-          if (value !== null) {
-            // value previously stored
-            console.log(value)
-          }
+            const value = await AsyncStorage.getItem('usertoken');
+            if (value !== null) {
+                // value previously stored
+                console.log(value)
+            }
         } catch (e) {
-          // error reading value
+            // error reading value
         }
-      };
+    };
 
     return (
 
-        <SafeAreaView style={styles.SafeAreaView}>
+        <SafeAreaView style={[styles.SafeAreaView]}>
 
             <TopBar title={"NexusMatch"} titleFont={"Montserrat-SemiBold"} navigation={navigation} backColor={"#3F51B5"}></TopBar>
 
             <View style={{ width: "100%", flex: 1, alignItems: "center" }}>
 
-                <View style={styles.SearchBarHomepage}>
-                    <View style={{ position: "absolute", width: 35, alignItems: "center", justifyContent: "center", top: 0, bottom: 0, left: 0, zIndex: 2, marginHorizontal: 15 }}>
-                        <Fontisto size={20} name={"search"} />
-                    </View>
+               
 
-                    <TextInput placeholderTextColor={"black"} style={{ width: "100%", borderRadius: 100, backgroundColor: "#9f9f9faa", fontSize: 11, minHeight: 35, paddingHorizontal: 35 }} placeholder='Arama Yapın...' />
-                </View>
+                {/*   <View style={styles.ScrollHolderViewHomepage}>
 
-
-                <View style={styles.ScrollHolderViewHomepage}>
-
-                    <Carousel
-                        data={data}
-                        renderItem={renderCarouselItem}
-                        itemWidth={screenWidth}
-                        autoplay
-                        autoplayDelay={4500}
-                    />
-                </View>
-{/* 
+                   
+                </View> */}
+                {/* 
                 <TouchableOpacity onPress={getData}><Text fontSize="xs">TESTTOKENBUTON</Text>
                 </TouchableOpacity> */}
 
                 <View style={styles.MainCategoriesContainer}>
+
+                    <TouchableOpacity onPress={() => { navigation.navigate("UserCreations") }} activeOpacity={0.65} style={styles.TouchableMainCategory}>
+                        <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} colors={["#03A9F477", "#8BC34A44"]} style={styles.MainCategories}>
+
+                            <View style={{ flex: 1, alignItems: "center", justifyContent: "center", rowGap: 5 }}>
+                                <FontAwesome5 name="link" size={28} color={"white"}></FontAwesome5>
+
+                                <Text style={{ fontFamily: "Montserrat-BoldItalic", color: "white", fontSize: 17, textAlign: "center", }} fontSize="xs">OLUŞTURDUĞUM AKTİVİTELER</Text>
+                            </View>
+
+                            <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+                                <Image source={require("../connections.jpg")} style={{ width: "100%", height: "100%", borderRadius: 10 }} />
+                            </View>
+
+                        </LinearGradient>
+                    </TouchableOpacity>
 
                     <TouchableOpacity onPress={() => { navigation.navigate("JobList") }} activeOpacity={0.65} style={styles.TouchableMainCategory}>
                         <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} colors={["#3F51B5dd", "#03A9F4bb"]} style={styles.MainCategories}>
@@ -157,7 +102,7 @@ function Homepage({ navigation }) {
                                 <Image source={require("../jobwork.jpg")} style={{ width: "100%", height: "100%", borderRadius: 10 }} />
                             </View>
 
-                            <View style={{ flex: 1, alignItems: "center", justifyContent: "center", rowGap: 10 }}>
+                            <View style={{ flex: 1, alignItems: "center", justifyContent: "center", rowGap: 5 }}>
                                 <MaterialIcons name="business-center" size={28} color={"white"}></MaterialIcons>
 
                                 <Text style={{ fontFamily: "Montserrat-BoldItalic", color: "white", fontSize: 17, textAlign: "center" }} fontSize="xs">İŞ FIRSATLARI</Text>
@@ -171,7 +116,7 @@ function Homepage({ navigation }) {
                     <TouchableOpacity onPress={() => { navigation.navigate("DateList") }} activeOpacity={0.65} style={styles.TouchableMainCategory}>
                         <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} colors={["#FF6B6B", "#FFD166"]} style={styles.MainCategories}>
 
-                            <View style={{ flex: 1, alignItems: "center", justifyContent: "center", rowGap: 10 }}>
+                            <View style={{ flex: 1, alignItems: "center", justifyContent: "center", rowGap: 5 }}>
                                 <AntDesign name="heart" size={28} color={"white"}></AntDesign>
 
                                 <Text style={{ fontFamily: "Montserrat-BoldItalic", color: "white", fontSize: 17, }} fontSize="xs">İLİŞKİLER</Text>
@@ -192,7 +137,7 @@ function Homepage({ navigation }) {
                                 <Image source={require("../event.jpg")} style={{ width: "100%", height: "100%", borderRadius: 10 }} />
                             </View>
 
-                            <View style={{ flex: 1, alignItems: "center", justifyContent: "center", rowGap: 10 }}>
+                            <View style={{ flex: 1, alignItems: "center", justifyContent: "center", rowGap: 5 }}>
                                 <FontAwesome5 name="calendar-alt" size={28} color={"white"}></FontAwesome5>
 
                                 <Text style={{ fontFamily: "Montserrat-BoldItalic", color: "white", fontSize: 17, }} fontSize="xs">ETKİNLİKLER</Text>

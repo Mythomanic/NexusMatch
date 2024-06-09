@@ -10,11 +10,22 @@ import TopBar from '../pages/TopBar';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Carousel } from 'react-native-basic-carousel'
 import MessageComponent from '../MessageComponent';
+import { useAtom } from 'jotai';
+import { refreshAtom } from '../JotaiAtoms';
+import JobListItem from '../pages/JobListItemComponent';
+
 
 
 function JobsRequester({ navigation }) {
 
     const [showPassword, setShowPassword] = useState(true);
+
+    const [refreshKey, setRefreshKey] = useAtom(refreshAtom); // State to manage the refresh key
+
+    const handleRefresh = () => {
+        // Update the refresh key to trigger a re-render of the Swiper component
+        setRefreshKey(prevKey => prevKey + 1);
+    };
 
     const screenWidth = Dimensions.get('window').width;
 
@@ -49,38 +60,38 @@ function JobsRequester({ navigation }) {
         return null;
     }
 
- 
+
     return (
         <SafeAreaProvider>
 
             <SafeAreaView style={[styles.SafeAreaView, {}]}>
 
-                <TopBar navigation={navigation} backColor={"#3F51B5"} title={"İşlerim"}></TopBar>
-
+                
                 <View style={{ width: "100%", flex: 1, alignItems: "center", }}>
 
-                    <ScrollView contentContainerStyle={{ alignItems: "center", }} style={{ flex: 1, width: "100%", padding: 5 }} showsVerticalScrollIndicator={false}>
+                    <View style={styles.SearchBarCategories}>
+                        <TouchableOpacity style={{ width: 35, alignItems: "center", justifyContent: "center", flexDirection: "row", columnGap: 7 }}>
+                            <Ionicons size={21} name={"filter"} />
+                            <Text style={{ fontSize: 13 }}>Filter</Text>
 
-                        <MessageComponent navigation={navigation} personName={"Necati"} messageDate={"20.02.2024"} backColor={"#FFFFFF"}></MessageComponent>
-                        <MessageComponent navigation={navigation} personName={"Necati"} messageDate={"20.02.2024"} backColor={"#3F51B511"}></MessageComponent>
-                        <MessageComponent navigation={navigation} personName={"Necati"} messageDate={"20.02.2024"} backColor={"#3F51B511"}></MessageComponent>
-                        <MessageComponent navigation={navigation} personName={"Necati"} messageDate={"20.02.2024"} backColor={"#3F51B511"}></MessageComponent>
-                        <MessageComponent navigation={navigation} personName={"Necati"} messageDate={"20.02.2024"} backColor={"#3F51B511"}></MessageComponent>
-                        <MessageComponent navigation={navigation} personName={"Necati"} messageDate={"20.02.2024"} backColor={"#3F51B511"}></MessageComponent>
-                        <MessageComponent navigation={navigation} personName={"Necati"} messageDate={"20.02.2024"} backColor={"#3F51B511"}></MessageComponent>
-                        <MessageComponent navigation={navigation} personName={"Necati"} messageDate={"20.02.2024"} backColor={"#3F51B511"}></MessageComponent>
-                        <MessageComponent navigation={navigation} personName={"Necati"} messageDate={"20.02.2024"} backColor={"#3F51B511"}></MessageComponent>
-                        <MessageComponent navigation={navigation} personName={"Necati"} messageDate={"20.02.2024"} backColor={"#3F51B511"}></MessageComponent>
-                        <MessageComponent navigation={navigation} personName={"Necati"} messageDate={"20.02.2024"} backColor={"#3F51B511"}></MessageComponent>
-                        <MessageComponent navigation={navigation} personName={"Necati"} messageDate={"20.02.2024"} backColor={"#3F51B511"}></MessageComponent>
-                        <MessageComponent navigation={navigation} personName={"Necati"} messageDate={"20.02.2024"} backColor={"#3F51B511"}></MessageComponent>
+                        </TouchableOpacity>
 
-                    </ScrollView>
+                        <TouchableOpacity style={{ alignItems: "center", justifyContent: "center", flexDirection: "row", columnGap: 7 }} onPress={handleRefresh}>
+                            <Text style={{ fontSize: 13 }}>Refresh</Text>
+                            <FontAwesome size={18} name="refresh"></FontAwesome>
+
+                        </TouchableOpacity>
+                    </View>
+
+                    <View style={{ flex: 1, width: "100%", }}>
+
+                        <JobListItem navigation={navigation} />
+                    </View>
 
 
                 </View>
 
-                <BottomBar selectMenu={1} navigation={navigation}></BottomBar>
+                <BottomBar selectMenu={11} navigation={navigation}></BottomBar>
 
 
             </SafeAreaView >

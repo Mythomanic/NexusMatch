@@ -27,7 +27,6 @@ function Profile({ navigation }) {
     const [galleryModalVisible2, setGalleryModalVisible2] = useState(false);
     const [galleryModalVisible3, setGalleryModalVisible3] = useState(false);
     /* const [avatarUrl, setAvatarUrl] = useState(null); */
-    const [selectedImage, setSelectedImage] = useState(null);
 
     const { heightScreen, widthScreen } = Dimensions.get("window");
 
@@ -72,6 +71,9 @@ function Profile({ navigation }) {
     const [userId, setUserId] = useState()
     const [loggedInUserJobInfo, setloggedInUserJobInfo] = useState({})
     const [loggedInUserJobTags, setloggedInUserJobTags] = useState([])
+    const [selectedImage, setSelectedImage] = useState("");
+    const [selectedImageDate, setSelectedImageDate] = useState("");
+    const [selectedImageEvent, setSelectedImageEvent] = useState("");
 
 
     const getData = async () => {
@@ -106,6 +108,9 @@ function Profile({ navigation }) {
                 if (data.status) {
                     setloggedInUserJobInfo(data.jobProfile);
                     setloggedInUserJobTags(data.jobProfile.tagsJob);
+                    setSelectedImage("https://nexusmain.onrender.com/storage/avatars/" + data.jobProfile.avatarJob);
+                    //setSelectedImageDate("https://nexusmain.onrender.com/storage/avatars/" + data.dateProfile.avatarDate);
+                    //setSelectedImageEvent("https://nexusmain.onrender.com/storage/avatars/" + data.eventProfile.avatarEvent);
                 }
             }
         } catch (e) {
@@ -124,6 +129,7 @@ function Profile({ navigation }) {
         }
 
     }, [userToken, userId]);
+
 
 
     const handleImagePickAndUpload = async () => {
@@ -149,6 +155,7 @@ function Profile({ navigation }) {
                     name: newImageUri.split("/").pop(),
                 });
 
+
                 const response = await axios.post(`https://nexusmain.onrender.com/api/user/${userId}/update-avatar-job`, formData, {
                     headers: {
                         'Content-Type': 'multipart/form-data',
@@ -160,46 +167,124 @@ function Profile({ navigation }) {
                     Alert.alert('Error', 'Failed to update profile.');
                     console.log(response.data.status);
                 }
-            } 
+            }
         } catch (error) {
             console.error('Error uploading image:', error);
             Alert.alert('Error', 'Failed to update profile. Please try again later.');
         }
     };
 
-    function TagComponent({ tag }) {
+    const handleImagePickAndUploadDate = async () => {
+        try {
+            const result = await ImagePicker.launchImageLibraryAsync({
+                mediaTypes: ImagePicker.MediaTypeOptions.Images,
+                allowsEditing: true,
+                aspect: [4, 3],
+                quality: 1,
+            });
 
+
+            if (!result.canceled && result.assets && result.assets.length > 0) {
+                const imageUri = result.assets[0].uri;
+                const newImageUri = "file:///" + imageUri.split("file:/").join("");
+
+                setSelectedImage(newImageUri);
+
+                const formData = new FormData();
+                formData.append('avatarJob', {
+                    uri: newImageUri,
+                    type: mime.getType(newImageUri),
+                    name: newImageUri.split("/").pop(),
+                });
+
+
+                const response = await axios.post(`https://nexusmain.onrender.com/api/user/${userId}/update-avatar-job`, formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                        'Authorization': `Bearer ${userToken}`
+                    },
+                });
+
+                if (!response.data.status) {
+                    Alert.alert('Error', 'Failed to update profile.');
+                    console.log(response.data.status);
+                }
+            }
+        } catch (error) {
+            console.error('Error uploading image:', error);
+            Alert.alert('Error', 'Failed to update profile. Please try again later.');
+        }
+    };
+
+    const handleImagePickAndUploadEvent = async () => {
+        try {
+            const result = await ImagePicker.launchImageLibraryAsync({
+                mediaTypes: ImagePicker.MediaTypeOptions.Images,
+                allowsEditing: true,
+                aspect: [4, 3],
+                quality: 1,
+            });
+
+
+            if (!result.canceled && result.assets && result.assets.length > 0) {
+                const imageUri = result.assets[0].uri;
+                const newImageUri = "file:///" + imageUri.split("file:/").join("");
+
+                setSelectedImage(newImageUri);
+
+                const formData = new FormData();
+                formData.append('avatarJob', {
+                    uri: newImageUri,
+                    type: mime.getType(newImageUri),
+                    name: newImageUri.split("/").pop(),
+                });
+
+
+                const response = await axios.post(`https://nexusmain.onrender.com/api/user/${userId}/update-avatar-job`, formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                        'Authorization': `Bearer ${userToken}`
+                    },
+                });
+
+                if (!response.data.status) {
+                    Alert.alert('Error', 'Failed to update profile.');
+                    console.log(response.data.status);
+                }
+            }
+        } catch (error) {
+            console.error('Error uploading image:', error);
+            Alert.alert('Error', 'Failed to update profile. Please try again later.');
+        }
+    };
+
+
+    function BioName({ text }) {
         return (
-
-            <View style={{ padding: 10, alignItems: "center", justifyContent: "center", backgroundColor: profileType === 0 ? "lightblue" : profileType === 1 ? "pink" : profileType === 2 ? "lightgreen" : null, borderRadius: 10, flexGrow: 1, margin: 5, borderWidth: 1, borderColor: profileType === 0 ? "lightseagreen" : profileType === 1 ? "hotpink" : profileType === 2 ? "mediumaquamarine" : null }}>
-                <Text style={{ fontSize: 12 }} fontSize="xs">{tag}</Text>
+            <View style={{ width: "100%", alignItems: "center", justifyContent: "center", }}>
+                <Text style={{ fontSize: 20, fontWeight: "bold", color: "black" }} fontSize="xs">{text}</Text>
             </View>
+
         )
     }
 
-    function BioName({ name }) {
+    function BioJob({ text }) {
         return (
             <View style={{ width: "100%", alignItems: "center", justifyContent: "center", }}>
-                <Text style={{ fontSize: 20, fontWeight: "bold", color: "black" }} fontSize="xs">{name}</Text>
+                <Text style={{ fontSize: 17, color: "slategrey" }} fontSize="xs">{text}</Text>
             </View>
+
         )
     }
 
     function BioText({ text }) {
         return (
-            <View style={{ width: "100%", alignItems: "center", justifyContent: "center", }}>
-                <Text style={{ fontSize: 13.5, color: "black", textAlign: "justify" }} fontSize="xs">{text}</Text>
+            <View style={{ width: "100%", }}>
+                <Text style={{ fontSize: 13, color: "black", textAlign: "justify" }} fontSize="xs">{text}</Text>
             </View>
         )
     }
 
-    function BioTitle({ title }) {
-        return (
-            <View style={{ width: "100%", alignItems: "center", justifyContent: "center", }}>
-                <Text numberOfLines={1} style={{ fontSize: 15, color: "darkslategrey", }} fontSize="xs">{title}</Text>
-            </View>
-        )
-    }
 
     function GalleryComponent({ imageLink }) {
         return (
@@ -263,114 +348,89 @@ function Profile({ navigation }) {
 
                 <ImageBackground source={profileType === 0 ? require("../jobbgprofile.png") : profileType === 1 ? require("../lovebgprofile2.png") : require("../profilebg.png")} resizeMode='cover' style={{ width: "100%", flex: 1, alignItems: "center", }}>
 
-                    <View style={{ width: "100%", flex: 1, borderBottomLeftRadius: 100, borderBottomRightRadius: 100, alignItems: "center", justifyContent: "center", paddingHorizontal: 20, }}>
+                    <TouchableOpacity onPress={() => { navigation.navigate("EditProfile") }}
+                        style={{ position: "absolute", right: 0, top: 0, alignItems: "center", justifyContent: "center", margin: 20 }}>
+                        <FontAwesome name="cog" size={30} />
+                    </TouchableOpacity>
 
-                        <TouchableOpacity onPress={handleImagePickAndUpload} style={{ width: 110, height: 110, borderRadius: 100, borderColor: "darkgrey", borderWidth: 1, alignItems: "center", justifyContent: "center" }}>
-
-                            {selectedImage && (
-                                <Image source={{ uri: selectedImage }} style={{ width: "100%", height: "100%", borderRadius: 100 }} />
-                            )}
-
-                        </TouchableOpacity>
-
-                        <TouchableOpacity onPress={() => { navigation.navigate("EditProfile") }}
-                            style={{ position: "absolute", right: 0, top: 0, alignItems: "center", justifyContent: "center", margin: 20 }}>
-                            <FontAwesome name="cog" size={30} />
-                        </TouchableOpacity>
-
-                    </View>
-
-                    <View style={{ flex: 3, alignItems: "center", paddingHorizontal: 20 }}>
+                    <View style={{ flex: 4, alignItems: "center", paddingHorizontal: 20, width: "100%" }}>
 
                         {
                             profileType === 0 ? (
-                                <>
-                                    <BioName name={"Necati Doğrul"} />
-                                    <BioTitle title={"Software Developer"} />
-                                    <TouchableOpacity onPress={() => { console.log(loggedInUserJobInfo) }}><Text fontSize="xs">TAGLERİ GÖR</Text>
+
+                                <View style={{ flex: 1, width: "100%", alignItems: "center" }}>
+
+                                    <TouchableOpacity onPress={handleImagePickAndUpload} style={{ width: 110, height: 110, borderRadius: 100, borderColor: "darkgrey", borderWidth: 1, alignItems: "center", justifyContent: "center" }}>
+
+                                        {selectedImage && (
+                                            <Image source={{ uri: selectedImage }} style={{ width: "100%", height: "100%", borderRadius: 100 }} />
+                                        )}
+
                                     </TouchableOpacity>
+
+
+                                    <BioName text={loggedInUserJobInfo.name}></BioName>
+                                    <BioJob text={loggedInUserJobInfo.userJob}></BioJob>
 
                                     <ProfileTags tags={loggedInUserJobTags}></ProfileTags>
 
-
-                                    <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ alignItems: "center", }}>
-                                        <BioText text={BioTextArray[0].text} />
-
-
+                                    <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ width: "100%", padding: 5 }}>
+                                        <BioText text={loggedInUserJobInfo.descriptionJob} />
                                     </ScrollView>
-                                </>
+
+                                </View>
 
                             ) : profileType === 1 ? (
-                                <>
-                                    <BioName name={"Necati Doğrul"} />
-                                    <BioTitle title={"Software Developer"} />
 
-                                    <View style={{ alignItems: "center", flexDirection: "row", flexWrap: "wrap", }}>
-                                        <TagComponent TagText={"Gezmek"} />
-                                        <TagComponent TagText={"Oyun oynamak"} />
-                                        <TagComponent TagText={"1.85 Boy"} />
-                                        <TagComponent TagText={"80 Kilo"} />
-                                        <TagComponent TagText={"Sarışın"} />
-                                        <TagComponent TagText={"Yayla"} />
-                                    </View>
+                                <View style={{ flex: 1, width: "100%", alignItems: "center" }}>
 
-                                    <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ alignItems: "center", }}>
-                                        <BioText text={"Ciddi ilişki arıyorum."} />
+                                    <TouchableOpacity onPress={handleImagePickAndUploadDate} style={{ width: 110, height: 110, borderRadius: 100, borderColor: "darkgrey", borderWidth: 1, alignItems: "center", justifyContent: "center" }}>
+
+                                      {/*   {selectedImage && (
+                                            <Image source={{ uri: selectedImage }} style={{ width: "100%", height: "100%", borderRadius: 100 }} />
+                                        )} */}
+
+                                    </TouchableOpacity>
+
+
+                                    <BioName text={loggedInUserJobInfo.name}></BioName>
+                                    <BioJob text={loggedInUserJobInfo.userJob}></BioJob>
+
+                                    <ProfileTags tags={loggedInUserJobTags}></ProfileTags>
+
+                                    <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ width: "100%", padding: 5 }}>
+                                        <BioText text={loggedInUserJobInfo.descriptionJob} />
                                     </ScrollView>
-                                </>
+
+                                </View>
 
                             ) : profileType === 2 ? (
-                                <>
-                                    <BioName name={"Necati Doğrul"} />
-                                    <BioTitle title={"Software Developer"} />
 
-                                    <View style={{ alignItems: "center", flexDirection: "row", flexWrap: "wrap", }}>
-                                        <TagComponent TagText={"Futbol"} />
-                                        <TagComponent TagText={"Parti"} />
-                                        <TagComponent TagText={"Motosiklet"} />
-                                        <TagComponent TagText={"Yayla"} />
-                                        <TagComponent TagText={"Gezi"} />
-                                        <TagComponent TagText={"Dalış"} />
-                                    </View>
-                                    <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ alignItems: "center", }}>
+                                <View style={{ flex: 1, width: "100%", alignItems: "center" }}>
 
-                                        <BioText text={"Futbol oynamayı severim halısahaya gelirim."} />
+                                    <TouchableOpacity onPress={handleImagePickAndUploadEvent} style={{ width: 110, height: 110, borderRadius: 100, borderColor: "darkgrey", borderWidth: 1, alignItems: "center", justifyContent: "center" }}>
+
+                                        {selectedImage && (
+                                            <Image source={{ uri: selectedImage }} style={{ width: "100%", height: "100%", borderRadius: 100 }} />
+                                        )}
+
+                                    </TouchableOpacity>
+
+
+                                    <BioName text={loggedInUserJobInfo.name}></BioName>
+                                    <BioJob text={loggedInUserJobInfo.userJob}></BioJob>
+
+                                    <ProfileTags tags={loggedInUserJobTags}></ProfileTags>
+
+                                    <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ width: "100%", padding: 5 }}>
+                                        <BioText text={loggedInUserJobInfo.descriptionJob} />
                                     </ScrollView>
-                                </>
+
+                                </View>
                             ) : null
                         }
 
                     </View>
-
-                    {/* <View style={styles.ProfileOptionsContainer}>
-                        <TouchableOpacity onPress={() => { navigation.navigate("EditProfile") }} style={[styles.ProfileOptions, { backgroundColor: profileType === 0 ? "lightblue" : profileType === 1 ? "pink" : profileType === 2 ? "lightgreen" : null, borderColor: profileType === 0 ? "lightseagreen" : profileType === 1 ? "hotpink" : profileType === 2 ? "mediumaquamarine" : null, borderWidth: 1 }]}>
-                            <View style={{ flexDirection: "row" }}>
-                                <View style={{ alignItems: "center", justifyContent: "center", minWidth: 25 }}>
-                                    <FontAwesome5 size={16} name="user-alt" />
-                                </View>
-                                <Text fontSize="xs">Profili Düzenle</Text>
-                            </View>
-
-                            <View style={{}}>
-                                <Entypo size={20} name="chevron-right" />
-                            </View>
-                        </TouchableOpacity>
-
-                        <TouchableOpacity onPress={() => { navigation.navigate("Login") }} style={[styles.ProfileOptions, { backgroundColor: profileType === 0 ? "lightblue" : profileType === 1 ? "pink" : profileType === 2 ? "lightgreen" : null, borderColor: profileType === 0 ? "lightseagreen" : profileType === 1 ? "hotpink" : profileType === 2 ? "mediumaquamarine" : null, borderWidth: 1 }]}>
-                            <View style={{ flexDirection: "row" }}>
-                                <View style={{ alignItems: "center", justifyContent: "center", minWidth: 25 }}>
-                                    <Entypo size={18} name="log-out" />
-                                </View>
-                                <Text fontSize="xs">Çıkış Yap</Text>
-                            </View>
-
-                            <View style={{}}>
-                                <Entypo size={20} name="chevron-right" />
-                            </View>
-                        </TouchableOpacity>
-
-                    </View> */}
-
 
 
 
@@ -389,10 +449,6 @@ function Profile({ navigation }) {
                             </View>
                         </TouchableOpacity>
                     </View>
-
-
-
-
 
 
                     <View style={{ flex: 1.25, width: "100%", flexDirection: "row", paddingVertical: 10, paddingHorizontal: 20, zIndex: 1 }}>

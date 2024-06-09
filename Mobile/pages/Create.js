@@ -14,13 +14,21 @@ import Accordion from 'react-native-collapsible/Accordion';
 import { Tag } from 'react-native-btr';
 import { Dialog } from 'react-native-ui-lib';
 import Modal from "react-native-modal";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 function Create({ navigation }) {
 
     const [showPassword, setShowPassword] = useState(true);
     const screenWidth = Dimensions.get('window').width;
-
+    const [userToken, setUserToken] = useState()
+    const [userId, setUserId] = useState()
+    const API_PROFILE_DETAILS_URL = 'https://nexusmain.onrender.com/api/user';
     const [createCategory, setcreateCategory] = useState(0)
+    const [loggedInUserJobInfo, setloggedInUserJobInfo] = useState({})
+    const [loggedInUserJobTags, setloggedInUserJobTags] = useState([])
+    const [selectedImage, setSelectedImage] = useState("");
+    const [selectedImageDate, setSelectedImageDate] = useState("");
+    const [selectedImageEvent, setSelectedImageEvent] = useState("");
 
     const [fontsLoaded] = useFonts({
         'Kaushan': require('../assets/fonts/KaushanScript-Regular.ttf'),
@@ -51,15 +59,110 @@ function Create({ navigation }) {
         return null;
     }
 
+    const getData = async () => {
+        try {
+            const userTokenValue = await AsyncStorage.getItem('usertoken');
+            const userIdValue = await AsyncStorage.getItem('userid');
+            if (userTokenValue !== null && userIdValue !== null) {
+                setUserToken(userTokenValue)
+                setUserId(userIdValue)
+            }
+        } catch (e) {
+            // error reading value
+        }
+    };
+
+    const getLoggedInUser = async () => {
+        try {
+            if (userToken !== null && userId !== null) {
+                const response = await fetch(`${API_PROFILE_DETAILS_URL}/${userId}/job-profile`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${userToken}` // Corrected Authorization header
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                if (data.status) {
+                    setloggedInUserJobInfo(data.jobProfile);
+                    setloggedInUserJobTags(data.jobProfile.tagsJob);
+                    setSelectedImage("https://nexusmain.onrender.com/storage/avatars/" + data.jobProfile.avatarJob);
+                    //setSelectedImageDate("https://nexusmain.onrender.com/storage/avatars/" + data.dateProfile.avatarDate);
+                    //setSelectedImageEvent("https://nexusmain.onrender.com/storage/avatars/" + data.eventProfile.avatarEvent);
+                }
+            }
+        } catch (e) {
+            console.error('Error fetching profile details:', e);
+        }
+    };
+
+    useEffect(() => {
+        getData();
+    }, []);
+
+    useEffect(() => {
+        if (userToken && userId) {
+            getLoggedInUser();
+        }
+
+    }, [userToken, userId]);
+
+
     //İş Stateleri
+    const JOB_CREATE_URL = "https://nexusmain.onrender.com/api/jobs"
 
-    const [companyName, setcompanyName] = useState();
-    const [jobPosition, setjobPosition] = useState();
-    const [skills, setskills] = useState([]);
-    const [experience, setexperience] = useState();
-    const [jobwage, setjobwage] = useState();
-    const [workingstyle, setworkingstyle] = useState();
+    const [title, setTitle] = useState('');
+    const [location, setLocation] = useState('');
+    const [position, setPosition] = useState('');
+    const [requirements, setRequirements] = useState('');
+    const [salary, setSalary] = useState('');
+    const [description, setDescription] = useState('');
 
+    const createJob = async () => {
+        const jobData = {
+            title,
+            location,
+            position,
+            requirements,
+            salary: parseFloat(salary), // Ensure salary is sent as a numeric value
+            description,
+        };
+
+        console.log('Sending job data:', jobData);
+
+        try {
+            const response = await fetch(JOB_CREATE_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${userToken}`
+                },
+                body: JSON.stringify(jobData),
+            });
+
+            if (response.ok) {
+                const jsonResponse = await response.json();
+                console.log('Job created successfully:', jsonResponse);
+                // Clear the input fields or navigate to another screen if necessary
+                setTitle('');
+                setLocation('');
+                setPosition('');
+                setRequirements('');
+                setSalary('');
+                setDescription('');
+            } else {
+                const errorResponse = await response.text();
+                console.error('Failed to create job:', errorResponse);
+            }
+        } catch (error) {
+            console.error('Error creating job:', error);
+        }
+    };
 
     return (
 
@@ -100,30 +203,66 @@ function Create({ navigation }) {
                         <ScrollView contentContainerStyle={{ width: "100%", alignItems: "center", padding: 10, rowGap: 15, }} showsVerticalScrollIndicator={false}>
 
                             <View style={styles.CreateContentContainer}>
-                                <TextInput style={{ width: "100%", paddingHorizontal: 10, fontSize: 13 }} placeholder='Şirket adı'></TextInput>
+                                <TextInput
+                                    value={title}
+                                    onChangeText={setTitle}
+                                    multiline={true}
+                                    style={{ width: "100%", paddingHorizontal: 10, fontSize: 12 }}
+                                    placeholder='Şirket adı'
+                                />
                             </View>
 
                             <View style={styles.CreateContentContainer}>
-                                <TextInput style={{ width: "100%", paddingHorizontal: 10, fontSize: 13 }} placeholder='Aday iş pozisyonu adı (Örn: Yazılımcı)'></TextInput>
+                                <TextInput
+                                    value={location}
+                                    onChangeText={setLocation}
+                                    multiline={true}
+                                    style={{ width: "100%", paddingHorizontal: 10, fontSize: 12 }}
+                                    placeholder='Şirket konumu'
+                                />
                             </View>
 
                             <View style={styles.CreateContentContainer}>
-                                <TextInput style={{ width: "100%", paddingHorizontal: 10, fontSize: 13 }} placeholder='Aranılan yetenekler'></TextInput>
+                                <TextInput
+                                    value={position}
+                                    onChangeText={setPosition}
+                                    multiline={true}
+                                    style={{ width: "100%", paddingHorizontal: 10, fontSize: 12 }}
+                                    placeholder='Aday iş pozisyonu adı (Örn: Yazılımcı)'
+                                />
                             </View>
 
                             <View style={styles.CreateContentContainer}>
-                                <TextInput style={{ width: "100%", paddingHorizontal: 10, fontSize: 13 }} placeholder='Aranılan Deneyim'></TextInput>
+                                <TextInput
+                                    value={requirements}
+                                    onChangeText={setRequirements}
+                                    multiline={true}
+                                    style={{ width: "100%", paddingHorizontal: 10, fontSize: 12 }}
+                                    placeholder='Aranılan yetenekler ve deneyim'
+                                />
                             </View>
 
                             <View style={styles.CreateContentContainer}>
-                                <TextInput style={{ width: "100%", paddingHorizontal: 10, fontSize: 13 }} placeholder='Maaş aralığı'></TextInput>
+                                <TextInput
+                                    value={salary}
+                                    onChangeText={setSalary}
+                                    multiline={true}
+                                    style={{ width: "100%", paddingHorizontal: 10, fontSize: 12 }}
+                                    placeholder='Maaş'
+                                />
                             </View>
 
                             <View style={styles.CreateContentContainer}>
-                                <TextInput style={{ width: "100%", paddingHorizontal: 10, fontSize: 13 }} placeholder='Çalışma stili (Ofis / Hibrit / Remote)'></TextInput>
+                                <TextInput
+                                    value={description}
+                                    onChangeText={setDescription}
+                                    multiline={true}
+                                    style={{ width: "100%", paddingHorizontal: 10, fontSize: 12 }}
+                                    placeholder='İş açıklaması'
+                                />
                             </View>
 
-                            <TouchableOpacity onPress={() => { }} style={{ padding: 10, paddingHorizontal: 25, borderRadius: 15, alignItems: "center", justifyContent: "center", borderWidth: 2, borderColor: "#03A9F4bb" }}>
+                            <TouchableOpacity onPress={createJob} style={{ padding: 10, paddingHorizontal: 25, borderRadius: 15, alignItems: "center", justifyContent: "center", borderWidth: 2, borderColor: "#03A9F4bb" }}>
                                 <Text style={{ color: "#03A9F4bb", fontWeight: "bold" }} fontSize="xs">Oluştur</Text>
                             </TouchableOpacity>
 
@@ -140,31 +279,27 @@ function Create({ navigation }) {
                         <ScrollView contentContainerStyle={{ width: "100%", alignItems: "center", padding: 10, rowGap: 15, }} showsVerticalScrollIndicator={false}>
 
                             <View style={styles.CreateContentContainer}>
-                                <TextInput style={{ width: "100%", paddingHorizontal: 10, fontSize: 13 }} placeholder='Şirket adı'></TextInput>
+                                <TextInput multiline={true} style={{ width: "100%", paddingHorizontal: 10, fontSize: 12 }} placeholder='Şirket adı'></TextInput>
                             </View>
 
                             <View style={styles.CreateContentContainer}>
-                                <TextInput style={{ width: "100%", paddingHorizontal: 10, fontSize: 13 }} placeholder='Aday iş pozisyonu adı (Örn: Yazılımcı)'></TextInput>
+                                <TextInput multiline={true} style={{ width: "100%", paddingHorizontal: 10, fontSize: 12 }} placeholder='Aday iş pozisyonu adı (Örn: Yazılımcı)'></TextInput>
                             </View>
 
                             <View style={styles.CreateContentContainer}>
-                                <TextInput style={{ width: "100%", paddingHorizontal: 10, fontSize: 13 }} placeholder='Aranılan yetenekler'></TextInput>
+                                <TextInput multiline={true} style={{ width: "100%", paddingHorizontal: 10, fontSize: 12 }} placeholder='Aranılan yetenekler, deneyim ve iş açıklaması'></TextInput>
                             </View>
 
                             <View style={styles.CreateContentContainer}>
-                                <TextInput style={{ width: "100%", paddingHorizontal: 10, fontSize: 13 }} placeholder='Aranılan Deneyim'></TextInput>
+                                <TextInput multiline={true} style={{ width: "100%", paddingHorizontal: 10, fontSize: 12 }} placeholder='Maaş'></TextInput>
                             </View>
 
                             <View style={styles.CreateContentContainer}>
-                                <TextInput style={{ width: "100%", paddingHorizontal: 10, fontSize: 13 }} placeholder='Maaş aralığı'></TextInput>
+                                <TextInput multiline={true} style={{ width: "100%", paddingHorizontal: 10, fontSize: 12 }} placeholder='İş açıklaması'></TextInput>
                             </View>
 
-                            <View style={styles.CreateContentContainer}>
-                                <TextInput style={{ width: "100%", paddingHorizontal: 10, fontSize: 13 }} placeholder='Çalışma stili (Ofis / Hibrit / Remote)'></TextInput>
-                            </View>
-
-                            <TouchableOpacity onPress={() => { }} style={{ padding: 10, paddingHorizontal: 25, borderRadius: 15, alignItems: "center", justifyContent: "center", borderWidth: 2, borderColor: "#FF6B6Bbb" }}>
-                                <Text style={{ color: "#FF6B6Bbb", fontWeight: "bold" }} fontSize="xs">Oluştur</Text>
+                            <TouchableOpacity onPress={() => { }} style={{ padding: 10, paddingHorizontal: 25, borderRadius: 15, alignItems: "center", justifyContent: "center", borderWidth: 2, borderColor: "#03A9F4bb" }}>
+                                <Text style={{ color: "#03A9F4bb", fontWeight: "bold" }} fontSize="xs">Oluştur</Text>
                             </TouchableOpacity>
 
                         </ScrollView>
@@ -179,31 +314,27 @@ function Create({ navigation }) {
                         <ScrollView contentContainerStyle={{ width: "100%", alignItems: "center", padding: 10, rowGap: 15, }} showsVerticalScrollIndicator={false}>
 
                             <View style={styles.CreateContentContainer}>
-                                <TextInput style={{ width: "100%", paddingHorizontal: 10, fontSize: 13 }} placeholder='Şirket adı'></TextInput>
+                                <TextInput multiline={true} style={{ width: "100%", paddingHorizontal: 10, fontSize: 12 }} placeholder='Şirket adı'></TextInput>
                             </View>
 
                             <View style={styles.CreateContentContainer}>
-                                <TextInput style={{ width: "100%", paddingHorizontal: 10, fontSize: 13 }} placeholder='Aday iş pozisyonu adı (Örn: Yazılımcı)'></TextInput>
+                                <TextInput multiline={true} style={{ width: "100%", paddingHorizontal: 10, fontSize: 12 }} placeholder='Aday iş pozisyonu adı (Örn: Yazılımcı)'></TextInput>
                             </View>
 
                             <View style={styles.CreateContentContainer}>
-                                <TextInput style={{ width: "100%", paddingHorizontal: 10, fontSize: 13 }} placeholder='Aranılan yetenekler'></TextInput>
+                                <TextInput multiline={true} style={{ width: "100%", paddingHorizontal: 10, fontSize: 12 }} placeholder='Aranılan yetenekler, deneyim ve iş açıklaması'></TextInput>
                             </View>
 
                             <View style={styles.CreateContentContainer}>
-                                <TextInput style={{ width: "100%", paddingHorizontal: 10, fontSize: 13 }} placeholder='Aranılan Deneyim'></TextInput>
+                                <TextInput multiline={true} style={{ width: "100%", paddingHorizontal: 10, fontSize: 12 }} placeholder='Maaş'></TextInput>
                             </View>
 
                             <View style={styles.CreateContentContainer}>
-                                <TextInput style={{ width: "100%", paddingHorizontal: 10, fontSize: 13 }} placeholder='Maaş aralığı'></TextInput>
+                                <TextInput multiline={true} style={{ width: "100%", paddingHorizontal: 10, fontSize: 12 }} placeholder='İş açıklaması'></TextInput>
                             </View>
 
-                            <View style={styles.CreateContentContainer}>
-                                <TextInput style={{ width: "100%", paddingHorizontal: 10, fontSize: 13 }} placeholder='Çalışma stili (Ofis / Hibrit / Remote)'></TextInput>
-                            </View>
-
-                            <TouchableOpacity onPress={() => { }} style={{ padding: 10, paddingHorizontal: 25, borderRadius: 15, alignItems: "center", justifyContent: "center", borderWidth: 2, borderColor: "#4CAF50bb" }}>
-                                <Text style={{ color: "#4CAF50bb", fontWeight: "bold" }} fontSize="xs">Oluştur</Text>
+                            <TouchableOpacity onPress={() => { }} style={{ padding: 10, paddingHorizontal: 25, borderRadius: 15, alignItems: "center", justifyContent: "center", borderWidth: 2, borderColor: "#03A9F4bb" }}>
+                                <Text style={{ color: "#03A9F4bb", fontWeight: "bold" }} fontSize="xs">Oluştur</Text>
                             </TouchableOpacity>
 
                         </ScrollView>

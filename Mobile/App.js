@@ -35,6 +35,7 @@ import MessageScreen from './pages/MessageScreen';
 import Create from './pages/Create';
 import { Provider } from 'jotai';
 import ProfileSettings from './pages/ProfileSettings';
+import UserCreations from './pages/UserCreations';
 
 
 export default function App({ navigation }) {
@@ -85,21 +86,7 @@ export default function App({ navigation }) {
   function Tab1Stack({ navigation }) {
     return (
       <>
-        <SafeAreaView>
-          <View style={styles.HizmetTipiStateBar}>
-
-            <TouchableOpacity style={{ flex: 1, alignItems: "center", justifyContent: "center", borderRadius: 5, padding: 7.5, backgroundColor: "#0386d0", flexDirection: "row", columnGap: 5 }} onPress={() => { navigation.navigate("Requester") }}>
-              <Ionicons name="contract" color={"white"} size={20} />
-              <Text style={{ color: "white" /* requestType === 1 ? "white" : "#003366" */, fontSize: 13 }}>Başvuran</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity style={{ flex: 1, alignItems: "center", justifyContent: "center", borderRadius: 5, padding: 7.5, flexDirection: "row", columnGap: 5 }} onPress={() => { navigation.navigate("Creator") }}>
-              <Ionicons name="create-outline" color={"#a6026b"} size={20} />
-              <Text style={{ color: "#a6026b"/* requestType === 2 ? "white" : "#003366" */, fontSize: 13 }}>Oluşturan</Text>
-            </TouchableOpacity>
-
-          </View>
-        </SafeAreaView >
+        <StatusBar></StatusBar>
 
         <Tab.Navigator tabBar={props => <MyTabBar {...props} />}>
           <Tab.Screen name="İş" component={Jobs} />
@@ -112,24 +99,10 @@ export default function App({ navigation }) {
     );
   }
 
-  function Tab2Stack({ navigation }) {
+  function Tab2StackActivities({ navigation }) {
     return (
       <>
-        <SafeAreaView>
-          <View style={styles.HizmetTipiStateBar}>
-
-            <TouchableOpacity style={{ flex: 1, alignItems: "center", justifyContent: "center", borderRadius: 5, padding: 7.5, flexDirection: "row", columnGap: 5 }} onPress={() => { navigation.navigate("Requester") }}>
-              <Ionicons name="contract" color={"#0386d0"} size={20} />
-              <Text style={{ color: "#0386d0" /* requestType === 1 ? "white" : "#003366" */, fontSize: 13 }}>Başvuran</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity style={{ flex: 1, alignItems: "center", justifyContent: "center", borderRadius: 5, padding: 7.5, backgroundColor: "#a6026b", flexDirection: "row", columnGap: 5 }} onPress={() => { navigation.navigate("Creator") }}>
-              <Ionicons name="create-outline" color={"white"} size={20} />
-              <Text style={{ color: "white"/* requestType === 2 ? "white" : "#003366" */, fontSize: 13 }}>Oluşturan</Text>
-            </TouchableOpacity>
-
-          </View>
-        </SafeAreaView>
+        <StatusBar></StatusBar>
 
         <Tab.Navigator tabBar={props => <MyTabBar {...props} />}>
           <Tab.Screen name="İş" component={JobsRequester} />
@@ -139,6 +112,7 @@ export default function App({ navigation }) {
       </>
     );
   }
+
 
   function TabSearchStack({ navigation }) {
     return (
@@ -158,7 +132,6 @@ export default function App({ navigation }) {
     return (
       <Tab.Navigator>
         <Tab.Screen name='TabRequester' component={Tab1Stack}></Tab.Screen>
-        <Tab.Screen name='TabCreator' component={Tab2Stack}></Tab.Screen>
       </Tab.Navigator>
     )
   }
@@ -181,7 +154,6 @@ export default function App({ navigation }) {
               <Stack.Screen name="SignUp" component={SignUp} />
               <Stack.Screen name="Homepage" component={Homepage} />
               <Stack.Screen name="Requester" component={Tab1Stack} />
-              <Stack.Screen name="Creator" component={Tab2Stack} />
               <Stack.Screen name="Matches" component={Matches} />
               <Stack.Screen name="Profile" component={Profile} />
               <Stack.Screen name="EditProfile" component={EditProfile} />
@@ -192,6 +164,7 @@ export default function App({ navigation }) {
               <Stack.Screen name="MessageScreen" component={MessageScreen} />
               <Stack.Screen name="Create" component={Create} />
               <Stack.Screen name="ProfileSettings" component={ProfileSettings} />
+              <Stack.Screen name="UserCreations" component={Tab2StackActivities} />
 
             </Stack.Navigator>
 
