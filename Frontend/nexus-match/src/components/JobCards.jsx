@@ -75,7 +75,7 @@ function JobCards() {
           </TinderCard>
         ))}
       </div>
-      <div className="buttons">
+      <div style={{ display: "flex", alignItems: "end" }} className="buttons">
         <button onClick={() => swipe("dislike")}>Dislike</button>
         <button onClick={() => swipe("like")}>Like</button>
       </div>

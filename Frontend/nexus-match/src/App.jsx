@@ -1,18 +1,20 @@
 import React, { useState } from "react";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
-import Header from "./Header";
+import SimpleNavbar from "./Header";
 import JobCards from "./components/JobCards"; // İş ilanlarını gösterecek bileşen
 import UserCards from "./components/UserCards"; // İş arayanların profillerini gösterecek bileşen
 import Login from "./components/Login";
 import Register from "./components/Register";
 import CreateJob from "./components/CreateJob";
 import Profile from "./components/Profile";
+import MyJobs from "./components/MyJobs"; // MyJobs bileşeni
 import { Snackbar, Alert } from "@mui/material";
 
 function App() {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
+  const userId = "your-user-id"; // Kullanıcının ID'sini buraya ekleyin
 
   const showSnackbar = (message, severity = "success") => {
     setSnackbarMessage(message);
@@ -27,13 +29,13 @@ function App() {
   return (
     <div className="app">
       <Router>
-        <Header showSnackbar={showSnackbar} />
+        <SimpleNavbar showSnackbar={showSnackbar} userId={userId} />
         <Routes>
           <Route
             path="/chat"
             element={
               <div>
-                <Header />
+                <SimpleNavbar showSnackbar={showSnackbar} userId={userId} />
                 <h1>Chat Screen</h1>
               </div>
             }
@@ -42,10 +44,12 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/create-job" element={<CreateJob />} />
           <Route path="/profile" element={<Profile />} />
-          <Route path="/find-jobs" element={<JobCards />} />{" "}
+          <Route path="/find-jobs" element={<JobCards />} />
           {/* İş bulmak için */}
-          <Route path="/find-workers" element={<UserCards />} />{" "}
+          <Route path="/find-workers" element={<UserCards />} />
           {/* İşçi/Çalışan bulmak için */}
+          <Route path="/my-jobs" element={<MyJobs userId={userId} />} />
+          {/* My Jobs */}
           <Route
             path="/"
             element={
