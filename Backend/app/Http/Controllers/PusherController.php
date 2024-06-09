@@ -7,6 +7,7 @@ use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
+use App\Http\Controllers\ChatMessage;
 
 class PusherController extends Controller
 {
@@ -25,5 +26,18 @@ class PusherController extends Controller
     public function receive(Request $request)
     {
         return view('receive', ['message' => $request->get('message')]);
+    }
+
+    public function sendMessage(Request $request)
+    {
+        $message = ChatMessage::create([
+            'chat_id' => $request->chat_id,
+            'user_id' => auth()->id(),
+            'message' => $request->message
+        ]);
+
+        broadcast(new MessageSent($message->load('user')))->toOthers();
+
+        return response(['status' => 'Message Sent!']);
     }
 }

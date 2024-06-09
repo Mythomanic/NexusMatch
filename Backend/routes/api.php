@@ -8,6 +8,8 @@ use App\Http\Controllers\Api\JobController;
 use App\Http\Controllers\Api\SwipeController;
 use App\Http\Controllers\Api\MatchController;
 use App\Http\Controllers\Api\JobFilterController;
+use App\Http\Controllers\MessageController;
+use Illuminate\Support\Facades\Auth;
 
 
 /*
@@ -90,7 +92,18 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/user/{user}/jobs/{jobId}/swipe', [UserController::class, 'swipe']);
     Route::get('/job/{job}/likes', [JobController::class, 'getLikedUsers']);
     Route::get('/user/{id}/jobs', [UserController::class, 'getUserJobs']);
+    Route::post('/chats', [ChatController::class, 'createChat']);
+    Route::get('/chats', [ChatController::class, 'fetchChats']);
+    Route::get('/chats/{chat}/messages', [MessageController::class, 'fetchMessages']);
+    Route::post('/chats/{chat}/messages', [MessageController::class, 'sendMessage']);
+    Route::post('/broadcasting/auth', function () {
+    return Auth::user();
+    });
 });
+
+
+
+
 
 
 

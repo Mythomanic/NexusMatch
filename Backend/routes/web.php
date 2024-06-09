@@ -20,3 +20,4 @@ Route::post('/broadcast', [PusherController::class, 'broadcast']);
 Route::post('/receive', [PusherController::class ,'receive']);
 Route::get('/profile', [UserController::class, 'showUser'])->name('profile.show');
 Route::put('/profile/{user}', [UserController::class, 'updateAvatar'])->name('profile.update');
+Route::post('/api/login', [UserController::class, 'login']);
