@@ -96,8 +96,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/chats', [ChatController::class, 'fetchChats']);
     Route::get('/chats/{chat}/messages', [MessageController::class, 'fetchMessages']);
     Route::post('/chats/{chat}/messages', [MessageController::class, 'sendMessage']);
-    Route::post('/broadcasting/auth', function () {
-    return Auth::user();
+    Route::post('/broadcasting/auth', function (Request $request) {
+        return Broadcast::auth($request);
     });
 });
 
