@@ -19,6 +19,7 @@ const CreateJob = () => {
   const [location, setLocation] = useState("");
   const [salary, setSalary] = useState("");
   const [requirements, setRequirements] = useState("");
+  const [position, setPosition] = useState("");
   const [error, setError] = useState(null);
   const [successMessage, setSuccessMessage] = useState(null);
   const [jobs, setJobs] = useState([]);
@@ -35,9 +36,10 @@ const CreateJob = () => {
   const fetchJobs = async (userId) => {
     try {
       const response = await jobService.getJobsByUser(userId);
-      setJobs(response.data);
+      setJobs(response.data.jobs || []);
     } catch (error) {
       console.error("Error fetching jobs:", error);
+      setJobs([]); // Ensure jobs is always an array
     }
   };
 
@@ -49,6 +51,7 @@ const CreateJob = () => {
       location,
       salary,
       requirements,
+      position, // Include position in the request
     };
 
     try {
@@ -61,7 +64,8 @@ const CreateJob = () => {
       setLocation("");
       setSalary("");
       setRequirements("");
-      fetchJobs(userId); // İlanları yeniden yükle
+      setPosition(""); // Clear the position input
+      fetchJobs(userId); // Refresh the job list
     } catch (error) {
       setError("Job creation failed. Please try again.");
       console.error("Job creation error:", error);
@@ -80,7 +84,7 @@ const CreateJob = () => {
   const handleUpdate = async (jobId, updatedJob) => {
     try {
       await jobService.updateJob(jobId, updatedJob);
-      fetchJobs(userId); // İlanları yeniden yükle
+      fetchJobs(userId); // Refresh the job list
     } catch (error) {
       console.error("Error updating job:", error);
     }
@@ -170,6 +174,17 @@ const CreateJob = () => {
               value={requirements}
               onChange={(e) => setRequirements(e.target.value)}
             />
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              id="position"
+              label="Position"
+              name="position"
+              autoComplete="position"
+              value={position}
+              onChange={(e) => setPosition(e.target.value)}
+            />
             <Button
               type="submit"
               fullWidth
@@ -183,39 +198,44 @@ const CreateJob = () => {
             <Typography component="h2" variant="h6">
               Your Jobs
             </Typography>
-            {jobs.map((job) => (
-              <Box key={job.id} sx={{ mt: 2 }}>
-                <Typography variant="h6">{job.title}</Typography>
-                <Typography>{job.description}</Typography>
-                <Typography>{job.location}</Typography>
-                <Typography>{job.salary}</Typography>
-                <Typography>{job.requirements}</Typography>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  sx={{ mt: 1, mr: 1 }}
-                  onClick={() =>
-                    handleUpdate(job.id, {
-                      title: job.title,
-                      description: job.description,
-                      location: job.location,
-                      salary: job.salary,
-                      requirements: job.requirements,
-                    })
-                  }
-                >
-                  Edit
-                </Button>
-                <Button
-                  variant="contained"
-                  color="secondary"
-                  sx={{ mt: 1 }}
-                  onClick={() => handleDelete(job.id)}
-                >
-                  Delete
-                </Button>
-              </Box>
-            ))}
+            {Array.isArray(jobs) && jobs.length > 0 ? (
+              jobs.map((job) => (
+                <Box key={job.id} sx={{ mt: 2 }}>
+                  <Typography variant="h6">{job.title}</Typography>
+                  <Typography>{job.description}</Typography>
+                  <Typography>{job.location}</Typography>
+                  <Typography>{job.salary}</Typography>
+                  <Typography>{job.requirements}</Typography>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    sx={{ mt: 1, mr: 1 }}
+                    onClick={() =>
+                      handleUpdate(job.id, {
+                        title: job.title,
+                        description: job.description,
+                        location: job.location,
+                        salary: job.salary,
+                        requirements: job.requirements,
+                        position: job.position,
+                      })
+                    }
+                  >
+                    Edit
+                  </Button>
+                  <Button
+                    variant="contained"
+                    color="secondary"
+                    sx={{ mt: 1 }}
+                    onClick={() => handleDelete(job.id)}
+                  >
+                    Delete
+                  </Button>
+                </Box>
+              ))
+            ) : (
+              <Typography>No jobs available</Typography>
+            )}
           </Box>
         </Box>
       </Container>

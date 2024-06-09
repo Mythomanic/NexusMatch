@@ -1,20 +1,18 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import TinderCard from "react-tinder-card";
-import userService from "./services/userService";
-import authService from "./services/authService";
-import swipeService from "./services/swipeService";
-import "./TinderCards.css";
+import userService from "../services/userService";
+import authService from "../services/authService";
+import swipeService from "../services/swipeService";
+import "../TinderCards.css";
 
-function TinderCards() {
+function UserCards() {
   const [users, setUsers] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const currentIndexRef = useRef(currentIndex);
 
   useEffect(() => {
     const fetchUsers = async () => {
       try {
         const response = await userService.getAllUsers();
-        console.log("Fetched users:", response);
         setUsers(response);
         setCurrentIndex(response.length - 1);
       } catch (error) {
@@ -24,11 +22,6 @@ function TinderCards() {
 
     fetchUsers();
   }, []);
-
-  const updateCurrentIndex = (val) => {
-    setCurrentIndex(val);
-    currentIndexRef.current = val;
-  };
 
   const swiped = async (direction, userId) => {
     const user = authService.getCurrentUser();
@@ -42,7 +35,6 @@ function TinderCards() {
           alert("Match!");
         }
       }
-      updateCurrentIndex(currentIndex - 1);
     } catch (error) {
       console.error("Error handling swipe:", error);
     }
@@ -52,12 +44,16 @@ function TinderCards() {
     if (currentIndex >= 0) {
       const userId = users[currentIndex].id;
       await swiped(dir, userId);
+      setUsers((prevUsers) =>
+        prevUsers.filter((_, index) => index !== currentIndex)
+      );
+      setCurrentIndex((prevIndex) => prevIndex - 1);
     }
   };
 
   return (
     <div>
-      <h1>Match Cards</h1>
+      <h1>User Cards</h1>
       <div className="tinderCards__cardContainer">
         {users.map((user, index) => (
           <TinderCard
@@ -90,4 +86,4 @@ function TinderCards() {
   );
 }
 
-export default TinderCards;
+export default UserCards;

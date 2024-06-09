@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import "./App.css";
+import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import Header from "./Header";
-import TinderCards from "./TinderCards";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import JobCards from "./components/JobCards"; // İş ilanlarını gösterecek bileşen
+import UserCards from "./components/UserCards"; // İş arayanların profillerini gösterecek bileşen
 import Login from "./components/Login";
 import Register from "./components/Register";
 import CreateJob from "./components/CreateJob";
@@ -42,11 +42,19 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/create-job" element={<CreateJob />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/find-jobs" element={<JobCards />} />{" "}
+          {/* İş bulmak için */}
+          <Route path="/find-workers" element={<UserCards />} />{" "}
+          {/* İşçi/Çalışan bulmak için */}
           <Route
             path="/"
             element={
               <div>
-                <TinderCards />
+                <h1>Welcome</h1>
+                <nav>
+                  <Link to="/find-jobs">İş Bulmak İçin</Link>
+                  <Link to="/find-workers">İşçi/Çalışan Bulmak İçin</Link>
+                </nav>
               </div>
             }
           />

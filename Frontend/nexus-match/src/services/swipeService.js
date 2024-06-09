@@ -3,12 +3,12 @@ import authService from "./authService";
 
 const API_URL = "https://nexusmain.onrender.com/api/";
 
-const swipeJob = async (jobId, direction) => {
+const swipeJob = async (userId, jobId, direction) => {
   const headers = authService.authHeader();
   try {
     const response = await axios.post(
-      API_URL + "swipes",
-      { job_id: jobId, direction },
+      `${API_URL}user/${userId}/jobs/${jobId}/swipe`,
+      { direction },
       { headers }
     );
     return response.data;
@@ -18,6 +18,21 @@ const swipeJob = async (jobId, direction) => {
   }
 };
 
+const checkMatch = async (userId, jobId) => {
+  const headers = authService.authHeader();
+  try {
+    const response = await axios.get(
+      `${API_URL}matches/check?user_id=${userId}&job_id=${jobId}`,
+      { headers }
+    );
+    return response.data.isMatch;
+  } catch (error) {
+    console.error("Error checking match:", error);
+    throw error;
+  }
+};
+
 export default {
   swipeJob,
+  checkMatch,
 };

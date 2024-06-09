@@ -11,7 +11,6 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import Header from "../Header"; // Header bileşenini import ediyoruz
 
 const defaultTheme = createTheme();
 
@@ -69,7 +68,7 @@ const Profile = () => {
 
   const handleAddTag = async () => {
     try {
-      await handleUpdate({ tag });
+      await handleUpdate({ tagJob: tag });
       setTags((prevTags) => [...prevTags, tag]);
       setTag("");
     } catch (error) {
@@ -79,7 +78,7 @@ const Profile = () => {
 
   const handleRemoveTag = async (tagToRemove) => {
     try {
-      await handleUpdate({ removeTag: tagToRemove });
+      await handleUpdate({ removeTagJob: tagToRemove });
       setTags((prevTags) => prevTags.filter((t) => t !== tagToRemove));
       setMessage("Tag removed successfully");
     } catch (error) {

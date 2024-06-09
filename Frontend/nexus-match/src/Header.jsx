@@ -1,5 +1,5 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import "./Header.css";
 import PersonIcon from "@mui/icons-material/Person";
 import ChatIcon from "@mui/icons-material/Chat";
@@ -47,6 +47,10 @@ function Header({ showSnackbar }) {
         <h3>Logout</h3>
         <LogoutIcon className="header__icon" />
       </IconButton>
+      <nav>
+        <Link to="/find-jobs">İş Bulmak İçin</Link>
+        <Link to="/find-workers">İşçi/Çalışan Bulmak İçin</Link>
+      </nav>
     </div>
   );
 }
