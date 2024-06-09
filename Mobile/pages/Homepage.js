@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react'
-import { View, Image, ImageBackground, Text, ScrollView, TouchableOpacity, Dimensions } from 'react-native'
+import { View, Image, ImageBackground, Text, ScrollView, TouchableOpacity, Dimensions, Alert } from 'react-native'
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import styles from '../App.styles';
 import { TextInput } from 'react-native';
@@ -59,15 +59,46 @@ function Homepage({ navigation }) {
         }
     };
 
+    const handleLogout = () => {
+        Alert.alert(
+            'Logout Confirmation',
+            'Are you sure you want to logout?',
+            [
+                {
+                    text: 'Cancel',
+                    style: 'cancel',
+                },
+                {
+                    text: 'Logout',
+                    onPress: () => navigation.navigate("Login"),
+                },
+            ],
+            { cancelable: true }
+        );
+    };
+
     return (
 
         <SafeAreaView style={[styles.SafeAreaView]}>
 
-            <TopBar title={"NexusMatch"} titleFont={"Montserrat-SemiBold"} navigation={navigation} backColor={"#3F51B5"}></TopBar>
+            {/* <TopBar title={"NexusMatch"} titleFont={"Montserrat-SemiBold"} navigation={navigation} backColor={"#3F51B5"}></TopBar> */}
+            <View style={[styles.HomepageTopbar, { backgroundColor: "#3F51B5" }]}>
+
+                <TouchableOpacity style={{ position: "absolute", left: 0, paddingLeft: 20 }} onPress={handleLogout}>
+                    <Ionicons name="arrow-back-circle-outline" color={"white"} size={37} />
+                </TouchableOpacity>
+
+                <View style={{}}>
+                    <Text style={{ color: "white", fontSize: 17, fontFamily: "Montserrat-SemiBold" }} fontSize="xs">NexusMatch</Text>
+                </View>
+
+
+
+            </View>
 
             <View style={{ width: "100%", flex: 1, alignItems: "center" }}>
 
-               
+
 
                 {/*   <View style={styles.ScrollHolderViewHomepage}>
 

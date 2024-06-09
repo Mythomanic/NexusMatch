@@ -18,6 +18,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as ImagePicker from 'expo-image-picker';
 import axios from 'axios';
 import mime from 'mime';
+import { useAtom } from 'jotai';
+import { tagRefreshAtom } from '../JotaiAtoms';
 
 function Profile({ navigation }) {
 
@@ -26,6 +28,7 @@ function Profile({ navigation }) {
     const [galleryModalVisible, setGalleryModalVisible] = useState(false);
     const [galleryModalVisible2, setGalleryModalVisible2] = useState(false);
     const [galleryModalVisible3, setGalleryModalVisible3] = useState(false);
+    const [tagRefreshKey, setTagRefreshKey] = useAtom(tagRefreshAtom);
     /* const [avatarUrl, setAvatarUrl] = useState(null); */
 
     const { heightScreen, widthScreen } = Dimensions.get("window");
@@ -130,8 +133,6 @@ function Profile({ navigation }) {
 
     }, [userToken, userId]);
 
-
-
     const handleImagePickAndUpload = async () => {
         try {
             const result = await ImagePicker.launchImageLibraryAsync({
@@ -140,7 +141,6 @@ function Profile({ navigation }) {
                 aspect: [4, 3],
                 quality: 1,
             });
-
 
             if (!result.canceled && result.assets && result.assets.length > 0) {
                 const imageUri = result.assets[0].uri;
@@ -154,7 +154,6 @@ function Profile({ navigation }) {
                     type: mime.getType(newImageUri),
                     name: newImageUri.split("/").pop(),
                 });
-
 
                 const response = await axios.post(`https://nexusmain.onrender.com/api/user/${userId}/update-avatar-job`, formData, {
                     headers: {
@@ -182,7 +181,6 @@ function Profile({ navigation }) {
                 aspect: [4, 3],
                 quality: 1,
             });
-
 
             if (!result.canceled && result.assets && result.assets.length > 0) {
                 const imageUri = result.assets[0].uri;
@@ -264,7 +262,6 @@ function Profile({ navigation }) {
             <View style={{ width: "100%", alignItems: "center", justifyContent: "center", }}>
                 <Text style={{ fontSize: 20, fontWeight: "bold", color: "black" }} fontSize="xs">{text}</Text>
             </View>
-
         )
     }
 
@@ -273,18 +270,16 @@ function Profile({ navigation }) {
             <View style={{ width: "100%", alignItems: "center", justifyContent: "center", }}>
                 <Text style={{ fontSize: 17, color: "slategrey" }} fontSize="xs">{text}</Text>
             </View>
-
         )
     }
 
     function BioText({ text }) {
         return (
-            <View style={{ width: "100%", }}>
-                <Text style={{ fontSize: 13, color: "black", textAlign: "justify" }} fontSize="xs">{text}</Text>
+            <View style={{ width: "100%", backgroundColor: "red", height: "100%" }}>
+                <Text style={{ fontSize: 12, color: "black", textAlign: "flex-start" }} fontSize="xs">{text}</Text>
             </View>
         )
     }
-
 
     function GalleryComponent({ imageLink }) {
         return (
@@ -293,14 +288,6 @@ function Profile({ navigation }) {
             </View>
         )
     }
-
-    const BioTextArray = [
-        {
-            id: 0,
-            text: "I'm deeply passionate about web development, particularly with Angular and Laravel, where I can seamlessly blend JavaScript, HTML, and CSS to craft immersive digital experiences. There's something profoundly satisfying about translating ideas into dynamic, interactive web applications. With Angular's robust framework and Laravel's elegant backend structure, I find myself at home, orchestrating the intricacies of front-end and back-end development. Whether it's creating responsive layouts with HTML and CSS or implementing complex functionality with JavaScript, the process of bringing designs to life exhilarates me. I love discussing the latest trends and techniques in web development, exchanging insights with fellow enthusiasts, and continuously pushing the boundaries of what's possible on the web. For me, web development isn't just a job; it's a journey of exploration and creativity that I'm thrilled to embark on every day."
-        },
-    ]
-
 
     // Function to animate layout changes
     const animateLayout = () => {
@@ -316,115 +303,150 @@ function Profile({ navigation }) {
                     justifyContent: "center",
                     backgroundColor: profileType === 0 ? "lightblue" : profileType === 1 ? "pink" : profileType === 2 ? "lightgreen" : null,
                     borderRadius: 10,
-                    flexGrow: 1,
                     margin: 5,
+                    flexGrow: 1,
                     borderWidth: 1,
                     borderColor: profileType === 0 ? "lightseagreen" : profileType === 1 ? "hotpink" : profileType === 2 ? "mediumaquamarine" : null
                 }}
             >
-                <Text style={{ fontSize: 12 }}>{item}</Text>
+                <Text style={{ fontSize: 11 }}>{item}</Text>
             </View>
         );
-
         return (
-            <FlatList
-                data={tags}
-                renderItem={renderItem}
-                keyExtractor={(item, index) => index.toString()}
-                contentContainerStyle={{ alignItems: "center", flexDirection: "row", }}
-                horizontal={false}
-                numColumns={3} // Adjust number of columns based on your design requirements
-            />
+            <View style={{ flex: 1, alignItems: "center", width: "100%" }}>
+                <FlatList
+                    key={tagRefreshKey}
+                    data={tags}
+                    renderItem={renderItem}
+                    keyExtractor={(item, index) => index.toString()}
+                    contentContainerStyle={{}}
+                    horizontal={false}
+                    numColumns={4}
+                />
+            </View>
+
         );
     };
 
-
     return (
         <SafeAreaProvider>
-
             <SafeAreaView style={[styles.SafeAreaView, { backgroundColor: "white" }]}>
-
-                {/* <TopBar navigation={navigation} backColor={"#3F51B5"} title={"İşlerim"}></TopBar> */}
 
                 <ImageBackground source={profileType === 0 ? require("../jobbgprofile.png") : profileType === 1 ? require("../lovebgprofile2.png") : require("../profilebg.png")} resizeMode='cover' style={{ width: "100%", flex: 1, alignItems: "center", }}>
 
                     <TouchableOpacity onPress={() => { navigation.navigate("EditProfile") }}
-                        style={{ position: "absolute", right: 0, top: 0, alignItems: "center", justifyContent: "center", margin: 20 }}>
+                        style={{ position: "absolute", right: 0, top: 0, alignItems: "center", justifyContent: "center", margin: 20, zIndex: 10 }}>
                         <FontAwesome name="cog" size={30} />
                     </TouchableOpacity>
 
-                    <View style={{ flex: 4, alignItems: "center", paddingHorizontal: 20, width: "100%" }}>
+                    <View style={{ flex: 4, alignItems: "center", paddingHorizontal: 20, width: "100%", }}>
 
                         {
                             profileType === 0 ? (
 
-                                <View style={{ flex: 1, width: "100%", alignItems: "center" }}>
+                                <View style={{ flex: 1, alignItems: "center", width: "100%", }}>
 
-                                    <TouchableOpacity onPress={handleImagePickAndUpload} style={{ width: 110, height: 110, borderRadius: 100, borderColor: "darkgrey", borderWidth: 1, alignItems: "center", justifyContent: "center" }}>
+                                    <View style={{ flex: 1, alignItems: "center", justifyContent: "center", }}>
+                                        <TouchableOpacity onPress={handleImagePickAndUpload} style={{ width: 110, height: 110, borderRadius: 100, borderColor: "darkgrey", borderWidth: 1, alignItems: "center", justifyContent: "center" }}>
+                                            {selectedImage && (
+                                                <Image source={{ uri: selectedImage }} style={{ width: "100%", height: "100%", borderRadius: 100 }} />
+                                            )}
+                                        </TouchableOpacity>
+                                    </View>
 
-                                        {selectedImage && (
-                                            <Image source={{ uri: selectedImage }} style={{ width: "100%", height: "100%", borderRadius: 100 }} />
-                                        )}
+                                    {/* <BioName text={loggedInUserJobInfo.name}></BioName> */}
+                                    <View style={{ width: "100%", alignItems: "center", justifyContent: "center", }}>
+                                        <Text style={{ fontSize: 20, fontWeight: "bold", color: "black" }} fontSize="xs">Ahmet</Text>
+                                    </View>
 
-                                    </TouchableOpacity>
-
-
-                                    <BioName text={loggedInUserJobInfo.name}></BioName>
-                                    <BioJob text={loggedInUserJobInfo.userJob}></BioJob>
+                                    {/* <BioJob text={loggedInUserJobInfo.userJob}></BioJob> */}
+                                    <View style={{ width: "100%", alignItems: "center", justifyContent: "center", }}>
+                                        <Text style={{ fontSize: 17, color: "slategrey" }} fontSize="xs">my job</Text>
+                                    </View>
 
                                     <ProfileTags tags={loggedInUserJobTags}></ProfileTags>
 
-                                    <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ width: "100%", padding: 5 }}>
-                                        <BioText text={loggedInUserJobInfo.descriptionJob} />
-                                    </ScrollView>
+                                    <View style={{ flex: 2, alignItems: "center", width: "100%" }}>
+
+                                        <ScrollView contentContainerStyle={{ alignItems: "center", width: "100%", }} showsVerticalScrollIndicator={false}>
+                                            <View style={{ flex: 1, minWidth: "100%", alignItems: "flex-start", paddingHorizontal: 10 }}>
+                                                <Text fontSize="xs">{loggedInUserJobInfo.descriptionJob}</Text>
+                                            </View>
+                                        </ScrollView>
+
+                                    </View>
 
                                 </View>
 
                             ) : profileType === 1 ? (
 
-                                <View style={{ flex: 1, width: "100%", alignItems: "center" }}>
+                                <View style={{ flex: 1, alignItems: "center", width: "100%", }}>
 
-                                    <TouchableOpacity onPress={handleImagePickAndUploadDate} style={{ width: 110, height: 110, borderRadius: 100, borderColor: "darkgrey", borderWidth: 1, alignItems: "center", justifyContent: "center" }}>
+                                    <View style={{ flex: 1, alignItems: "center", justifyContent: "center", }}>
+                                        <TouchableOpacity onPress={handleImagePickAndUpload} style={{ width: 110, height: 110, borderRadius: 100, borderColor: "darkgrey", borderWidth: 1, alignItems: "center", justifyContent: "center" }}>
+                                            {selectedImage && (
+                                                <Image source={{ uri: selectedImage }} style={{ width: "100%", height: "100%", borderRadius: 100 }} />
+                                            )}
+                                        </TouchableOpacity>
+                                    </View>
 
-                                      {/*   {selectedImage && (
-                                            <Image source={{ uri: selectedImage }} style={{ width: "100%", height: "100%", borderRadius: 100 }} />
-                                        )} */}
+                                    {/* <BioName text={loggedInUserJobInfo.name}></BioName> */}
+                                    <View style={{ width: "100%", alignItems: "center", justifyContent: "center", }}>
+                                        <Text style={{ fontSize: 20, fontWeight: "bold", color: "black" }} fontSize="xs">Ahmet</Text>
+                                    </View>
 
-                                    </TouchableOpacity>
-
-
-                                    <BioName text={loggedInUserJobInfo.name}></BioName>
-                                    <BioJob text={loggedInUserJobInfo.userJob}></BioJob>
+                                    {/* <BioJob text={loggedInUserJobInfo.userJob}></BioJob> */}
+                                    <View style={{ width: "100%", alignItems: "center", justifyContent: "center", }}>
+                                        <Text style={{ fontSize: 17, color: "slategrey" }} fontSize="xs">my job</Text>
+                                    </View>
 
                                     <ProfileTags tags={loggedInUserJobTags}></ProfileTags>
 
-                                    <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ width: "100%", padding: 5 }}>
-                                        <BioText text={loggedInUserJobInfo.descriptionJob} />
-                                    </ScrollView>
+                                    <View style={{ flex: 2, alignItems: "center", width: "100%" }}>
+
+                                        <ScrollView contentContainerStyle={{ alignItems: "center", width: "100%", }} showsVerticalScrollIndicator={false}>
+                                            <View style={{ flex: 1, minWidth: "100%", alignItems: "flex-start", paddingHorizontal: 10 }}>
+                                                <Text fontSize="xs">{loggedInUserJobInfo.descriptionJob}</Text>
+                                            </View>
+                                        </ScrollView>
+
+                                    </View>
 
                                 </View>
 
                             ) : profileType === 2 ? (
 
-                                <View style={{ flex: 1, width: "100%", alignItems: "center" }}>
+                                <View style={{ flex: 1, alignItems: "center", width: "100%", }}>
 
-                                    <TouchableOpacity onPress={handleImagePickAndUploadEvent} style={{ width: 110, height: 110, borderRadius: 100, borderColor: "darkgrey", borderWidth: 1, alignItems: "center", justifyContent: "center" }}>
+                                    <View style={{ flex: 1, alignItems: "center", justifyContent: "center", }}>
+                                        <TouchableOpacity onPress={handleImagePickAndUpload} style={{ width: 110, height: 110, borderRadius: 100, borderColor: "darkgrey", borderWidth: 1, alignItems: "center", justifyContent: "center" }}>
+                                            {selectedImage && (
+                                                <Image source={{ uri: selectedImage }} style={{ width: "100%", height: "100%", borderRadius: 100 }} />
+                                            )}
+                                        </TouchableOpacity>
+                                    </View>
 
-                                        {selectedImage && (
-                                            <Image source={{ uri: selectedImage }} style={{ width: "100%", height: "100%", borderRadius: 100 }} />
-                                        )}
+                                    {/* <BioName text={loggedInUserJobInfo.name}></BioName> */}
+                                    <View style={{ width: "100%", alignItems: "center", justifyContent: "center", }}>
+                                        <Text style={{ fontSize: 20, fontWeight: "bold", color: "black" }} fontSize="xs">Ahmet</Text>
+                                    </View>
 
-                                    </TouchableOpacity>
-
-
-                                    <BioName text={loggedInUserJobInfo.name}></BioName>
-                                    <BioJob text={loggedInUserJobInfo.userJob}></BioJob>
+                                    {/* <BioJob text={loggedInUserJobInfo.userJob}></BioJob> */}
+                                    <View style={{ width: "100%", alignItems: "center", justifyContent: "center", }}>
+                                        <Text style={{ fontSize: 17, color: "slategrey" }} fontSize="xs">my job</Text>
+                                    </View>
 
                                     <ProfileTags tags={loggedInUserJobTags}></ProfileTags>
 
-                                    <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ width: "100%", padding: 5 }}>
-                                        <BioText text={loggedInUserJobInfo.descriptionJob} />
-                                    </ScrollView>
+                                    <View style={{ flex: 2, alignItems: "center", width: "100%" }}>
+
+                                        <ScrollView contentContainerStyle={{ alignItems: "center", width: "100%", }} showsVerticalScrollIndicator={false}>
+                                            <View style={{ flex: 1, minWidth: "100%", alignItems: "flex-start", paddingHorizontal: 10 }}>
+                                                <Text fontSize="xs">{loggedInUserJobInfo.descriptionJob}</Text>
+                                            </View>
+                                        </ScrollView>
+
+                                    </View>
 
                                 </View>
                             ) : null
@@ -451,7 +473,7 @@ function Profile({ navigation }) {
                     </View>
 
 
-                    <View style={{ flex: 1.25, width: "100%", flexDirection: "row", paddingVertical: 10, paddingHorizontal: 20, zIndex: 1 }}>
+                    <View style={{ flex: 1, width: "100%", flexDirection: "row", paddingVertical: 10, paddingHorizontal: 20, zIndex: 1 }}>
 
                         <TouchableOpacity onPress={() => { setProfileType(0); animateLayout(); }} style={{ width: profileType === 0 ? "65%" : "17.5%", }}>
                             <Image style={{ width: "100%", height: "100%", borderTopLeftRadius: 15, borderBottomLeftRadius: 15 }} source={require("../jobwork.jpg")}></Image>

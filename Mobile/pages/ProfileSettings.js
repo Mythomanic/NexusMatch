@@ -12,7 +12,8 @@ import { Carousel } from 'react-native-basic-carousel'
 import MessageComponent from '../MessageComponent';
 import { CollapsibleCard } from "react-native-btr";
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import { useAtom } from 'jotai';
+import { tagRefreshAtom } from '../JotaiAtoms';
 
 function ProfileSettings({ navigation }) {
 
@@ -34,6 +35,7 @@ function ProfileSettings({ navigation }) {
     const [loggedInUserJobInfo, setloggedInUserJobInfo] = useState({})
     const [loggedInUserJobTags, setloggedInUserJobTags] = useState([])
     const [newTag, setNewTag] = useState("");
+    const [tagRefreshKey, setTagRefreshKey] = useAtom(tagRefreshAtom);
 
     const getData = async () => {
         try {
@@ -107,6 +109,7 @@ function ProfileSettings({ navigation }) {
             if (data.status) {
                 setloggedInUserJobTags(data.tagsJob);
                 setNewTag("");
+                setTagRefreshKey((prevKey)=>(prevKey+1))
             }
         } catch (error) {
             console.error("Failed to add tag", error);
@@ -126,6 +129,7 @@ function ProfileSettings({ navigation }) {
             const data = await response.json();
             if (data.status) {
                 setloggedInUserJobTags(data.tagsJob);
+                setTagRefreshKey((prevKey)=>(prevKey+1))
             }
         } catch (error) {
             console.error("Failed to remove tag", error);
@@ -235,12 +239,7 @@ function ProfileSettings({ navigation }) {
                                 />
                             </View>
 
-                            <TouchableOpacity onPress={handleAddTag} style={{ width: "100%", alignItems: "center", justifyContent: "center" }}>
-                                <Text fontSize="xs">Tag ekle</Text>
-                            </TouchableOpacity>
-
-
-                            <TouchableOpacity onPress={() => { console.log(loggedInUserJobInfo); }} style={{ padding: 10, paddingHorizontal: 25, borderRadius: 15, alignItems: "center", justifyContent: "center", borderWidth: 2, borderColor: "#03A9F4bb" }}>
+                            <TouchableOpacity onPress={handleAddTag} style={{ padding: 10, paddingHorizontal: 25, borderRadius: 15, alignItems: "center", justifyContent: "center", borderWidth: 2, borderColor: "#03A9F4bb" }}>
                                 <Text style={{ color: "#03A9F4bb", fontWeight: "bold" }} fontSize="xs">Kaydet</Text>
                             </TouchableOpacity>
 
