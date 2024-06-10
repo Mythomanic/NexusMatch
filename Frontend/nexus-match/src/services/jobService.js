@@ -86,6 +86,21 @@ const getLikedUsers = async (jobId) => {
   }
 };
 
+const moveUserFromLikesToDislikes = async (jobId, userId) => {
+  const headers = authService.authHeader();
+  try {
+    const response = await axios.post(
+      `${API_URL}jobs/${jobId}/move-user/${userId}`,
+      {},
+      { headers }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error moving user from likes to dislikes:", error);
+    throw error;
+  }
+};
+
 export default {
   getJobs,
   getJobById,
@@ -94,4 +109,5 @@ export default {
   deleteJob,
   getJobsByUser,
   getLikedUsers,
+  moveUserFromLikesToDislikes,
 };

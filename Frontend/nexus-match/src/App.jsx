@@ -51,10 +51,7 @@ function App() {
             element={
               <div>
                 <h1>Welcome</h1>
-                <nav>
-                  <Link to="/find-jobs">İş Bulmak İçin</Link>
-                  <Link to="/find-workers">İşçi/Çalışan Bulmak İçin</Link>
-                </nav>
+                <h1>Home page</h1>
               </div>
             }
           />

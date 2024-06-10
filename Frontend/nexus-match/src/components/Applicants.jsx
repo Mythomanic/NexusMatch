@@ -31,10 +31,11 @@ function Applicants() {
     if (!user) return;
 
     try {
-      await swipeService.swipeJob(user.id, jobId, direction);
       if (direction === "like") {
         await chatService.createChat(applicantId);
         alert("Match! Chat created.");
+      } else if (direction === "dislike") {
+        await jobService.moveUserFromLikesToDislikes(jobId, applicantId);
       }
     } catch (error) {
       console.error("Error handling swipe:", error);
@@ -75,13 +76,23 @@ function Applicants() {
             >
               <h3>{applicant.name}</h3>
               <p>{applicant.descriptionJob}</p>
+              <div className="buttons">
+                <button
+                  className="btn btn-danger"
+                  onClick={() => swipe("dislike")}
+                >
+                  Dislike
+                </button>
+                <button
+                  className="btn btn-success"
+                  onClick={() => swipe("like")}
+                >
+                  Like
+                </button>
+              </div>
             </div>
           </TinderCard>
         ))}
-      </div>
-      <div className="buttons">
-        <button onClick={() => swipe("dislike")}>Dislike</button>
-        <button onClick={() => swipe("like")}>Like</button>
       </div>
     </div>
   );

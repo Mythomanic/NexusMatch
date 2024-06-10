@@ -26,22 +26,24 @@ function Chats() {
   }, []);
 
   return (
-    <div>
-      <h1>Chats</h1>
-      {chats.length > 0 ? (
-        chats.map((chat) => (
-          <div key={chat.id}>
-            <Link to={`/chat/${chat.id}`}>
-              Chat with{" "}
-              {chat.user1_id === authService.getCurrentUser().id
-                ? chat.user2.name
-                : chat.user1.name}
-            </Link>
-          </div>
-        ))
-      ) : (
-        <p>No chats available</p>
-      )}
+    <div className="text-center">
+      <h1>You matched with these people, your chats:</h1>
+      <div className="d-flex flex-column justify-content-center gap-5">
+        {chats.length > 0 ? (
+          chats.map((chat) => (
+            <div key={chat.id}>
+              <Link to={`/chat/${chat.id}`}>
+                Chat with{" "}
+                {chat.user1_id === authService.getCurrentUser().id
+                  ? chat.user2.name
+                  : chat.user1.name}
+              </Link>
+            </div>
+          ))
+        ) : (
+          <p>No chats available</p>
+        )}
+      </div>
     </div>
   );
 }

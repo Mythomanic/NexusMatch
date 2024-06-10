@@ -76,13 +76,23 @@ function JobCards() {
               <h3>{job.title}</h3>
               <p>{job.description}</p>
               <p>{job.location}</p>
+              <div className="buttons">
+                <button
+                  className="btn btn-danger"
+                  onClick={() => swipe("dislike")}
+                >
+                  Dislike
+                </button>
+                <button
+                  className="btn btn-success"
+                  onClick={() => swipe("like")}
+                >
+                  Like
+                </button>
+              </div>
             </div>
           </TinderCard>
         ))}
-      </div>
-      <div style={{ display: "flex", alignItems: "end" }} className="buttons">
-        <button onClick={() => swipe("dislike")}>Dislike</button>
-        <button onClick={() => swipe("like")}>Like</button>
       </div>
     </div>
   );

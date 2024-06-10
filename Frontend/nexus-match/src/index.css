@@ -1,5 +1,6 @@
 * {
   margin: 0;
+  font-family: "Roboto", sans-serif;
 }
 
 body {
@@ -59,4 +60,49 @@ code {
   transform: translateX(-1000px) rotate(-20deg);
   opacity: 0;
   border: 44px solid red;
+}
+
+.tinderCards__cardContainer {
+  display: flex;
+  justify-content: center;
+  margin-top: 50px;
+}
+
+.card {
+  position: relative;
+  background-color: white;
+  width: 300px;
+  max-width: 85vw;
+  height: 400px;
+  max-height: 50vh;
+  box-shadow: 0 18px 18px -10px rgba(0, 0, 0, 0.3);
+  border-radius: 20px;
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  overflow: hidden;
+}
+
+.card h3 {
+  margin: 10px;
+  color: white;
+}
+
+.card p {
+  margin: 10px;
+  color: white;
+}
+
+.buttons {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+  width: 100%;
+}
+
+.btn {
+  flex: 1;
+  margin: 5px;
 }
