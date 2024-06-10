@@ -13,8 +13,7 @@ use App\Models\Chat;
 | used to check if an authenticated user can listen to the channel.
 |
 */
-Broadcast::channel('private-chat.{chatId}', function ($user, $chatId) {
+Broadcast::channel('chat.{chatId}', function ($user, $chatId) {
     $chat = Chat::find($chatId);
-
     return $chat && $chat->users->contains($user->id);
 });
