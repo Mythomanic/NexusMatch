@@ -428,12 +428,18 @@ class UserController extends Controller
 
     public function getUnseenJobs($userId)
     {
+         // Tüm işleri çekiyoruz
+        $allJobs = Job::all();
 
-        // Kullanıcının likes veya dislikes kolonunda olmadığı iş ilanlarını çekiyoruz
-        $jobs = Job::whereNotIn('likes', [$userId])
-                ->whereNotIn('dislikes', [$userId])
-                ->get();
+        // Kullanıcının likes veya dislikes kolonunda olmadığı işleri filtreliyoruz
+        $unseenJobs = $allJobs->filter(function($job) use ($userId) {
+            $likes = $job->likes ?? [];
+            $dislikes = $job->dislikes ?? [];
 
-        return response()->json($jobs);
+            return !in_array($userId, $likes) && !in_array($userId, $dislikes);
+        });
+
+        return response()->json($unseenJobs->values());
+ 
     }
 }
