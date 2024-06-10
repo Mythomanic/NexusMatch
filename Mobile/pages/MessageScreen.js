@@ -91,47 +91,6 @@ const MessageScreen = ({ navigation }) => {
         }
     };
 
-    /* const fetchMessages = async () => {
-        try {
-            const response = await fetch(`https://nexusmain.onrender.com/api/chats/${chatId}/messages`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${userToken}`,
-                },
-            });
-
-            console.log(response);
-
-            const data = await response.json();
-
-            if (data.messages) {
-                const loadedMessages = [];
-                data.messages.forEach((msg) => {
-                    loadedMessages.push({
-                        _id: msg.id,
-                        text: msg.message,
-                        createdAt: new Date(msg.created_at),
-                        user: {
-                            _id: msg.user_id,
-                            name: msg.user.name,
-                            avatar: msg.user.avatar, // Optional: Add avatar if available
-                        },
-                    });
-                });
-                setMessages(loadedMessages.map((message) => ({
-                    ...message,
-                    user: {
-                        ...message.user,
-                        _id: message.user._id == userId ? userId : 900, // Ensure the message user ID is correctly set
-                    },
-                })));
-            }
-        } catch (error) {
-            console.log(error);
-        }
-    }; */
-
     const fetchMessages = async () => {
         try {
             const response = await fetch(`https://nexusmain.onrender.com/api/chats/${chatId}/messages`, {
