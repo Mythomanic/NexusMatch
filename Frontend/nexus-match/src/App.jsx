@@ -1,6 +1,12 @@
 import React, { useState } from "react";
-import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
-import SimpleNavbar from "./Header";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  useLocation,
+  Link,
+} from "react-router-dom";
+import SimpleNavbar from "./Header"; // Updated to point to your new SimpleNavbar component
 import JobCards from "./components/JobCards"; // İş ilanlarını gösterecek bileşen
 import UserCards from "./components/UserCards"; // İş arayanların profillerini gösterecek bileşen
 import Login from "./components/Login";
@@ -29,27 +35,15 @@ function App() {
   return (
     <div className="app">
       <Router>
-        <SimpleNavbar showSnackbar={showSnackbar} userId={userId} />
+        <HeaderWrapper showSnackbar={showSnackbar} userId={userId} />
         <Routes>
-          <Route
-            path="/chat"
-            element={
-              <div>
-                <SimpleNavbar showSnackbar={showSnackbar} userId={userId} />
-                <h1>Chat Screen</h1>
-              </div>
-            }
-          />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/create-job" element={<CreateJob />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/find-jobs" element={<JobCards />} />
-          {/* İş bulmak için */}
           <Route path="/find-workers" element={<UserCards />} />
-          {/* İşçi/Çalışan bulmak için */}
           <Route path="/my-jobs" element={<MyJobs userId={userId} />} />
-          {/* My Jobs */}
           <Route
             path="/"
             element={
@@ -77,8 +71,20 @@ function App() {
           </Alert>
         </Snackbar>
       </Router>
+      {console.log(userId)}
     </div>
   );
+}
+
+function HeaderWrapper({ showSnackbar, userId }) {
+  const location = useLocation();
+  const hideHeaderPaths = ["/login", "/register"];
+
+  if (hideHeaderPaths.includes(location.pathname)) {
+    return null;
+  }
+
+  return <SimpleNavbar showSnackbar={showSnackbar} userId={userId} />;
 }
 
 export default App;

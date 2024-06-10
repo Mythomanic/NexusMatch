@@ -8,6 +8,7 @@ import "../TinderCards.css";
 function JobCards() {
   const [jobs, setJobs] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [swipeDirection, setSwipeDirection] = useState("");
 
   useEffect(() => {
     const fetchJobs = async () => {
@@ -42,12 +43,16 @@ function JobCards() {
 
   const swipe = async (dir) => {
     if (currentIndex >= 0) {
+      setSwipeDirection(dir);
       const jobId = jobs[currentIndex].id;
       await swiped(dir, jobId);
-      setJobs((prevJobs) =>
-        prevJobs.filter((_, index) => index !== currentIndex)
-      );
-      setCurrentIndex((prevIndex) => prevIndex - 1);
+      setTimeout(() => {
+        setJobs((prevJobs) =>
+          prevJobs.filter((_, index) => index !== currentIndex)
+        );
+        setCurrentIndex((prevIndex) => prevIndex - 1);
+        setSwipeDirection("");
+      }, 300); // Animasyon süresi
     }
   };
 
@@ -57,7 +62,7 @@ function JobCards() {
       <div className="tinderCards__cardContainer">
         {jobs.map((job, index) => (
           <TinderCard
-            className="swipe"
+            className={`swipe ${index === currentIndex ? swipeDirection : ""}`}
             key={job.id}
             onSwipe={(dir) => swiped(dir, job.id)}
             preventSwipe={["up", "down"]}

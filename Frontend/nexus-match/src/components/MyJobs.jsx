@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from "react";
 import jobService from "../services/jobService";
 import authService from "../services/authService";
+import { Spinner } from "react-bootstrap";
+import Button from "react-bootstrap/Button";
+import Card from "react-bootstrap/Card";
 
 function MyJobs() {
   const [jobs, setJobs] = useState([]);
@@ -16,6 +19,7 @@ function MyJobs() {
 
         const response = await jobService.getJobsByUser(user.id);
         setJobs(response);
+        console.log("asdasdadas", user.id);
       } catch (error) {
         console.error("Error fetching jobs:", error);
         console.error("Error details:", error.response?.data);
@@ -26,19 +30,25 @@ function MyJobs() {
   }, []);
 
   return (
-    <div>
-      <h1>My Jobs</h1>
+    <div className="jobs">
       {jobs.length > 0 ? (
         jobs.map((job) => (
-          <div key={job.id}>
-            <h3>{job.title}</h3>
-            <p>{job.description}</p>
-            <p>{job.location}</p>
-            <p>{job.salary}</p>
+          <div key={job.id} className="myJobs d-flex">
+            <Card className="text-center">
+              <Card.Body>
+                <Card.Title>Company Name: {job.title}</Card.Title>
+                <Card.Text>Job Description: {job.description}</Card.Text>
+                <Card.Text>Location: {job.location}</Card.Text>
+                <Card.Text>Salary: {job.salary}</Card.Text>
+                <Button variant="primary">See The Applicants</Button>
+              </Card.Body>
+            </Card>
           </div>
         ))
       ) : (
-        <p>No jobs found</p>
+        <Spinner animation="border" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </Spinner>
       )}
     </div>
   );
