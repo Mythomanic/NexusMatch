@@ -97,7 +97,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/chats/{chat}/messages', [MessageController::class, 'fetchMessages']);
     Route::post('/chats/{chat}/messages', [MessageController::class, 'sendMessage']);
     Route::post('/jobs/{jobId}/move-user/{userId}', [JobController::class, 'moveUserFromLikesToDislikes']);
-    Route::get('/user/{user}/jobOpportunities', [UserController::class, 'getUnseenJobs']);
+    Route::get('/user/{userId}/jobOpportunities', [UserController::class, 'getUnseenJobs']);
     Route::post('/broadcasting/auth', function (Request $request) {
         return Broadcast::auth($request);
     });
