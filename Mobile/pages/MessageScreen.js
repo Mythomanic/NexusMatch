@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react'
-import { View, Image, ImageBackground, Text, ScrollView, TouchableOpacity, Dimensions, KeyboardAvoidingView, Platform } from 'react-native'
+import { View, Image, ImageBackground, Text, ScrollView, TouchableOpacity, Dimensions, KeyboardAvoidingView, Platform, FlatList } from 'react-native'
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import styles from '../App.styles';
 import { TextInput } from 'react-native';
@@ -21,8 +21,11 @@ const MessageScreen = ({ navigation }) => {
     const [userId, setUserId] = useState()
     const [loggedInUserJobInfo, setloggedInUserJobInfo] = useState({})
     const [messages, setMessages] = useState([]);
+    const [sentMessageIds, setSentMessageIds] = useState([]);
+
 
     const chatId = 2;
+    const initialLoad = useRef(true);
 
     const [fontsLoaded] = useFonts({
         'Kaushan': require('../assets/fonts/KaushanScript-Regular.ttf'),
@@ -88,7 +91,7 @@ const MessageScreen = ({ navigation }) => {
         }
     };
 
-    const fetchMessages = async () => {
+    /* const fetchMessages = async () => {
         try {
             const response = await fetch(`https://nexusmain.onrender.com/api/chats/${chatId}/messages`, {
                 method: 'GET',
@@ -127,6 +130,42 @@ const MessageScreen = ({ navigation }) => {
         } catch (error) {
             console.log(error);
         }
+    }; */
+
+    const fetchMessages = async () => {
+        try {
+            const response = await fetch(`https://nexusmain.onrender.com/api/chats/${chatId}/messages`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${userToken}`,
+                },
+            });
+
+            const data = await response.json();
+
+            if (data.messages) {
+                const loadedMessages = data.messages.map((msg) => ({
+                    _id: msg.id,
+                    text: msg.message,
+                    createdAt: new Date(msg.created_at),
+                    user: {
+                        _id: msg.user_id,
+                        name: msg.user.name,
+                        avatar: msg.user.avatar,
+                    },
+                }));
+                setMessages(loadedMessages.map((message) => ({
+                    ...message,
+                    user: {
+                        ...message.user,
+                        _id: message.user._id == userId ? userId : 900,
+                    },
+                })));
+            }
+        } catch (error) {
+            console.log(error);
+        }
     };
 
     useEffect(() => {
@@ -138,40 +177,146 @@ const MessageScreen = ({ navigation }) => {
 
 
     useEffect(() => {
-        if (userToken && userId) {
-            getLoggedInUser();
+        if (userToken && userId && chatId) {
+
+            if (initialLoad.current) {
+                fetchMessages();
+                initialLoad.current = false;
+            }
+
+            console.log("Initializing Pusher...");
+
+            // Enable Pusher logging
+            Pusher.logToConsole = true;
+
+            // Initialize Pusher
             const pusher = new Pusher('052e95b6508db9070fc0', {
                 cluster: 'eu',
                 authEndpoint: 'https://nexusmain.onrender.com/api/broadcasting/auth',
                 auth: {
                     headers: {
-                        'Authorization': `Bearer ${userToken}`
-                    }
-                }
-            });
-
-            const channel = pusher.subscribe('chat.' + chatId);
-            channel.bind('MessageSent', function (data) {
-                const newMessage = {
-                    _id: data.message.id,
-                    text: data.message.message,
-                    createdAt: new Date(data.message.created_at),
-                    user: {
-                        _id: data.message.user_id,
-                        name: data.message.user.name,
-                        avatar: data.message.user.avatar,
+                        'Authorization': `Bearer ${userToken}`,
                     },
-                };
-                setMessages(previousMessages => GiftedChat.append(previousMessages, newMessage));
+                },
             });
 
-            fetchMessages();
+            // Subscribe to the chat channel
+            const channel = pusher.subscribe('chat.' + chatId);
 
+            // Log subscription status
+            channel.bind('pusher:subscription_succeeded', () => {
+                console.log('Subscription to channel succeeded');
+            });
+
+            channel.bind('pusher:subscription_error', (status) => {
+                console.log('Subscription to channel failed:', status);
+            });
+
+            // Event handler for new messages
+            const handleNewMessage = (data) => {
+                console.log("New message received:", data);
+
+                // Check if the message is already in the chat
+                setMessages((previousMessages) => {
+                    if (data.message.user_id === userId || sentMessageIds.includes(data.message.id) || previousMessages.some(message => message._id === data.message.id)) {
+                        return previousMessages;
+                    }
+
+                    const newMessage = {
+                        _id: data.message.id,
+                        text: data.message.message,
+                        createdAt: new Date(data.message.created_at),
+                        user: {
+                            _id: data.message.user_id,
+                            name: data.message.user.name,
+                            avatar: data.message.user.avatar,
+                        },
+                    };
+                    console.log("Formatted new message:", newMessage);
+                    return [...previousMessages, newMessage];
+                });
+            };
+
+            // Bind the event handler to the MessageSent event
+            channel.bind('App\\Events\\MessageSent', handleNewMessage);
+
+            // Cleanup function to unbind the event handler and unsubscribe from the channel
             return () => {
+                console.log("Cleaning up Pusher...");
+                channel.unbind('App\\Events\\MessageSent', handleNewMessage);
                 pusher.unsubscribe('chat.' + chatId);
             };
         }
-    }, [userToken, userId, chatId]);
+    }, [userToken, userId, chatId, sentMessageIds]); // Dependency array
+
+
+    //ÖNEMLİ USE EFFECT ÇOK ÖNEMLİ
+    /*  useEffect(() => {
+         if (userToken && userId && chatId) {
+ 
+             if (initialLoad.current) {
+                 fetchMessages();
+                 initialLoad.current = false;
+             }
+ 
+             console.log("Initializing Pusher...");
+ 
+             // Enable Pusher logging
+             Pusher.logToConsole = true;
+ 
+             // Initialize Pusher
+             const pusher = new Pusher('052e95b6508db9070fc0', {
+                 cluster: 'eu',
+                 authEndpoint: 'https://nexusmain.onrender.com/api/broadcasting/auth',
+                 auth: {
+                     headers: {
+                         'Authorization': `Bearer ${userToken}`,
+                     },
+                 },
+             });
+ 
+             // Subscribe to the chat channel
+             const channel = pusher.subscribe('chat.' + chatId);
+ 
+             // Log subscription status
+             channel.bind('pusher:subscription_succeeded', () => {
+                 console.log('Subscription to channel succeeded');
+             });
+ 
+             channel.bind('pusher:subscription_error', (status) => {
+                 console.log('Subscription to channel failed:', status);
+             });
+ 
+             // Event handler for new messages
+             const handleNewMessage = (data) => {
+                 console.log("New message received:", data);
+                 const newMessage = {
+                     _id: data.message.id,
+                     text: data.message.message,
+                     createdAt: new Date(data.message.created_at),
+                     user: {
+                         _id: data.message.user_id,
+                         name: data.message.user.name,
+                         avatar: data.message.user.avatar,
+                     },
+                 };
+                 console.log("Formatted new message:", newMessage);
+                 // Append the new message to the existing messages
+                 setMessages((previousMessages) => GiftedChat.append(previousMessages, newMessage));
+             };
+ 
+ 
+             // Bind the event handler to the MessageSent event
+             channel.bind('App\\Events\\MessageSent', handleNewMessage);
+ 
+             // Cleanup function to unbind the event handler and unsubscribe from the channel
+             return () => {
+                 console.log("Cleaning up Pusher...");
+                 channel.unbind('App\\Events\\MessageSent', handleNewMessage);
+                 pusher.unsubscribe('chat.' + chatId);
+             };
+         }
+     }, [userToken, userId, chatId]); // Dependency array */
 
     function MessageTopBar({ navigation }) {
 
@@ -204,9 +349,24 @@ const MessageScreen = ({ navigation }) => {
     }
 
     const onSend = useCallback((messages = []) => {
-        setMessages(previousMessages => GiftedChat.append(previousMessages, messages));
-
         const message = messages[0];
+        const newMessage = {
+            _id: message._id,
+            text: message.text,
+            createdAt: new Date(),
+            user: {
+                _id: userId,
+                name: 'Your Name', // Replace with actual user's name if available
+                avatar: 'your-avatar-url' // Replace with actual user's avatar if available
+            }
+        };
+
+        // Add the new message to the bottom of the array
+        setMessages(previousMessages => [...previousMessages, newMessage]);
+
+        // Add the message ID to the sent messages list
+        setSentMessageIds(prevIds => [...prevIds, message._id]);
+
         fetch(`https://nexusmain.onrender.com/api/chats/${chatId}/messages`, {
             method: 'POST',
             headers: {
@@ -230,11 +390,9 @@ const MessageScreen = ({ navigation }) => {
             .catch(error => {
                 console.error('Error sending message:', error);
             });
-    }, [userToken, chatId]);
+    }, [userToken, chatId, userId]);
 
-
-
-
+   
 
     return (
         <SafeAreaProvider>
@@ -248,20 +406,19 @@ const MessageScreen = ({ navigation }) => {
                     source={{ uri: "https://img.freepik.com/free-photo/empty-blackboard_53876-30426.jpg?t=st=1715260895~exp=1715264495~hmac=0d5b04154fccf4450af5906b66c3b870038d093494a74f4170a6bcc783dd0652&w=1380" }}
                 />
 
-
                 <View style={{ flex: 1, width: "100%", }}>
-
                     <GiftedChat
+                        ref={chatRef}
                         alwaysShowSend
                         messages={messages}
                         onSend={newMessages => onSend(newMessages)}
+                        scrollToBottom
+                        inverted={false}
                         user={{
                             _id: userId, // Ensure this is the ID of the currently logged-in user
                             name: loggedInUserJobInfo.name, // Ensure this is the name of the currently logged-in user
                         }}
                     />
-
-
                 </View>
 
             </SafeAreaView>
@@ -270,7 +427,6 @@ const MessageScreen = ({ navigation }) => {
     )
 
 }
-
 
 
 export default MessageScreen;
