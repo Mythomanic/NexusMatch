@@ -113,4 +113,30 @@ class JobController extends Controller
             'likedUsers' => $likedUsers
         ], 200);
     }
+
+
+    public function moveUserFromLikesToDislikes($jobId, $userId)
+    {
+        // İlgili işi buluyoruz
+        $job = Job::findOrFail($jobId);
+
+        // Kullanıcıyı likes array'inden çıkar
+        $likes = $job->likes ?? [];
+        if (($key = array_search($userId, $likes)) !== false) {
+            unset($likes[$key]);
+            $job->likes = array_values($likes); // Diziyi yeniden indeksle
+        }
+
+        // Kullanıcıyı dislikes array'ine ekle
+        $dislikes = $job->dislikes ?? [];
+        if (!in_array($userId, $dislikes)) {
+            $dislikes[] = $userId;
+            $job->dislikes = $dislikes;
+        }
+
+        // Değişiklikleri kaydet
+        $job->save();
+
+        return response()->json(['message' => 'User moved from likes to dislikes successfully.']);
+    }
 }
