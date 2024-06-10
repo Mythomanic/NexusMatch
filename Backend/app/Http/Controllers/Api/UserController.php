@@ -426,9 +426,9 @@ class UserController extends Controller
         ], 200);
     }
 
-    public function getUnseenJobs(User $user)
+    public function getUnseenJobs($id)
     {
-        $userId = $user->id;
+        $userId = $id;
 
         // Kullanıcının likes veya dislikes kolonunda olmadığı iş ilanlarını çekiyoruz
         $jobs = Job::whereNotIn('likes', [$userId])
