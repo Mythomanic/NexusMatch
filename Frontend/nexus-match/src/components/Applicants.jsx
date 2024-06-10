@@ -34,9 +34,8 @@ function Applicants() {
       if (direction === "like") {
         await chatService.createChat(applicantId);
         alert("Match! Chat created.");
-      } else if (direction === "dislike") {
-        await jobService.moveUserFromLikesToDislikes(jobId, applicantId);
       }
+      await jobService.moveUserFromLikesToDislikes(jobId, applicantId);
     } catch (error) {
       console.error("Error handling swipe:", error);
     }
@@ -55,7 +54,7 @@ function Applicants() {
 
   return (
     <div>
-      <h1>Applicants</h1>
+      <h1 className="text-center">Bu işe başvuranlar</h1>
       <div className="tinderCards__cardContainer">
         {applicants.map((applicant, index) => (
           <TinderCard
