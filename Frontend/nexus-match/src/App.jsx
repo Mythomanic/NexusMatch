@@ -15,6 +15,8 @@ import CreateJob from "./components/CreateJob";
 import Profile from "./components/Profile";
 import MyJobs from "./components/MyJobs"; // MyJobs bileşeni
 import { Snackbar, Alert } from "@mui/material";
+import Applicants from "./components/Applicants";
+import Chats from "./components/Chats";
 
 function App() {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
@@ -56,6 +58,8 @@ function App() {
               </div>
             }
           />
+          <Route path="/applicants/:jobId" element={<Applicants />} />
+          <Route path="/chats" element={<Chats />} />
         </Routes>
         <Snackbar
           open={snackbarOpen}

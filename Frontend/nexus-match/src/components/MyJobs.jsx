@@ -4,9 +4,11 @@ import authService from "../services/authService";
 import { Spinner } from "react-bootstrap";
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
+import { useNavigate } from "react-router-dom";
 
 function MyJobs() {
   const [jobs, setJobs] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchJobs = async () => {
@@ -29,6 +31,10 @@ function MyJobs() {
     fetchJobs();
   }, []);
 
+  const handleViewApplicants = (jobId) => {
+    navigate(`/applicants/${jobId}`);
+  };
+
   return (
     <div className="jobs">
       {jobs.length > 0 ? (
@@ -40,7 +46,12 @@ function MyJobs() {
                 <Card.Text>Job Description: {job.description}</Card.Text>
                 <Card.Text>Location: {job.location}</Card.Text>
                 <Card.Text>Salary: {job.salary}</Card.Text>
-                <Button variant="primary">See The Applicants</Button>
+                <Button
+                  variant="primary"
+                  onClick={() => handleViewApplicants(job.id)}
+                >
+                  See The Applicants
+                </Button>
               </Card.Body>
             </Card>
           </div>

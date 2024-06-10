@@ -73,6 +73,19 @@ const getJobsByUser = async (userId) => {
   }
 };
 
+const getLikedUsers = async (jobId) => {
+  const headers = authService.authHeader();
+  try {
+    const response = await axios.get(`${API_URL}job/${jobId}/likes`, {
+      headers,
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching liked users:", error);
+    throw error;
+  }
+};
+
 export default {
   getJobs,
   getJobById,
@@ -80,4 +93,5 @@ export default {
   updateJob,
   deleteJob,
   getJobsByUser,
+  getLikedUsers,
 };

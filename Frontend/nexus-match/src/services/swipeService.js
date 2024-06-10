@@ -34,7 +34,23 @@ const checkMatch = async (userId, jobId) => {
   }
 };
 
+const createChat = async (userId, applicantId) => {
+  const headers = authService.authHeader();
+  try {
+    const response = await axios.post(
+      `${API_URL}chats`,
+      { userId, applicantId },
+      { headers }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error creating chat:", error);
+    throw error;
+  }
+};
+
 export default {
   swipeJob,
   checkMatch,
+  createChat,
 };
