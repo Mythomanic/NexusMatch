@@ -1,19 +1,19 @@
 <?php
 
 namespace App\Http\Controllers\Api;
-use App\Models\Job;
+use App\Models\Event;
 use App\Models\User;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-class JobController extends Controller
+class EventController extends Controller
 {
-    
     public function index()
     {
-        return Job::all();
+        return Event::all();
     }
+
 
     public function store(Request $request)
     {
@@ -21,77 +21,67 @@ class JobController extends Controller
             'title' => 'required|string|max:255',
             'description' => 'required|string',
             'location' => 'required|string|max:255',
-            'salary' => 'required|numeric',
             'requirements' => 'required|string',
-            'position' => 'required|string',
         ]);
 
         $userId = auth()->id();
 
-        $job = Job::create([
+        $event = Event::create([
             'user_id' => $userId,
             'title' => $request->title,
             'description' => $request->description,
             'location' => $request->location,
-            'salary' => $request->salary,
             'requirements' => $request->requirements,
-            'position' =>$request->position,
             ]
         );
 
-        return response()->json($job, 201);
+        return response()->json($event, 201);
     }
 
-    
-    public function show(Job $job)
+
+    public function show(Event $event)
     {
-        return $job;
+        return $event;
     }
 
-    
-    public function update(Request $request,  Job $job)
+
+    public function update(Request $request,  Event $event)
     {
         $request->validate([
             'title' => 'string|max:255',
             'description' => 'string',
             'location' => 'string|max:255',
-            'salary' => 'numeric',
             'requirements' => 'string',
-            'position'=>'string',
         ]);
 
-        $job->update($request->all());
+        $event->update($request->all());
 
-        return response()->json($job);
+        return response()->json($event);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Job $job)
+    public function destroy(Event $event)
     {
-        $job->delete();
+        $event->delete();
 
         return response()->json(null, 204);
     }
 
-
-    public function getLikedUsers($jobId)
+    public function getLikedUsers($eventId)
     {
-        $job = Job::find($jobId);
+        $event = Event::find($eventId);
     
-        if (!$job) {
+        if (!$event) {
             return response()->json([
                 'status' => false,
-                'message' => 'Job not found'
+                'message' => 'Event not found'
             ], 404);
         }
         
-        if (is_null($job->likes)) {
+        if (is_null($event->likes)) {
             $likedUsers = [];
         }
         else {
-            $likedUserIds = $job->likes; 
+            $likedUserIds = $event->likes; 
             $likedUsers = User::whereIn('id', $likedUserIds)->get();
         }
     
@@ -103,40 +93,40 @@ class JobController extends Controller
     }
 
 
-    public function moveUserFromLikesToDislikes($jobId, $userId)
+    public function moveUserFromLikesToDislikes($eventId, $userId)
     {
-        $job = Job::findOrFail($jobId);
+        $event = Event::findOrFail($eventId);
 
-        $likes = $job->likes ?? [];
+        $likes = $event->likes ?? [];
         if (($key = array_search($userId, $likes)) !== false) {
             unset($likes[$key]);
-            $job->likes = array_values($likes); 
+            $event->likes = array_values($likes); 
         }
 
-        $dislikes = $job->dislikes ?? [];
+        $dislikes = $event->dislikes ?? [];
         if (!in_array($userId, $dislikes)) {
             $dislikes[] = $userId;
-            $job->dislikes = $dislikes;
+            $event->dislikes = $dislikes;
         }
 
-        $job->save();
+        $event->save();
 
         return response()->json(['message' => 'User moved from likes to dislikes successfully.']);
     }
 
-    public function filterByPosition(Request $request, $userId)
+    public function filterByTitle(Request $request, $userId)
     {
-        $position = strtolower($request->input('position'));
+        $title = strtolower($request->input('title'));
 
-        $allJobs = Job::whereRaw('LOWER(position) = ?', [$position])->get();
+        $allEvents = Event::whereRaw('LOWER(title) = ?', [$title])->get();
 
-        $unseenJobs = $allJobs->filter(function($job) use ($userId) {
-            $likes = $job->likes ?? [];
-            $dislikes = $job->dislikes ?? [];
+        $unseenEvents = $allEvents->filter(function($event) use ($userId) {
+            $likes = $event->likes ?? [];
+            $dislikes = $event->dislikes ?? [];
 
             return !in_array($userId, $likes) && !in_array($userId, $dislikes);
         });
 
-        return response()->json($unseenJobs->values());
+        return response()->json($unseenEvents->values());
     }
 }

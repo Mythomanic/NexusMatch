@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\Api\JobController;
+use App\Http\Controllers\Api\EventController;
 use App\Http\Controllers\Api\SwipeController;
 use App\Http\Controllers\Api\MatchController;
 use App\Http\Controllers\Api\JobFilterController;
@@ -88,30 +89,46 @@ body:
 
 */
 Route::middleware('auth:sanctum')->group(function () {
-    Route::apiResource('jobs', JobController::class);
-    Route::apiResource('swipes', SwipeController::class);
-    Route::apiResource('matches', MatchController::class);
-    Route::apiResource('filters', JobFilterController::class);
-    Route::put('/user/{user}/update-profile', [UserController::class, 'updateUserProfile']);
-    Route::get('/user/{user}/tags', [UserController::class, 'getTags']);
-    Route::get('/user/{user}/job-profile', [UserController::class, 'getJobProfile']);
-    Route::post('/user/logout', [UserController::class, 'logout']);
-    Route::post('/user/{user}/update-avatar', [UserController::class, 'updateAvatar']);
-    Route::post('/user/{user}/update-avatar-job', [UserController::class, 'updateAvatarJob']);
-    Route::post('/user/{user}/jobs/{jobId}/swipe', [UserController::class, 'swipe']);
-    Route::get('/job/{job}/likes', [JobController::class, 'getLikedUsers']);
-    Route::get('/user/{id}/jobs', [UserController::class, 'getUserJobs']);
-    Route::post('/chats', [ChatController::class, 'createChat']);
-    Route::get('/chats', [ChatController::class, 'fetchChats']);
-    Route::get('/chats/{chat}/messages', [MessageController::class, 'fetchMessages']);
-    Route::post('/chats/{chat}/messages', [MessageController::class, 'sendMessage']);
-    Route::post('/jobs/{jobId}/move-user/{userId}', [JobController::class, 'moveUserFromLikesToDislikes']);
-    Route::get('/user/{userId}/jobOpportunities', [UserController::class, 'getUnseenJobs']);
     Route::post('/broadcasting/auth', function (Request $request) {
         return Broadcast::auth($request);
-    });
-    Route::get('/user/{userId}/jobs/filterJob', [JobController::class, 'filterByPosition']);
-});
+        });
+        
+        Route::post('/user/logout', [UserController::class, 'logout']);
+        Route::put('/user/{user}/update-profile', [UserController::class, 'updateUserProfile']);
+        Route::get('/user/{user}/tags', [UserController::class, 'getTags']);
+        Route::post('/user/{user}/update-avatar', [UserController::class, 'updateAvatar']);
+
+        Route::get('/user/{user}/job-profile', [UserController::class, 'getJobProfile']);
+        Route::post('/user/{user}/update-avatar-job', [UserController::class, 'updateAvatarJob']);
+        Route::post('/user/{user}/jobs/{jobId}/swipe', [UserController::class, 'swipe']);
+        Route::get('/user/{id}/jobs', [UserController::class, 'getUserJobs']);
+        Route::get('/user/{userId}/jobOpportunities', [UserController::class, 'getUnseenJobs']);
+        
+        Route::get('/user/{user}/event-profile', [UserController::class, 'getEventProfile']);
+        Route::post('/user/{user}/update-avatar-event', [UserController::class, 'updateAvatarEvent']);
+        Route::post('/user/{user}/events/{eventId}/swipeEvent', [UserController::class, 'swipeEvent']);
+        Route::get('/user/{id}/events', [UserController::class, 'getUserEvents']);
+        Route::get('/user/{userId}/eventOpportunities', [UserController::class, 'getUnseenEvents']);
+        
+        
+        
+        Route::get('/chats/{chat}/messages', [MessageController::class, 'fetchMessages']);
+        Route::post('/chats/{chat}/messages', [MessageController::class, 'sendMessage']);
+
+        Route::post('/chats', [ChatController::class, 'createChat']);
+        Route::get('/chats', [ChatController::class, 'fetchChats']);
+        
+        Route::apiResource('jobs', JobController::class);
+        Route::get('/job/{job}/likes', [JobController::class, 'getLikedUsers']);
+        Route::post('/jobs/{jobId}/move-user/{userId}', [JobController::class, 'moveUserFromLikesToDislikes']);
+        Route::get('/user/{userId}/jobs/filterJob', [JobController::class, 'filterByPosition']);
+        
+        Route::apiResource('events', EventController::class);
+        Route::get('/event/{event}/likes', [EventController::class, 'getLikedUsers']);
+        Route::post('/events/{eventId}/move-user/{userId}', [EventController::class, 'moveUserFromLikesToDislikes']);
+        Route::get('/user/{userId}/events/filterEvent', [EventController::class, 'filterByPosition']);
+        
+        });
 
 
 
