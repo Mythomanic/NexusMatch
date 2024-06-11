@@ -77,6 +77,15 @@ https://nexusmain.onrender.com/api/job/jobid/likes
 user'ın oluşturduğu jobları çekmek için
 https://nexusmain.onrender.com/api/user/userid/jobs 
 
+
+
+filtreleme için
+http://nexusmain.onrender.com/api/user/userid/jobs/filterJob
+body:
+{
+    "position" : "herhangi bir pozisyon"
+}
+
 */
 Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('jobs', JobController::class);
@@ -101,6 +110,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/broadcasting/auth', function (Request $request) {
         return Broadcast::auth($request);
     });
+    Route::get('/user/{userId}/jobs/filterJob', [JobController::class, 'filterByPosition']);
 });
 
 

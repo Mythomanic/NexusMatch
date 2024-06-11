@@ -139,4 +139,23 @@ class JobController extends Controller
 
         return response()->json(['message' => 'User moved from likes to dislikes successfully.']);
     }
+
+    public function filterByPosition(Request $request, $userId)
+    {
+        // Gelen position parametresini al ve küçük harfe çevir
+        $position = strtolower($request->input('position'));
+
+        // Position'a göre büyük/küçük harfe duyarsız filtreleme yap
+        $allJobs = Job::whereRaw('LOWER(position) = ?', [$position])->get();
+
+        // Kullanıcının likes veya dislikes kolonunda olmadığı işleri filtrele
+        $unseenJobs = $allJobs->filter(function($job) use ($userId) {
+            $likes = $job->likes ?? [];
+            $dislikes = $job->dislikes ?? [];
+
+            return !in_array($userId, $likes) && !in_array($userId, $dislikes);
+        });
+
+        return response()->json($unseenJobs->values());
+    }
 }
