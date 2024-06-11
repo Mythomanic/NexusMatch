@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\Api\JobController;
 use App\Http\Controllers\Api\EventController;
+use App\Http\Controllers\Api\DateController;
 use App\Http\Controllers\Api\SwipeController;
 use App\Http\Controllers\Api\MatchController;
 use App\Http\Controllers\Api\JobFilterController;
@@ -111,7 +112,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/user/{userId}/eventOpportunities', [UserController::class, 'getUnseenEvents']);
 
         Route::get('/user/{user}/date-profile', [UserController::class, 'getDateProfile']);
-        Route::post('/user/{user}/update-avatar-date', [UserController::class, 'updateAvatarEvent']);
+        Route::post('/user/{user}/update-avatar-date', [UserController::class, 'updateAvatarDate']);
         Route::post('/user/{user}/dates/{dateId}/swipeDate', [UserController::class, 'swipeDate']);
         Route::get('/user/{id}/dates', [UserController::class, 'getUserDates']);
         Route::get('/user/{userId}/dateOpportunities', [UserController::class, 'getUnseenDates']);
