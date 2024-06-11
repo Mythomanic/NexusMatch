@@ -109,6 +109,12 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/user/{user}/events/{eventId}/swipeEvent', [UserController::class, 'swipeEvent']);
         Route::get('/user/{id}/events', [UserController::class, 'getUserEvents']);
         Route::get('/user/{userId}/eventOpportunities', [UserController::class, 'getUnseenEvents']);
+
+        Route::get('/user/{user}/date-profile', [UserController::class, 'getDateProfile']);
+        Route::post('/user/{user}/update-avatar-date', [UserController::class, 'updateAvatarEvent']);
+        Route::post('/user/{user}/dates/{dateId}/swipeDate', [UserController::class, 'swipeDate']);
+        Route::get('/user/{id}/dates', [UserController::class, 'getUserDates']);
+        Route::get('/user/{userId}/dateOpportunities', [UserController::class, 'getUnseenDates']);
         
         
         
@@ -127,6 +133,11 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/event/{event}/likes', [EventController::class, 'getLikedUsers']);
         Route::post('/events/{eventId}/move-user/{userId}', [EventController::class, 'moveUserFromLikesToDislikes']);
         Route::get('/user/{userId}/events/filterEvent', [EventController::class, 'filterByPosition']);
+
+        Route::apiResource('dates', DateController::class);
+        Route::get('/date/{date}/likes', [DateController::class, 'getLikedUsers']);
+        Route::post('/dates/{dateId}/move-user/{userId}', [DateController::class, 'moveUserFromLikesToDislikes']);
+        Route::get('/user/{userId}/dates/filterDate', [DateController::class, 'filterByPosition']);
         
         });
 

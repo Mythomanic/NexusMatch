@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Api;
 use App\Models\User;
 use App\Models\Job;
 use App\Models\Event;
+use App\Models\Date;
+
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -173,6 +175,8 @@ class UserController extends Controller
             "descriptionJob" => "sometimes|nullable|string",
             "tagEvent" => "sometimes|nullable|string",
             "descriptionEvent" => "sometimes|nullable|string",
+            "tagDate" => "sometimes|nullable|string",
+            "descriptionDate" => "sometimes|nullable|string",
             "userJob" => "sometimes|nullable|string",
             "tag" => "sometimes|required|string",
             "removeTag" => "sometimes|required|string",
@@ -302,6 +306,58 @@ class UserController extends Controller
             $user->descriptionEvent = $request->input('descriptionEvent');
         }
 
+        if ($request->has('tagDate')) {
+            $tagsDate = $user->tagsDate; 
+
+            $tagsDate[] = $request->input('tagDate');
+            $user->tagsDate = $tagsDate;
+            $user->save();
+            return response()->json([
+                'status' => true,
+                'message' => 'Tag added successfully',
+                'tagsDate' => $user->tagsDate
+            ], 200);
+        }
+        if ($request->has('removeTagDate')) {            
+            $tagsDate = $user->tagsDate;
+            
+            // Remove quotes from tags
+            $tagsDate = array_map(function($tag) {
+                return trim($tag, "'");
+            }, $tagsDate);
+        
+            // Debugging purposes
+            $searchTag = $request->input('removeTagDate');
+            $key = array_search($searchTag, $tagsDate);
+        
+            if ($key !== false) {
+                unset($tagsDate[$key]);
+            } else {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Tag not found',
+                    'debug' => [
+                        'searchTag' => $searchTag,
+                        'tagsDate' => $tagsDate,
+                        'key' => $key,
+                    ]
+                ], 404);
+            }
+        
+            // Reindex the array to avoid any issues with array structure
+            $user->tagsDate = array_values($tagsDate);
+            $user->save();
+        
+            return response()->json([
+                'status' => true,
+                'message' => 'Tag removed successfully',
+                'tagsDate' => $user->tagsDate
+            ], 200);
+        }
+        if ($request->has('descriptionDate')) {
+            $user->descriptionDate = $request->input('descriptionDate');
+        }
+
 
         // Adding a tag
         if ($request->has('tag') && !$request->has('removeTag')) {
@@ -317,7 +373,6 @@ class UserController extends Controller
                 'tags' => $user->tags
             ], 200);
         }
-
         // Removing a tag
         if ($request->has('removeTag')) {            
             $tags = $user->tags;
@@ -613,5 +668,127 @@ class UserController extends Controller
 
         return response()->json($unseenEvents->values());
  
+    }
+
+
+    //Date
+    public function updateAvatarDate(Request $request, User $user){
+        
+        $request->validate([
+            'avatarDate' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+    
+        $user = Auth::user();
+    
+        if ($request->hasFile('avatarDate')) {
+            // Eski avatarı sil
+            if ($user->avatarDate) {
+                Storage::delete('public/avatars/' . $user->avatarDate);
+            }
+    
+            // Yeni avatarı kaydet
+            $filename = $request->file('avatarDate')->store('avatars', 'public');
+            $user->avatarDate = basename($filename);
+        }
+    
+        $user->save();
+    
+        return response()->json([
+            'status' => true,
+            'message' => 'Profile updated successfully.',
+            'avatarDate' => $user->avatarDate
+        ], 200);
+    
+}
+    public function swipeDate(Request $request, User $user, $dateId)
+    {
+        // İstekten kullanıcı ID'sini ve swipe yönünü alıyoruz
+        $userId = $user->id;
+        $direction = $request->input('direction'); // "like" veya "dislike"
+
+        // İlgili işi buluyoruz
+        $date = Date::findOrFail($dateId);
+
+        if ($direction === 'like') {
+            // Kullanıcı ID'sini likes array'ine ekle
+            $likes = $date->likes ?? [];
+            if (!in_array($userId, $likes)) {
+                $likes[] = $userId;
+                $date->likes = $likes;
+            }
+        } elseif ($direction === 'dislike') {
+            // Kullanıcı ID'sini dislikes array'ine ekle
+            $dislikes = $date->dislikes ?? [];
+            if (!in_array($userId, $dislikes)) {
+                $dislikes[] = $userId;
+                $date->dislikes = $dislikes;
+            }
+        }
+
+        // Değişiklikleri kaydet
+        $date->save();
+        return response()->json(['message' => 'Swipe updated successfully.']);
+    }
+    public function getDateProfile($id)
+    {
+        // Kullanıcıyı ID ile bul
+        $user = User::find($id);
+
+        // Kullanıcı bulunamazsa 404 döndür
+        if (!$user) {
+            return response()->json([
+                'status' => false,
+                'message' => 'User not found'
+            ], 404);
+        }
+
+        // İlgili kolonları seç
+        $dateProfile = $user->only(['name', 'email', 'avatarDate', 'tagsDate', 'descriptionDate']);
+
+        return response()->json([
+            'status' => true,
+            'dateProfile' => $dateProfile
+        ], 200);
+    }
+    public function getUserDates($userId)
+    {
+        $user = User::find($userId);
+
+        if (!$user) {
+            return response()->json([
+                'status' => false,
+                'message' => 'User not found'
+            ], 404);
+        }
+
+        $dates = Date::where('user_id', $userId)->get();
+
+        if ($dates->isEmpty()) {
+            return response()->json([
+                'status' => false,
+                'message' => 'No dates found for this user'
+            ], 404);
+        }
+
+        return response()->json([
+            'status' => true,
+            'dates' => $dates
+        ], 200);
+    }
+    public function getUnseenDates($userId)
+    {
+        // Tüm işleri çekiyoruz
+        $allDates = Date::all();
+
+        // Kullanıcının likes veya dislikes kolonunda olmadığı işleri filtreliyoruz
+        $unseenDates = $allDates->filter(function($date) use ($userId) {
+            $likes = $date->likes ?? [];
+            $dislikes = $date->dislikes ?? [];
+
+            return !in_array($userId, $likes) && !in_array($userId, $dislikes);
+        });
+
+        return response()->json($unseenDates->values());
+
     }
 }
