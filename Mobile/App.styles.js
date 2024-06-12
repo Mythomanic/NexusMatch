@@ -444,7 +444,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'flex-start',
     height: screenHeight * 0.8,
-    marginTop: "5%",
     paddingTop: 10,
 
   },
@@ -479,6 +478,8 @@ const styles = StyleSheet.create({
     padding: 5
 
   },
+ 
+
 
 
 });

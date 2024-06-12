@@ -15,7 +15,8 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 /* import axios from 'axios'; */
 
-const MessageScreen = ({ navigation }) => {
+const MessageScreen = ({ navigation, route }) => {
+    const {chatId} = route?.params
     const API_PROFILE_DETAILS_URL = 'https://nexusmain.onrender.com/api/user';
     const [userToken, setUserToken] = useState()
     const [userId, setUserId] = useState()
@@ -24,7 +25,7 @@ const MessageScreen = ({ navigation }) => {
     const [sentMessageIds, setSentMessageIds] = useState([]);
 
 
-    const chatId = 2;
+
     const initialLoad = useRef(true);
 
     const [fontsLoaded] = useFonts({
@@ -208,75 +209,6 @@ const MessageScreen = ({ navigation }) => {
         }
     }, [userToken, userId, chatId, sentMessageIds]); // Dependency array
 
-
-    //ÖNEMLİ USE EFFECT ÇOK ÖNEMLİ
-    /*  useEffect(() => {
-         if (userToken && userId && chatId) {
- 
-             if (initialLoad.current) {
-                 fetchMessages();
-                 initialLoad.current = false;
-             }
- 
-             console.log("Initializing Pusher...");
- 
-             // Enable Pusher logging
-             Pusher.logToConsole = true;
- 
-             // Initialize Pusher
-             const pusher = new Pusher('052e95b6508db9070fc0', {
-                 cluster: 'eu',
-                 authEndpoint: 'https://nexusmain.onrender.com/api/broadcasting/auth',
-                 auth: {
-                     headers: {
-                         'Authorization': `Bearer ${userToken}`,
-                     },
-                 },
-             });
- 
-             // Subscribe to the chat channel
-             const channel = pusher.subscribe('chat.' + chatId);
- 
-             // Log subscription status
-             channel.bind('pusher:subscription_succeeded', () => {
-                 console.log('Subscription to channel succeeded');
-             });
- 
-             channel.bind('pusher:subscription_error', (status) => {
-                 console.log('Subscription to channel failed:', status);
-             });
- 
-             // Event handler for new messages
-             const handleNewMessage = (data) => {
-                 console.log("New message received:", data);
-                 const newMessage = {
-                     _id: data.message.id,
-                     text: data.message.message,
-                     createdAt: new Date(data.message.created_at),
-                     user: {
-                         _id: data.message.user_id,
-                         name: data.message.user.name,
-                         avatar: data.message.user.avatar,
-                     },
-                 };
-                 console.log("Formatted new message:", newMessage);
-                 // Append the new message to the existing messages
-                 setMessages((previousMessages) => GiftedChat.append(previousMessages, newMessage));
-             };
- 
- 
-             // Bind the event handler to the MessageSent event
-             channel.bind('App\\Events\\MessageSent', handleNewMessage);
- 
-             // Cleanup function to unbind the event handler and unsubscribe from the channel
-             return () => {
-                 console.log("Cleaning up Pusher...");
-                 channel.unbind('App\\Events\\MessageSent', handleNewMessage);
-                 pusher.unsubscribe('chat.' + chatId);
-             };
-         }
-     }, [userToken, userId, chatId]); // Dependency array */
-
     function MessageTopBar({ navigation }) {
 
         return (
@@ -302,9 +234,7 @@ const MessageScreen = ({ navigation }) => {
 
 
             </View>
-
         )
-
     }
 
     const onSend = useCallback((messages = []) => {
@@ -351,7 +281,7 @@ const MessageScreen = ({ navigation }) => {
             });
     }, [userToken, chatId, userId]);
 
-   
+
 
     return (
         <SafeAreaProvider>
@@ -367,7 +297,6 @@ const MessageScreen = ({ navigation }) => {
 
                 <View style={{ flex: 1, width: "100%", }}>
                     <GiftedChat
-                        ref={chatRef}
                         alwaysShowSend
                         messages={messages}
                         onSend={newMessages => onSend(newMessages)}

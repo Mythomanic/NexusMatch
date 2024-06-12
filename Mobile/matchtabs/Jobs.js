@@ -1,92 +1,103 @@
-import React, { useState, useCallback } from 'react'
-import { View, Image, ImageBackground, Text, ScrollView, TouchableOpacity, Dimensions } from 'react-native'
-import { SafeAreaProvider, SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
+import React, { useEffect, useState } from 'react';
+import { View, Text, ActivityIndicator, TouchableOpacity, FlatList, SafeAreaView, Image, StatusBar } from 'react-native';
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import styles from '../App.styles';
-import { TextInput } from 'react-native';
-import { useFonts } from 'expo-font';
-import { Ionicons, Fontisto, FontAwesome, FontAwesome5, Entypo, EvilIcons, Feather, MaterialCommunityIcons, MaterialIcons, AntDesign } from "react-native-vector-icons"
 import BottomBar from '../pages/BottomBar';
-import TopBar from '../pages/TopBar';
-import { LinearGradient } from 'expo-linear-gradient';
-import { Carousel } from 'react-native-basic-carousel'
-import MessageComponent from '../MessageComponent';
+
+const Jobs = ({ route, navigation }) => {
+    const userId = route?.params?.userId;
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const [chats, setChats] = useState([]);
+    const [selectedImage, setSelectedImage] = useState("");
 
 
-function Jobs({ navigation }) {
+    const fetchChats = async () => {
+        try {
+            const userTokenValue = await AsyncStorage.getItem('usertoken');
+            if (userTokenValue) {
+                const response = await axios.get(`https://nexusmain.onrender.com/api/chats`, {
+                    headers: {
+                        Authorization: `Bearer ${userTokenValue}`,
+                    },
+                });
 
-    const [showPassword, setShowPassword] = useState(true);
-
-    const screenWidth = Dimensions.get('window').width;
-
-    const insets = useSafeAreaInsets();
-
-    const [fontsLoaded] = useFonts({
-        'Kaushan': require('../assets/fonts/KaushanScript-Regular.ttf'),
-        "Allura": require('../assets/fonts/Allura-Regular.ttf'),
-        "Montserrat-Black": require('../assets/fonts/Montserrat-Black.ttf'),
-        "Montserrat-BlackItalic": require('../assets/fonts/Montserrat-BlackItalic.ttf'),
-        "Montserrat-Bold": require('../assets/fonts/Montserrat-Bold.ttf'),
-        "Montserrat-BoldItalic": require('../assets/fonts/Montserrat-BoldItalic.ttf'),
-        "Montserrat-Italic": require('../assets/fonts/Montserrat-Italic.ttf'),
-        "Montserrat-Light": require('../assets/fonts/Montserrat-Light.ttf'),
-        "Montserrat-LightItalic": require('../assets/fonts/Montserrat-LightItalic.ttf'),
-        "Montserrat-Medium": require('../assets/fonts/Montserrat-Medium.ttf'),
-        "Montserrat-MediumItalic": require('../assets/fonts/Montserrat-MediumItalic.ttf'),
-        "Montserrat-Regular": require('../assets/fonts/Montserrat-Regular.ttf'),
-        "Montserrat-Thin": require('../assets/fonts/Montserrat-Thin.ttf'),
-        "Montserrat-SemiBold": require('../assets/fonts/Montserrat-SemiBold.ttf'),
-        "Montserrat-SemiBoldItalic": require('../assets/fonts/Montserrat-SemiBoldItalic.ttf'),
-        "Montserrat-ThinItalic": require('../assets/fonts/Montserrat-ThinItalic.ttf'),
-    });
-
-    const onLayoutRootView = useCallback(async () => {
-        if (fontsLoaded) {
-            await SplashScreen.hideAsync();
+                if (response.data.status) {
+                    setChats(response.data.chats);
+                } else {
+                    setError(response.data.message);
+                }
+            } else {
+                setError('User token not found');
+            }
+        } catch (e) {
+            setError('Error fetching chats');
+            console.error('Error fetching chats', e);
+        } finally {
+            setLoading(false);
         }
-    }, [fontsLoaded]);
+    };
 
-    if (!fontsLoaded) {
-        return null;
+    useEffect(() => {
+        fetchChats();
+    }, [userId]);
+
+    const handlePressChat = (chatId) => {
+        navigation.navigate('MessageScreen', { chatId });
+    };
+
+    if (loading) {
+        return <ActivityIndicator size="large" color="#0000ff" />;
     }
 
- 
-    return (
-        <SafeAreaProvider>
+    if (error) {
+        return (
+            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+                <Text>{error}</Text>
+            </View>
+        );
+    }
 
-            <SafeAreaView style={[styles.SafeAreaView, {}]}>
-
-                <TopBar navigation={navigation} backColor={"#3F51B5"} title={"İşlerim"}></TopBar>
-
-                <View style={{ width: "100%", flex: 1, alignItems: "center", }}>
-
-                    <ScrollView contentContainerStyle={{ alignItems: "center", }} style={{ flex: 1, width: "100%", padding: 5 }} showsVerticalScrollIndicator={false}>
-
-                        <MessageComponent navigation={navigation} personName={"Necati"} messageDate={"20.02.2024"} backColor={"#3F51B511"}></MessageComponent>
-                        <MessageComponent navigation={navigation} personName={"Necati"} messageDate={"20.02.2024"} backColor={"#3F51B511"}></MessageComponent>
-                        <MessageComponent navigation={navigation} personName={"Necati"} messageDate={"20.02.2024"} backColor={"#3F51B511"}></MessageComponent>
-                        <MessageComponent navigation={navigation} personName={"Necati"} messageDate={"20.02.2024"} backColor={"#3F51B511"}></MessageComponent>
-                        <MessageComponent navigation={navigation} personName={"Necati"} messageDate={"20.02.2024"} backColor={"#3F51B511"}></MessageComponent>
-                        <MessageComponent navigation={navigation} personName={"Necati"} messageDate={"20.02.2024"} backColor={"#3F51B511"}></MessageComponent>
-                        <MessageComponent navigation={navigation} personName={"Necati"} messageDate={"20.02.2024"} backColor={"#3F51B511"}></MessageComponent>
-                        <MessageComponent navigation={navigation} personName={"Necati"} messageDate={"20.02.2024"} backColor={"#3F51B511"}></MessageComponent>
-                        <MessageComponent navigation={navigation} personName={"Necati"} messageDate={"20.02.2024"} backColor={"#3F51B511"}></MessageComponent>
-                        <MessageComponent navigation={navigation} personName={"Necati"} messageDate={"20.02.2024"} backColor={"#3F51B511"}></MessageComponent>
-                        <MessageComponent navigation={navigation} personName={"Necati"} messageDate={"20.02.2024"} backColor={"#3F51B511"}></MessageComponent>
-                        <MessageComponent navigation={navigation} personName={"Necati"} messageDate={"20.02.2024"} backColor={"#3F51B511"}></MessageComponent>
-                        <MessageComponent navigation={navigation} personName={"Necati"} messageDate={"20.02.2024"} backColor={"#3F51B511"}></MessageComponent>
-
-                    </ScrollView>
-
-
+    const renderItem = ({ item }) => (
+        <TouchableOpacity style={{
+            width: "100%", flex: 1, alignItems: "center",
+            justifyContent: "center",
+            borderTopWidth: 1, borderBottomWidth: 1,
+            backgroundColor: "skyblue", padding: 15,
+            marginVertical: 8,
+            borderTopColor: "lightblue",
+            borderBottomColor: "lightblue"
+        }} onPress={() => handlePressChat(item.id)}>
+            <View style={{ width: "100%", flexDirection: "row", justifyContent: "flex-start", alignItems: "center", columnGap: 10 }}>
+                <View style={{ width: 50, height: 50, alignItems: "center", justifyContent: "center", borderRadius: 100 }}>
+                    <Image source={{
+                        uri: item.user2.avatarJob === "defaultpp"
+                            ? "https://cdn.icon-icons.com/icons2/1879/PNG/512/iconfinder-3-avatar-2754579_120516.png"
+                            : `https://nexusmain.onrender.com/storage/avatars/${item.user2.avatarJob}`
+                    }} style={{ width: "100%", height: "100%", borderRadius: 100 }} />
                 </View>
 
-                <BottomBar selectMenu={1} navigation={navigation}></BottomBar>
+                <Text style={{ textAlign: "justify" }}>Chat with {item.user2.name}</Text>
+            </View>
 
 
-            </SafeAreaView >
-        </SafeAreaProvider>
+        </TouchableOpacity>
+    );
 
+    return (
+        <SafeAreaView style={[styles.SafeAreaView, { backgroundColor: "#8bcce833" }]}>
+            <StatusBar></StatusBar>
+            <FlatList
+                data={chats}
+                renderItem={renderItem}
+                keyExtractor={(item) => item.id.toString()}
+                showsVerticalScrollIndicator={false}
+            />
 
-    )
+            <BottomBar selectMenu={1} navigation={navigation} />
+        </SafeAreaView >
+    );
 };
+
 export default Jobs;

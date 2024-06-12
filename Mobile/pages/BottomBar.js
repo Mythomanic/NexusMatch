@@ -7,6 +7,7 @@ import { TextInput } from 'react-native';
 import { useFonts } from 'expo-font';
 import { Ionicons, FontAwesome, FontAwesome5, Entypo, EvilIcons, Feather, MaterialCommunityIcons, MaterialIcons, AntDesign, Fontisto, Octicons } from "react-native-vector-icons"
 
+
 function BottomBar({ navigation, selectMenu, topbarColor }) {
 
     const defaultTopbarColor = "#1161a8";
@@ -67,7 +68,7 @@ function BottomBar({ navigation, selectMenu, topbarColor }) {
                     }
                 </TouchableOpacity>
 
-                <TouchableOpacity onPress={() => { navigation.navigate("Requester") }} style={{ alignItems: "center", justifyContent: "center", flex: 1 }}>
+                <TouchableOpacity onPress={() => { navigation.navigate("Jobs") }} style={{ alignItems: "center", justifyContent: "center", flex: 1 }}>
 
                     {selectMenu === 1 ? (
                         <>
@@ -90,22 +91,22 @@ function BottomBar({ navigation, selectMenu, topbarColor }) {
                     {selectMenu === 2 ? (
                         <>
                             <View style={{ width: 30, height: 30, alignItems: "center", justifyContent: "center", }}>
-                                <AntDesign style={{ color: "#a6026b", fontSize: 27 }} name="pluscircleo"></AntDesign>
+                                <AntDesign style={{ color: "#1161a8", fontSize: 24 }} name="pluscircleo"></AntDesign>
                             </View>
-                            <Text style={{ color: "#a6026b", fontSize: 11 }}>Oluştur</Text>
+                            <Text style={{ color: "#1161a8", fontSize: 10 }}>Oluştur</Text>
                         </>
                     ) : (
                         <>
-                            <AntDesign style={{ color: "#a6026b", fontSize: 28 }} name="pluscircleo"></AntDesign>
-                            <Text style={{ color: "#a6026b", fontSize: 11 }}>Oluştur</Text>
+                            <AntDesign style={{ color: "#9f9f9f", fontSize: 24 }} name="pluscircleo"></AntDesign>
+                            <Text style={{ color: "#9f9f9f", fontSize: 10 }}>Oluştur</Text>
                         </>
-                    )
+                    ) /* #a6026b */
                     }
                 </TouchableOpacity>
 
 
 
-                <TouchableOpacity onPress={() => { navigation.navigate("Search") }} style={{ alignItems: "center", justifyContent: "center", flex: 1 }}>
+                {/* <TouchableOpacity onPress={() => { navigation.navigate("Search") }} style={{ alignItems: "center", justifyContent: "center", flex: 1 }}>
 
                     {selectMenu === 3 ? (
                         <>
@@ -123,7 +124,7 @@ function BottomBar({ navigation, selectMenu, topbarColor }) {
                     )
                     }
 
-                </TouchableOpacity>
+                </TouchableOpacity> */}
 
                 <TouchableOpacity onPress={() => { navigation.navigate("Profile") }} style={{ alignItems: "center", justifyContent: "center", flex: 1 }}>
 

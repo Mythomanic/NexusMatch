@@ -257,38 +257,6 @@ function Profile({ navigation }) {
     };
 
 
-    function BioName({ text }) {
-        return (
-            <View style={{ width: "100%", alignItems: "center", justifyContent: "center", }}>
-                <Text style={{ fontSize: 20, fontWeight: "bold", color: "black" }} fontSize="xs">{text}</Text>
-            </View>
-        )
-    }
-
-    function BioJob({ text }) {
-        return (
-            <View style={{ width: "100%", alignItems: "center", justifyContent: "center", }}>
-                <Text style={{ fontSize: 17, color: "slategrey" }} fontSize="xs">{text}</Text>
-            </View>
-        )
-    }
-
-    function BioText({ text }) {
-        return (
-            <View style={{ width: "100%", backgroundColor: "red", height: "100%" }}>
-                <Text style={{ fontSize: 12, color: "black", textAlign: "flex-start" }} fontSize="xs">{text}</Text>
-            </View>
-        )
-    }
-
-    function GalleryComponent({ imageLink }) {
-        return (
-            <View style={{ width: "47%", alignItems: "center", justifyContent: "center", height: 150, borderRadius: 10, borderWidth: 1, borderColor: "#afafaf" }}>
-
-            </View>
-        )
-    }
-
     // Function to animate layout changes
     const animateLayout = () => {
         LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
@@ -334,7 +302,7 @@ function Profile({ navigation }) {
 
                 <ImageBackground source={profileType === 0 ? require("../jobbgprofile.png") : profileType === 1 ? require("../lovebgprofile2.png") : require("../profilebg.png")} resizeMode='cover' style={{ width: "100%", flex: 1, alignItems: "center", }}>
 
-                    <TouchableOpacity onPress={() => { navigation.navigate("EditProfile") }}
+                    <TouchableOpacity onPress={() => { navigation.navigate("ProfileSettings") }}
                         style={{ position: "absolute", right: 0, top: 0, alignItems: "center", justifyContent: "center", margin: 20, zIndex: 10 }}>
                         <FontAwesome name="cog" size={30} />
                     </TouchableOpacity>
@@ -356,12 +324,12 @@ function Profile({ navigation }) {
 
                                     {/* <BioName text={loggedInUserJobInfo.name}></BioName> */}
                                     <View style={{ width: "100%", alignItems: "center", justifyContent: "center", }}>
-                                        <Text style={{ fontSize: 20, fontWeight: "bold", color: "black" }} fontSize="xs">Ahmet</Text>
+                                        <Text style={{ fontSize: 20, fontWeight: "bold", color: "black" }} fontSize="xs">{loggedInUserJobInfo.name}</Text>
                                     </View>
 
                                     {/* <BioJob text={loggedInUserJobInfo.userJob}></BioJob> */}
                                     <View style={{ width: "100%", alignItems: "center", justifyContent: "center", }}>
-                                        <Text style={{ fontSize: 17, color: "slategrey" }} fontSize="xs">my job</Text>
+                                        <Text style={{ fontSize: 17, color: "slategrey" }} fontSize="xs">{loggedInUserJobInfo.userJob}</Text>
                                     </View>
 
                                     <ProfileTags tags={loggedInUserJobTags}></ProfileTags>
@@ -402,7 +370,7 @@ function Profile({ navigation }) {
 
                                     <ProfileTags tags={loggedInUserJobTags}></ProfileTags>
 
-                                    <View style={{ flex: 2, alignItems: "center", width: "100%" }}>
+                                    <View style={{ flex: 2, alignItems: "center", width: "100%", }}>
 
                                         <ScrollView contentContainerStyle={{ alignItems: "center", width: "100%", }} showsVerticalScrollIndicator={false}>
                                             <View style={{ flex: 1, minWidth: "100%", alignItems: "flex-start", paddingHorizontal: 10 }}>
@@ -454,25 +422,6 @@ function Profile({ navigation }) {
 
                     </View>
 
-
-
-                    <View style={{ width: "100%", paddingHorizontal: 20, alignItems: "center", marginVertical: 5 }}>
-
-                        <TouchableOpacity onPress={() => { setGalleryModalVisible(true) }} style={[styles.ProfileOptions, { backgroundColor: profileType === 0 ? "lightblue" : profileType === 1 ? "pink" : profileType === 2 ? "lightgreen" : null, borderColor: profileType === 0 ? "lightseagreen" : profileType === 1 ? "hotpink" : profileType === 2 ? "mediumaquamarine" : null, borderWidth: 1 }]}>
-                            <View style={{ flexDirection: "row" }}>
-                                <View style={{ alignItems: "center", justifyContent: "center", minWidth: 25 }}>
-                                    <FontAwesome size={16} name="photo" />
-                                </View>
-                                <Text fontSize="xs">Galeri</Text>
-                            </View>
-
-                            <View style={{}}>
-                                <Entypo size={20} name="chevron-right" />
-                            </View>
-                        </TouchableOpacity>
-                    </View>
-
-
                     <View style={{ flex: 1, width: "100%", flexDirection: "row", paddingVertical: 10, paddingHorizontal: 20, zIndex: 1 }}>
 
                         <TouchableOpacity onPress={() => { setProfileType(0); animateLayout(); }} style={{ width: profileType === 0 ? "65%" : "17.5%", }}>
@@ -489,121 +438,6 @@ function Profile({ navigation }) {
 
                     </View>
 
-
-                    {profileType == 0 ? (
-                        <Modal style={{ alignItems: "center", justifyContent: "flex-end", margin: 0, }}
-                            onBackButtonPress={() => { setGalleryModalVisible(false) }} onBackdropPress={() => { setGalleryModalVisible(false) }} isVisible={galleryModalVisible} onDismiss={() => { setGalleryModalVisible(false) }} >
-
-                            <View style={{ width: "100%", minHeight: 500, backgroundColor: "white", borderTopLeftRadius: 50, borderTopRightRadius: 50, borderBottomWidth: 1, padding: 20, rowGap: 5, backgroundColor: "lightblue" }}>
-
-                                {/* 1 */}
-                                <View style={{ alignItems: "center", justifyContent: "center", flexDirection: "row" }}>
-                                    <View style={{ flexDirection: "row", alignItems: "center", columnGap: 5 }} >
-                                        <Text style={{ fontSize: 15, fontFamily: "Montserrat-SemiBold", }}>Galeri</Text>
-                                        <FontAwesome name="photo" size={17} />
-                                    </View>
-                                    <TouchableOpacity style={{ position: "absolute", right: 0 }} onPress={() => { setGalleryModalVisible(false) }}>
-                                        <AntDesign style={{ fontSize: 28 }} name="closecircleo" />
-                                    </TouchableOpacity>
-                                </View>
-
-                                {/* 2 */}
-                                <View style={{ flex: 1, width: "100%", alignItems: "center", justifyContent: "center" }}>
-                                    <ScrollView contentContainerStyle={{ width: "100%", alignItems: "center", flexWrap: "wrap", flexDirection: "row", columnGap: 10, rowGap: 10, paddingVertical: 10 }} showsVerticalScrollIndicator={false}>
-
-                                        {/* FlashList ya da Flatlist kullan apiden veri çekerken resimler için */}
-
-                                        <GalleryComponent imageLink={{}} />
-                                        <GalleryComponent imageLink={{}} />
-                                        <GalleryComponent imageLink={{}} />
-                                        <GalleryComponent imageLink={{}} />
-                                        <GalleryComponent imageLink={{}} />
-                                        <GalleryComponent imageLink={{}} />
-                                        <GalleryComponent imageLink={{}} />
-                                        <GalleryComponent imageLink={{}} />
-                                        <GalleryComponent imageLink={{}} />
-
-                                    </ScrollView>
-
-                                </View>
-
-
-                            </View>
-
-                        </Modal>
-                    ) : profileType == 1 ? (
-                        <Modal style={{ alignItems: "center", justifyContent: "flex-end", margin: 0, }}
-                            onBackButtonPress={() => { setGalleryModalVisible(false) }} onBackdropPress={() => { setGalleryModalVisible(false) }} isVisible={galleryModalVisible} onDismiss={() => { setGalleryModalVisible(false) }} >
-
-                            <View style={{ width: "100%", minHeight: 500, backgroundColor: "white", borderTopLeftRadius: 50, borderTopRightRadius: 50, borderBottomWidth: 1, padding: 20, rowGap: 5, backgroundColor: "pink" }}>
-
-                                {/* 1 */}
-                                <View style={{ alignItems: "center", justifyContent: "center", flexDirection: "row" }}>
-                                    <View style={{ flexDirection: "row", alignItems: "center", columnGap: 5 }} >
-                                        <Text style={{ fontSize: 15, fontFamily: "Montserrat-SemiBold", }}>Galeri</Text>
-                                        <FontAwesome name="photo" size={17} />
-                                    </View>
-                                    <TouchableOpacity style={{ position: "absolute", right: 0 }} onPress={() => { setGalleryModalVisible(false) }}>
-                                        <AntDesign style={{ fontSize: 28 }} name="closecircleo" />
-                                    </TouchableOpacity>
-                                </View>
-
-                                {/* 2 */}
-                                <View style={{ flex: 1, width: "100%", alignItems: "center", justifyContent: "center" }}>
-                                    <ScrollView contentContainerStyle={{ width: "100%", alignItems: "center", flexWrap: "wrap", flexDirection: "row", columnGap: 10, rowGap: 10, paddingVertical: 10 }} showsVerticalScrollIndicator={false}>
-
-                                        {/* FlashList ya da Flatlist kullan apiden veri çekerken resimler için */}
-
-                                        <GalleryComponent imageLink={{}} />
-                                        <GalleryComponent imageLink={{}} />
-
-
-                                    </ScrollView>
-
-                                </View>
-
-
-                            </View>
-
-                        </Modal>
-                    ) : (
-                        <Modal style={{ alignItems: "center", justifyContent: "flex-end", margin: 0, }}
-                            onBackButtonPress={() => { setGalleryModalVisible(false) }} onBackdropPress={() => { setGalleryModalVisible(false) }} isVisible={galleryModalVisible} onDismiss={() => { setGalleryModalVisible(false) }} >
-
-                            <View style={{ width: "100%", minHeight: 500, backgroundColor: "white", borderTopLeftRadius: 50, borderTopRightRadius: 50, borderBottomWidth: 1, padding: 20, rowGap: 5, backgroundColor: "lightgreen" }}>
-
-                                {/* 1 */}
-                                <View style={{ alignItems: "center", justifyContent: "center", flexDirection: "row" }}>
-                                    <View style={{ flexDirection: "row", alignItems: "center", columnGap: 5 }} >
-                                        <Text style={{ fontSize: 15, fontFamily: "Montserrat-SemiBold", }}>Galeri</Text>
-                                        <FontAwesome name="photo" size={17} />
-                                    </View>
-                                    <TouchableOpacity style={{ position: "absolute", right: 0 }} onPress={() => { setGalleryModalVisible(false) }}>
-                                        <AntDesign style={{ fontSize: 28 }} name="closecircleo" />
-                                    </TouchableOpacity>
-                                </View>
-
-                                {/* 2 */}
-                                <View style={{ flex: 1, width: "100%", alignItems: "center", justifyContent: "center" }}>
-                                    <ScrollView contentContainerStyle={{ width: "100%", alignItems: "center", flexWrap: "wrap", flexDirection: "row", columnGap: 10, rowGap: 10, paddingVertical: 10 }} showsVerticalScrollIndicator={false}>
-
-                                        {/* FlashList ya da Flatlist kullan apiden veri çekerken resimler için */}
-
-                                        <GalleryComponent imageLink={{}} />
-                                        <GalleryComponent imageLink={{}} />
-                                        <GalleryComponent imageLink={{}} />
-                                        <GalleryComponent imageLink={{}} />
-                                        <GalleryComponent imageLink={{}} />
-
-                                    </ScrollView>
-
-                                </View>
-
-
-                            </View>
-
-                        </Modal>
-                    )}
 
 
                 </ImageBackground>

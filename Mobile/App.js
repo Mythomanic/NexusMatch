@@ -36,7 +36,8 @@ import Create from './pages/Create';
 import { Provider } from 'jotai';
 import ProfileSettings from './pages/ProfileSettings';
 import UserCreations from './pages/UserCreations';
-
+import UserCreatedJobs from './pages/UserCreatedJobs';
+import JobLikeDislikeUsers from './pages/JobLikeDislikeUsers';
 
 export default function App({ navigation }) {
 
@@ -83,7 +84,7 @@ export default function App({ navigation }) {
     );
   };
 
-  function Tab1Stack({ navigation }) {
+ /*  function Tab1Stack({ navigation }) {
     return (
       <>
         <StatusBar></StatusBar>
@@ -97,7 +98,7 @@ export default function App({ navigation }) {
       </>
 
     );
-  }
+  } */
 
   function Tab2StackActivities({ navigation }) {
     return (
@@ -153,7 +154,7 @@ export default function App({ navigation }) {
               <Stack.Screen name="Login" component={Login} />
               <Stack.Screen name="SignUp" component={SignUp} />
               <Stack.Screen name="Homepage" component={Homepage} />
-              <Stack.Screen name="Requester" component={Tab1Stack} />
+              {/* <Stack.Screen name="Requester" component={Tab1Stack} /> */}
               <Stack.Screen name="Matches" component={Matches} />
               <Stack.Screen name="Profile" component={Profile} />
               <Stack.Screen name="EditProfile" component={EditProfile} />
@@ -165,6 +166,9 @@ export default function App({ navigation }) {
               <Stack.Screen name="Create" component={Create} />
               <Stack.Screen name="ProfileSettings" component={ProfileSettings} />
               <Stack.Screen name="UserCreations" component={Tab2StackActivities} />
+              <Stack.Screen name="UserCreatedJobs" component={UserCreatedJobs} />
+              <Stack.Screen name="JobLikeDislikeUsers" component={JobLikeDislikeUsers} />
+              <Stack.Screen name="Jobs" component={Jobs} />
 
             </Stack.Navigator>
 

@@ -13,8 +13,7 @@ import MessageComponent from '../MessageComponent';
 import { useAtom } from 'jotai';
 import { refreshAtom } from '../JotaiAtoms';
 import JobListItem from '../pages/JobListItemComponent';
-
-
+import UserCreatedJobs from '../pages/UserCreatedJobs';
 
 function JobsRequester({ navigation }) {
 
@@ -69,23 +68,9 @@ function JobsRequester({ navigation }) {
                 
                 <View style={{ width: "100%", flex: 1, alignItems: "center", }}>
 
-                    <View style={styles.SearchBarCategories}>
-                        <TouchableOpacity style={{ width: 35, alignItems: "center", justifyContent: "center", flexDirection: "row", columnGap: 7 }}>
-                            <Ionicons size={21} name={"filter"} />
-                            <Text style={{ fontSize: 13 }}>Filter</Text>
-
-                        </TouchableOpacity>
-
-                        <TouchableOpacity style={{ alignItems: "center", justifyContent: "center", flexDirection: "row", columnGap: 7 }} onPress={handleRefresh}>
-                            <Text style={{ fontSize: 13 }}>Refresh</Text>
-                            <FontAwesome size={18} name="refresh"></FontAwesome>
-
-                        </TouchableOpacity>
-                    </View>
-
                     <View style={{ flex: 1, width: "100%", }}>
 
-                        <JobListItem navigation={navigation} />
+                        <UserCreatedJobs navigation={navigation} />
                     </View>
 
 

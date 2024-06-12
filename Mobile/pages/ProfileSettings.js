@@ -173,7 +173,7 @@ function ProfileSettings({ navigation }) {
 
         <SafeAreaView style={styles.SafeAreaView}>
 
-            <TopBar title={"Oluştur"} titleFont={"Montserrat-SemiBold"} navigation={navigation} backColor={"#3F51B5"}></TopBar>
+            <TopBar title={"Düzenle"} titleFont={"Montserrat-SemiBold"} navigation={navigation} backColor={"#3F51B5"}></TopBar>
 
             <View style={{ width: "100%", flex: 1, alignItems: "center", }}>
 
@@ -335,7 +335,7 @@ function ProfileSettings({ navigation }) {
             </View>
 
 
-            <BottomBar selectMenu={2} navigation={navigation} ></BottomBar>
+            <BottomBar selectMenu={12} navigation={navigation} ></BottomBar>
         </SafeAreaView>
 
     )
