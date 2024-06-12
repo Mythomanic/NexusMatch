@@ -43,12 +43,7 @@ function JobCards() {
 
     try {
       await swipeService.swipeJob(user.id, jobId, direction);
-      if (direction === "like") {
-        const isMatch = await swipeService.checkMatch(user.id, jobId);
-        if (isMatch) {
-          alert("Match!");
-        }
-      }
+      // Match kontrolü kaldırıldı
     } catch (error) {
       console.error("Error handling swipe:", error);
     }
