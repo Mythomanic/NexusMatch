@@ -3,6 +3,17 @@ import authService from "./authService";
 
 const API_URL = "https://nexusmain.onrender.com/api/";
 
+const fetchChats = async () => {
+  const headers = authService.authHeader();
+  try {
+    const response = await axios.get(API_URL + "chats", { headers });
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching chats:", error);
+    throw error;
+  }
+};
+
 const createChat = async (user2_id) => {
   const headers = authService.authHeader();
   try {
@@ -18,18 +29,37 @@ const createChat = async (user2_id) => {
   }
 };
 
-const fetchChats = async () => {
+const fetchMessages = async (chatId) => {
   const headers = authService.authHeader();
   try {
-    const response = await axios.get(API_URL + "chats", { headers });
+    const response = await axios.get(`${API_URL}chats/${chatId}/messages`, {
+      headers,
+    });
     return response.data;
   } catch (error) {
-    console.error("Error fetching chats:", error);
+    console.error("Error fetching messages:", error);
+    throw error;
+  }
+};
+
+const sendMessage = async (chatId, content) => {
+  const headers = authService.authHeader();
+  try {
+    const response = await axios.post(
+      `${API_URL}chats/${chatId}/messages`,
+      { content },
+      { headers }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error sending message:", error);
     throw error;
   }
 };
 
 export default {
-  createChat,
   fetchChats,
+  createChat,
+  fetchMessages,
+  sendMessage,
 };

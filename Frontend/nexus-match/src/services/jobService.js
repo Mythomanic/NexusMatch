@@ -66,7 +66,7 @@ const getJobsByUser = async (userId) => {
     const response = await axios.get(`${API_URL}user/${userId}/jobs`, {
       headers,
     });
-    return response.data.jobs; // Ensure the API response is as expected
+    return response.data.jobs; // API yanıtının doğruluğunu kontrol edin
   } catch (error) {
     console.error("Error fetching jobs by user:", error);
     throw error;
@@ -110,8 +110,7 @@ const getUnseenJobs = async (userId) => {
         headers,
       }
     );
-    console.log("getUnseenJobs response:", response.data); // Log the response
-    return response.data; // Ensure the correct data is returned
+    return response.data.jobs;
   } catch (error) {
     console.error("Error fetching unseen jobs:", error);
     throw error;

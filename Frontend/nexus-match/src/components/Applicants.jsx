@@ -73,8 +73,10 @@ function Applicants() {
               }}
               className="card"
             >
-              <h3>{applicant.name}</h3>
-              <p>{applicant.descriptionJob}</p>
+              <div className="card-content">
+                <h3>{applicant.name}</h3>
+                <p>{applicant.descriptionJob}</p>
+              </div>
               <div className="buttons">
                 <button
                   className="btn btn-danger"

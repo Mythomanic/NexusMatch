@@ -64,8 +64,8 @@ function JobCards() {
   };
 
   return (
-    <div>
-      <h1>Job Cards</h1>
+    <div className="job-cards-container">
+      <h1 className="title">Job Opportunities</h1>
       <div className="tinderCards__cardContainer">
         {jobs && jobs.length > 0 ? (
           jobs.map((job, index) => (
@@ -85,9 +85,11 @@ function JobCards() {
                 }}
                 className="card"
               >
-                <h3>{job.title}</h3>
-                <p>{job.description}</p>
-                <p>{job.location}</p>
+                <div className="card-content">
+                  <h3 className="job-title">{job.title}</h3>
+                  <p className="job-description">{job.description}</p>
+                  <p className="job-location">{job.location}</p>
+                </div>
                 <div className="buttons">
                   <button
                     className="btn btn-danger"
@@ -106,7 +108,7 @@ function JobCards() {
             </TinderCard>
           ))
         ) : (
-          <p>No jobs available</p>
+          <p className="no-jobs">No jobs available</p>
         )}
       </div>
     </div>

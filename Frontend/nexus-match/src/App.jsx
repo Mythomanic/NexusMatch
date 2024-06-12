@@ -17,6 +17,8 @@ import MyJobs from "./components/MyJobs"; // MyJobs bileşeni
 import { Snackbar, Alert } from "@mui/material";
 import Applicants from "./components/Applicants";
 import Chats from "./components/Chats";
+import Chat from "./components/Chat"; // Import the new Chat component
+import LandingPage from "./components/LandingPage"; // Import the new LandingPage component
 
 function App() {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
@@ -46,17 +48,11 @@ function App() {
           <Route path="/find-jobs" element={<JobCards />} />
           <Route path="/find-workers" element={<UserCards />} />
           <Route path="/my-jobs" element={<MyJobs userId={userId} />} />
-          <Route
-            path="/"
-            element={
-              <div>
-                <h1>Welcome</h1>
-                <h1>Home page</h1>
-              </div>
-            }
-          />
+          <Route path="/" element={<LandingPage />} />
           <Route path="/applicants/:jobId" element={<Applicants />} />
           <Route path="/chats" element={<Chats />} />
+          <Route path="/chat/:chatId" element={<Chat />} />{" "}
+          {/* Add this route */}
         </Routes>
         <Snackbar
           open={snackbarOpen}

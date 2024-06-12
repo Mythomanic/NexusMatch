@@ -16,7 +16,12 @@ function Chats() {
         }
 
         const response = await chatService.fetchChats();
-        setChats(response.chats);
+        console.log("Fetched chats response:", response); // Add a log to check the response structure
+        if (response && response.chats) {
+          setChats(response.chats);
+        } else {
+          console.error("No chats received.");
+        }
       } catch (error) {
         console.error("Error fetching chats:", error);
       }
