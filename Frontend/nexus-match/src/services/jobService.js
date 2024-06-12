@@ -104,13 +104,15 @@ const moveUserFromLikesToDislikes = async (jobId, userId) => {
 const getUnseenJobs = async (userId) => {
   const headers = authService.authHeader();
   try {
+    console.log(`Fetching unseen jobs for user ID: ${userId}`);
     const response = await axios.get(
       `${API_URL}user/${userId}/jobOpportunities`,
       {
         headers,
       }
     );
-    return response.data.jobs;
+    console.log("API response:", response.data);
+    return response.data; // Burada doğrudan response.data döndürülüyor
   } catch (error) {
     console.error("Error fetching unseen jobs:", error);
     throw error;
