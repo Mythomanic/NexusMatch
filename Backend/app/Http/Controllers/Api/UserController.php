@@ -541,7 +541,7 @@ class UserController extends Controller
             $likes = $job->likes ?? [];
             $dislikes = $job->dislikes ?? [];
 
-            return !in_array($userId, $likes) && !in_array($userId, $dislikes);
+            return !in_array($userId, $likes) && !in_array($userId, $dislikes) && $job->user_id != $userId;
         });
 
         return response()->json($unseenJobs->values());
@@ -663,7 +663,7 @@ class UserController extends Controller
             $likes = $event->likes ?? [];
             $dislikes = $event->dislikes ?? [];
 
-            return !in_array($userId, $likes) && !in_array($userId, $dislikes);
+            return !in_array($userId, $likes) && !in_array($userId, $dislikes) && $event->user_id != $userId;
         });
 
         return response()->json($unseenEvents->values());
@@ -785,7 +785,7 @@ class UserController extends Controller
             $likes = $date->likes ?? [];
             $dislikes = $date->dislikes ?? [];
 
-            return !in_array($userId, $likes) && !in_array($userId, $dislikes);
+            return !in_array($userId, $likes) && !in_array($userId, $dislikes) && $date->user_id != $userId;
         });
 
         return response()->json($unseenDates->values());
