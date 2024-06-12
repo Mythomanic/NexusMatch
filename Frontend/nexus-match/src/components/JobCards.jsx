@@ -3,7 +3,67 @@ import TinderCard from "react-tinder-card";
 import jobService from "../services/jobService";
 import authService from "../services/authService";
 import swipeService from "../services/swipeService";
-import "../TinderCards.css";
+import styled from "styled-components";
+
+const Container = styled.div`
+  text-align: center;
+`;
+
+const CardContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 20px;
+`;
+
+const Card = styled.div`
+  background-size: cover;
+  background-position: center;
+  background-color: #f5f5f5;
+  border-radius: 10px;
+  width: 300px;
+  height: 400px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease;
+  background-image: ${(props) => `url(${props.backgroundImage})`};
+`;
+
+const CardContent = styled.div`
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+`;
+
+const Title = styled.h3`
+  margin: 0;
+`;
+
+const Description = styled.p`
+  margin: 5px 0;
+`;
+
+const Location = styled.p`
+  margin: 5px 0;
+`;
+
+const Buttons = styled.div`
+  display: flex;
+  justify-content: space-between;
+`;
+
+const Button = styled.button`
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  background-color: ${(props) => (props.danger ? "#e74c3c" : "#2ecc71")};
+  color: white;
+`;
 
 function JobCards() {
   const [jobs, setJobs] = useState([]);
@@ -65,9 +125,9 @@ function JobCards() {
   };
 
   return (
-    <div className="job-cards-container">
-      <h1 className="title">Job Opportunities</h1>
-      <div className="tinderCards__cardContainer">
+    <Container>
+      <h1>Job Opportunities</h1>
+      <CardContainer>
         {jobs && jobs.length > 0 ? (
           jobs.map((job, index) => (
             <TinderCard
@@ -78,41 +138,26 @@ function JobCards() {
               onSwipe={(dir) => swiped(dir, job.id)}
               preventSwipe={["up", "down"]}
             >
-              <div
-                style={{
-                  backgroundImage: `url(${
-                    job.imageUrl || "default_image_url"
-                  })`,
-                }}
-                className="card"
-              >
-                <div className="card-content">
-                  <h3 className="job-title">{job.title}</h3>
-                  <p className="job-description">{job.description}</p>
-                  <p className="job-location">{job.location}</p>
-                </div>
-                <div className="buttons">
-                  <button
-                    className="btn btn-danger"
-                    onClick={() => swipe("dislike")}
-                  >
+              <Card backgroundImage={job.imageUrl || "default_image_url"}>
+                <CardContent>
+                  <Title>{job.title}</Title>
+                  <Description>{job.description}</Description>
+                  <Location>{job.location}</Location>
+                </CardContent>
+                <Buttons>
+                  <Button danger onClick={() => swipe("dislike")}>
                     Dislike
-                  </button>
-                  <button
-                    className="btn btn-success"
-                    onClick={() => swipe("like")}
-                  >
-                    Like
-                  </button>
-                </div>
-              </div>
+                  </Button>
+                  <Button onClick={() => swipe("like")}>Like</Button>
+                </Buttons>
+              </Card>
             </TinderCard>
           ))
         ) : (
-          <p className="no-jobs">No jobs available</p>
+          <p>No jobs available</p>
         )}
-      </div>
-    </div>
+      </CardContainer>
+    </Container>
   );
 }
 

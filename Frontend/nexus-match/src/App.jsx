@@ -6,25 +6,24 @@ import {
   useLocation,
   Link,
 } from "react-router-dom";
-import SimpleNavbar from "./Header"; // Updated to point to your new SimpleNavbar component
-import JobCards from "./components/JobCards"; // İş ilanlarını gösterecek bileşen
-import UserCards from "./components/UserCards"; // İş arayanların profillerini gösterecek bileşen
+import SimpleNavbar from "./Header"; 
+import JobCards from "./components/JobCards"; 
+import UserCards from "./components/UserCards"; 
 import Login from "./components/Login";
 import Register from "./components/Register";
 import CreateJob from "./components/CreateJob";
 import Profile from "./components/Profile";
-import MyJobs from "./components/MyJobs"; // MyJobs bileşeni
+import MyJobs from "./components/MyJobs";
 import { Snackbar, Alert } from "@mui/material";
 import Applicants from "./components/Applicants";
 import Chats from "./components/Chats";
-import Chat from "./components/Chat"; // Import the new Chat component
-import LandingPage from "./components/LandingPage"; // Import the new LandingPage component
+import Chat from "./components/Chat"; 
 
 function App() {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
-  const userId = "your-user-id"; // Kullanıcının ID'sini buraya ekleyin
+  const userId = "your-user-id"; 
 
   const showSnackbar = (message, severity = "success") => {
     setSnackbarMessage(message);
@@ -48,7 +47,6 @@ function App() {
           <Route path="/find-jobs" element={<JobCards />} />
           <Route path="/find-workers" element={<UserCards />} />
           <Route path="/my-jobs" element={<MyJobs userId={userId} />} />
-          <Route path="/" element={<LandingPage />} />
           <Route path="/applicants/:jobId" element={<Applicants />} />
           <Route path="/chats" element={<Chats />} />
           <Route path="/chat/:chatId" element={<Chat />} />{" "}

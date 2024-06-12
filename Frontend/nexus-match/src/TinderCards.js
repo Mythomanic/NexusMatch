@@ -3,7 +3,62 @@ import TinderCard from "react-tinder-card";
 import userService from "./services/userService";
 import authService from "./services/authService";
 import swipeService from "./services/swipeService";
-import "./TinderCards.css";
+import styled from "styled-components";
+
+const Container = styled.div`
+  text-align: center;
+`;
+
+const CardContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 20px;
+`;
+
+const Card = styled.div`
+  background-size: cover;
+  background-position: center;
+  border-radius: 10px;
+  width: 300px;
+  height: 400px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease;
+  background-image: ${(props) => `url(${props.backgroundImage})`};
+`;
+
+const CardContent = styled.div`
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+`;
+
+const Title = styled.h3`
+  margin: 0;
+`;
+
+const Description = styled.p`
+  margin: 5px 0;
+`;
+
+const Buttons = styled.div`
+  display: flex;
+  justify-content: space-between;
+`;
+
+const Button = styled.button`
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  background-color: ${(props) => (props.danger ? "#e74c3c" : "#2ecc71")};
+  color: white;
+`;
 
 function TinderCards() {
   const [users, setUsers] = useState([]);
@@ -56,9 +111,9 @@ function TinderCards() {
   };
 
   return (
-    <div>
+    <Container>
       <h1>Match Cards</h1>
-      <div className="tinderCards__cardContainer">
+      <CardContainer>
         {users.map((user, index) => (
           <TinderCard
             className="swipe"
@@ -66,27 +121,28 @@ function TinderCards() {
             onSwipe={(dir) => swiped(dir, user.id)}
             preventSwipe={["up", "down"]}
           >
-            <div
-              style={{
-                backgroundImage: `url(${
-                  user.avatarJob
-                    ? `https://nexusmain.onrender.com/storage/avatars/${user.avatarJob}`
-                    : "default_image_url"
-                })`,
-              }}
-              className="card"
+            <Card
+              backgroundImage={
+                user.avatarJob
+                  ? `https://nexusmain.onrender.com/storage/avatars/${user.avatarJob}`
+                  : "default_image_url"
+              }
             >
-              <h3>{user.name}</h3>
-              <p>{user.descriptionJob}</p>
-            </div>
+              <CardContent>
+                <Title>{user.name}</Title>
+                <Description>{user.descriptionJob}</Description>
+              </CardContent>
+            </Card>
           </TinderCard>
         ))}
-      </div>
-      <div className="buttons">
-        <button onClick={() => swipe("left")}>Dislike</button>
-        <button onClick={() => swipe("right")}>Like</button>
-      </div>
-    </div>
+      </CardContainer>
+      <Buttons>
+        <Button danger onClick={() => swipe("left")}>
+          Dislike
+        </Button>
+        <Button onClick={() => swipe("right")}>Like</Button>
+      </Buttons>
+    </Container>
   );
 }
 

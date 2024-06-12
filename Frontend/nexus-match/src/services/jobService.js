@@ -1,12 +1,12 @@
 import axios from "axios";
 import authService from "./authService";
 
-const API_URL = "https://nexusmain.onrender.com/api/";
+const API_URL = "https://nexusmain.onrender.com/api";
 
 const getJobs = async () => {
   const headers = authService.authHeader();
   try {
-    const response = await axios.get(API_URL + "jobs", { headers });
+    const response = await axios.get(`${API_URL}/jobs`, { headers });
     return response.data;
   } catch (error) {
     console.error("Error fetching jobs:", error);
@@ -17,7 +17,7 @@ const getJobs = async () => {
 const getJobById = async (id) => {
   const headers = authService.authHeader();
   try {
-    const response = await axios.get(API_URL + `jobs/${id}`, { headers });
+    const response = await axios.get(`${API_URL}/jobs/${id}`, { headers });
     return response.data;
   } catch (error) {
     console.error("Error fetching job by id:", error);
@@ -28,7 +28,7 @@ const getJobById = async (id) => {
 const createJob = async (jobData) => {
   const headers = authService.authHeader();
   try {
-    const response = await axios.post(API_URL + "jobs", jobData, { headers });
+    const response = await axios.post(`${API_URL}/jobs`, jobData, { headers });
     return response.data;
   } catch (error) {
     console.error("Error creating job:", error);
@@ -39,7 +39,7 @@ const createJob = async (jobData) => {
 const updateJob = async (id, jobData) => {
   const headers = authService.authHeader();
   try {
-    const response = await axios.put(API_URL + `jobs/${id}`, jobData, {
+    const response = await axios.put(`${API_URL}/jobs/${id}`, jobData, {
       headers,
     });
     return response.data;
@@ -49,10 +49,12 @@ const updateJob = async (id, jobData) => {
   }
 };
 
-const deleteJob = async (id) => {
+const deleteJob = async (jobId) => {
   const headers = authService.authHeader();
   try {
-    const response = await axios.delete(API_URL + `jobs/${id}`, { headers });
+    const response = await axios.delete(`${API_URL}/jobs/${jobId}`, {
+      headers,
+    });
     return response.data;
   } catch (error) {
     console.error("Error deleting job:", error);
@@ -63,7 +65,7 @@ const deleteJob = async (id) => {
 const getJobsByUser = async (userId) => {
   const headers = authService.authHeader();
   try {
-    const response = await axios.get(`${API_URL}user/${userId}/jobs`, {
+    const response = await axios.get(`${API_URL}/user/${userId}/jobs`, {
       headers,
     });
     return response.data.jobs; // API yanıtının doğruluğunu kontrol edin
@@ -76,7 +78,7 @@ const getJobsByUser = async (userId) => {
 const getLikedUsers = async (jobId) => {
   const headers = authService.authHeader();
   try {
-    const response = await axios.get(`${API_URL}job/${jobId}/likes`, {
+    const response = await axios.get(`${API_URL}/job/${jobId}/likes`, {
       headers,
     });
     return response.data;
@@ -90,7 +92,7 @@ const moveUserFromLikesToDislikes = async (jobId, userId) => {
   const headers = authService.authHeader();
   try {
     const response = await axios.post(
-      `${API_URL}jobs/${jobId}/move-user/${userId}`,
+      `${API_URL}/jobs/${jobId}/move-user/${userId}`,
       {},
       { headers }
     );
@@ -106,7 +108,7 @@ const getUnseenJobs = async (userId) => {
   try {
     console.log(`Fetching unseen jobs for user ID: ${userId}`);
     const response = await axios.get(
-      `${API_URL}user/${userId}/jobOpportunities`,
+      `${API_URL}/user/${userId}/jobOpportunities`,
       {
         headers,
       }

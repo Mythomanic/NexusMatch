@@ -5,7 +5,63 @@ import jobService from "../services/jobService";
 import authService from "../services/authService";
 import swipeService from "../services/swipeService";
 import chatService from "../services/chatService";
-import "../TinderCards.css";
+import styled from "styled-components";
+
+const Container = styled.div`
+  text-align: center;
+`;
+
+const CardContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 20px;
+`;
+
+const Card = styled.div`
+  background-size: cover;
+  background-color: #f5f5f5;
+  background-position: center;
+  border-radius: 10px;
+  width: 300px;
+  height: 400px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease;
+  background-image: ${(props) => `url(${props.backgroundImage})`};
+`;
+
+const CardContent = styled.div`
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+`;
+
+const Title = styled.h3`
+  margin: 0;
+`;
+
+const Description = styled.p`
+  margin: 5px 0;
+`;
+
+const Buttons = styled.div`
+  display: flex;
+  justify-content: space-between;
+`;
+
+const Button = styled.button`
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  background-color: ${(props) => (props.danger ? "#e74c3c" : "#2ecc71")};
+  color: white;
+`;
 
 function Applicants() {
   const { jobId } = useParams();
@@ -48,14 +104,14 @@ function Applicants() {
       setApplicants((prevApplicants) =>
         prevApplicants.filter((_, index) => index !== currentIndex)
       );
-      setCurrentIndex((prevIndex) => prevIndex - 1);
+      setCurrentIndex((prevIndex) => prevIndex - prevIndex);
     }
   };
 
   return (
-    <div>
-      <h1 className="text-center">Bu işe başvuranlar</h1>
-      <div className="tinderCards__cardContainer">
+    <Container>
+      <h1>Bu işe başvuranlar</h1>
+      <CardContainer>
         {applicants.map((applicant, index) => (
           <TinderCard
             className="swipe"
@@ -63,39 +119,28 @@ function Applicants() {
             onSwipe={(dir) => swiped(dir, applicant.id)}
             preventSwipe={["up", "down"]}
           >
-            <div
-              style={{
-                backgroundImage: `url(${
-                  applicant.avatarJob
-                    ? `https://nexusmain.onrender.com/storage/avatars/${applicant.avatarJob}`
-                    : "default_image_url"
-                })`,
-              }}
-              className="card"
+            <Card
+              backgroundImage={
+                applicant.avatarJob
+                  ? `https://nexusmain.onrender.com/storage/avatars/${applicant.avatarJob}`
+                  : "default_image_url"
+              }
             >
-              <div className="card-content">
-                <h3>{applicant.name}</h3>
-                <p>{applicant.descriptionJob}</p>
-              </div>
-              <div className="buttons">
-                <button
-                  className="btn btn-danger"
-                  onClick={() => swipe("dislike")}
-                >
+              <CardContent>
+                <Title>{applicant.name}</Title>
+                <Description>{applicant.descriptionJob}</Description>
+              </CardContent>
+              <Buttons>
+                <Button danger onClick={() => swipe("dislike")}>
                   Dislike
-                </button>
-                <button
-                  className="btn btn-success"
-                  onClick={() => swipe("like")}
-                >
-                  Like
-                </button>
-              </div>
-            </div>
+                </Button>
+                <Button onClick={() => swipe("like")}>Like</Button>
+              </Buttons>
+            </Card>
           </TinderCard>
         ))}
-      </div>
-    </div>
+      </CardContainer>
+    </Container>
   );
 }
 
