@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import Pusher from "pusher-js";
 import messageService from "../services/messageService";
 import authService from "../services/authService";
-import "../css/Chat.css";
+import "../css/Chat.css"; // Add the path to your CSS file
 
 function Chat() {
   const { chatId } = useParams();

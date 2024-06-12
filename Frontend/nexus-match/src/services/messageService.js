@@ -6,7 +6,7 @@ const API_URL = "https://nexusmain.onrender.com/api/";
 const sendMessage = async (chatId, message) => {
   const response = await axios.post(
     `${API_URL}chats/${chatId}/messages`,
-    { message },
+    { chat_id: chatId, message: message },
     { headers: authService.authHeader() }
   );
   return response.data;
