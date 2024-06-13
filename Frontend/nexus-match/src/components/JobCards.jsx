@@ -8,19 +8,19 @@ import { ThumbUp, ThumbDown } from "@mui/icons-material";
 
 const Container = styled.div`
   text-align: center;
-  background: linear-gradient(135deg, #37657f 0%, #5f757f 100%);
+  background: linear-gradient(to right, #ffffff, #e6f0f5);
   min-height: 100vh;
   padding: 20px 0;
   transition: background-color 0.5s ease;
   ${({ swipeDirection }) =>
     swipeDirection === "like" &&
     css`
-      background-color: rgba(46, 204, 113, 0.2);
+      background-color: rgba(46, 204, 113, 0.4);
     `}
   ${({ swipeDirection }) =>
     swipeDirection === "dislike" &&
     css`
-      background-color: rgba(231, 76, 60, 0.2);
+      background-color: rgba(231, 76, 60, 0.4);
     `}
 `;
 

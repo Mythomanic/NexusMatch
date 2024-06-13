@@ -49,7 +49,6 @@ const createChat = async (userId, applicantId) => {
   }
 };
 
-
 export default {
   swipeJob,
   checkMatch,

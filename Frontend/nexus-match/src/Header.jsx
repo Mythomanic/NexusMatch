@@ -19,14 +19,14 @@ const GlobalStyle = createGlobalStyle`
 
   body {
     margin: 0;
-    background: #f5f5f5;
+    background: linear-gradient(to right, #ffffff, #e6f0f5);
     font-family: 'Work+Sans', sans-serif;
     font-weight: 800;
   }
 `;
 
 const NavbarContainer = styled.nav`
-  background: #37657f;
+  background: black;
   padding: 10px 0;
   &::after {
     content: "";
@@ -77,7 +77,7 @@ const NavLink = styled(Link)`
   text-transform: uppercase;
   font-size: 18px;
   &:hover {
-    color: #000;
+    color: grey;
   }
   &::before {
     content: "";

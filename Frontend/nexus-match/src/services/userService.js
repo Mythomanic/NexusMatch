@@ -15,6 +15,4 @@ const getAllUsers = async () => {
   }
 };
 
-export default {
-  getAllUsers,
-};
+export default getAllUsers;

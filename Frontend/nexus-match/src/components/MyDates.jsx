@@ -13,7 +13,7 @@ const DatesContainer = styled.div`
   align-items: center;
   gap: 20px;
   padding: 20px;
-  background-color: #f5f5f5;
+  background: linear-gradient(to right, #ffffff, #e6f0f5);
 `;
 
 const DateCard = styled(Card)`

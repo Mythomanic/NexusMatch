@@ -23,17 +23,19 @@ const Register = () => {
   const [password, setPassword] = useState("");
   const [passwordConfirmation, setPasswordConfirmation] = useState("");
   const [message, setMessage] = useState("");
+  const navigate = useNavigate();
 
   const handleRegister = async (e) => {
     e.preventDefault();
     try {
-      const response = await authService.register(
+      await authService.register(
         username,
         email,
         password,
         passwordConfirmation
       );
       setMessage("Registration successful!");
+      navigate("/login"); // Redirect to login page after successful registration
     } catch (error) {
       setMessage("Registration failed: " + error.response.data.message);
     }
@@ -109,7 +111,7 @@ export default function SignUp() {
   const navigate = useNavigate();
 
   const handleSignIn = () => {
-    navigate("/login"); // Login sayfasının URL'si buraya yazılmalı
+    navigate("/login"); // Login page URL
   };
 
   return (

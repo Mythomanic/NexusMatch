@@ -31,7 +31,7 @@ import DateApplicants from "./components/DateApplicants"; // Import DateApplican
 const HomeContainer = styled.div`
   text-align: center;
   padding: 60px;
-  background: linear-gradient(135deg, #7eb0cc 0%, #bef8ff 100%);
+  background: linear-gradient(to right, #ffffff, #e6f0f5);
   min-height: 100vh;
   font-family: "Roboto", sans-serif;
 `;
