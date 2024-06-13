@@ -7,14 +7,18 @@ import {
 } from "react-router-dom";
 import SimpleNavbar from "./Header";
 import JobCards from "./components/JobCards";
+import EventCards from "./components/EventCards"; // Import EventCards
 import UserCards from "./components/UserCards";
 import Login from "./components/Login";
 import Register from "./components/Register";
 import CreateJob from "./components/CreateJob";
+import CreateEvent from "./components/CreateEvent"; // Import CreateEvent
 import Profile from "./components/Profile";
 import MyJobs from "./components/MyJobs";
+import MyEvents from "./components/MyEvents"; // Import MyEvents
 import { Snackbar, Alert, Button } from "@mui/material";
 import Applicants from "./components/Applicants";
+import EventApplicants from "./components/EventApplicants"; // Import EventApplicants
 import Chats from "./components/Chats";
 import Chat from "./components/Chat";
 import styled from "styled-components";
@@ -88,11 +92,18 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/create-job" element={<CreateJob />} />
+          <Route path="/create-event" element={<CreateEvent />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/find-jobs" element={<JobCards />} />
+          <Route path="/find-events" element={<EventCards />} />
           <Route path="/find-workers" element={<UserCards />} />
           <Route path="/my-jobs" element={<MyJobs userId={userId} />} />
+          <Route path="/my-events" element={<MyEvents userId={userId} />} />
           <Route path="/applicants/:jobId" element={<Applicants />} />
+          <Route
+            path="/event-applicants/:eventId"
+            element={<EventApplicants />}
+          />
           <Route path="/chats" element={<Chats />} />
           <Route path="/chat/:chatId" element={<Chat />} />
           <Route

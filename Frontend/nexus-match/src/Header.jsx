@@ -147,6 +147,22 @@ function SimpleNavbar({ showSnackbar, userId }) {
             </NavItem>
             <NavItem>
               <NavDropdown>
+                <NavLink to="#">Event</NavLink>
+                <DropdownContent className="dropdown-content">
+                  <DropdownItem to="/find-events">
+                    <PersonIcon /> Find Events
+                  </DropdownItem>
+                  <DropdownItem to="/my-events">
+                    <PersonIcon /> My Events
+                  </DropdownItem>
+                  <DropdownItem to="/create-event">
+                    <LogoutIcon /> Create Event
+                  </DropdownItem>
+                </DropdownContent>
+              </NavDropdown>
+            </NavItem>
+            <NavItem>
+              <NavDropdown>
                 <NavLink to="#">Create Job</NavLink>
                 <DropdownContent className="dropdown-content">
                   <DropdownItem to="/my-jobs">
