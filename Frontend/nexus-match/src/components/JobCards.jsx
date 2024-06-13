@@ -104,10 +104,20 @@ const EmptyState = styled.div`
   font-size: 1.2em;
 `;
 
+const SearchInput = styled.input`
+  padding: 10px;
+  margin: 20px 0;
+  width: 600px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+`;
+
 function JobCards() {
   const [jobs, setJobs] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [swipeDirection, setSwipeDirection] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filteredJobs, setFilteredJobs] = useState([]);
 
   useEffect(() => {
     const fetchJobs = async () => {
@@ -122,6 +132,7 @@ function JobCards() {
         console.log("getUnseenJobs response:", response); // Log the jobs for debugging
         if (response && response.length > 0) {
           setJobs(response);
+          setFilteredJobs(response);
           setCurrentIndex(response.length - 1);
         } else {
           console.error("No jobs received.");
@@ -135,6 +146,19 @@ function JobCards() {
 
     fetchJobs();
   }, []);
+
+  useEffect(() => {
+    const results = jobs.filter(
+      (job) =>
+        job.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        job.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        job.location.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        job.salary.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        job.requirements.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    setFilteredJobs(results);
+    setCurrentIndex(results.length - 1);
+  }, [searchTerm, jobs]);
 
   const swiped = async (direction, jobId) => {
     const user = authService.getCurrentUser();
@@ -150,10 +174,10 @@ function JobCards() {
   const swipe = async (dir) => {
     if (currentIndex >= 0) {
       setSwipeDirection(dir);
-      const jobId = jobs[currentIndex].id;
+      const jobId = filteredJobs[currentIndex].id;
       await swiped(dir, jobId);
       setTimeout(() => {
-        setJobs((prevJobs) =>
+        setFilteredJobs((prevJobs) =>
           prevJobs.filter((_, index) => index !== currentIndex)
         );
         setCurrentIndex((prevIndex) => prevIndex - 1);
@@ -168,9 +192,15 @@ function JobCards() {
 
   return (
     <Container swipeDirection={swipeDirection}>
+      <SearchInput
+        type="text"
+        placeholder="Search jobs..."
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+      />
       <CardContainer>
-        {jobs && jobs.length > 0 ? (
-          jobs.map((job, index) => (
+        {filteredJobs && filteredJobs.length > 0 ? (
+          filteredJobs.map((job, index) => (
             <TinderCard
               className={`swipe ${
                 index === currentIndex ? swipeDirection : ""
@@ -181,7 +211,7 @@ function JobCards() {
             >
               <Card
                 backgroundImage={job.imageUrl || "default_image_url"}
-                style={{ zIndex: jobs.length - index }}
+                style={{ zIndex: filteredJobs.length - index }}
               >
                 <CardContent>
                   <Title>{job.title}</Title>
