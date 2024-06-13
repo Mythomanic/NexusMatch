@@ -3,18 +3,16 @@
   justify-content: space-around;
   align-items: center;
   border-bottom: 1px solid #f9f9f9;
-  background-color: #ffffff; /* Arka plan rengini beyaz yapıyoruz */
-  padding: 10px; /* Üst ve alt boşluk ekliyoruz */
+  background-color: #ffffff;
+  padding: 10px;
 }
 
 .header__icon {
   padding: 20px;
-  color: #000000; /* İkonların rengini siyah yapıyoruz */
+  color: #000000;
 }
 
 .header__link {
   text-decoration: none;
-  color: inherit; /* Linklerin rengini varsayılan olarak ayarlıyoruz */
+  color: inherit;
 }
-
-

@@ -129,18 +129,18 @@ function JobCards() {
         }
         console.log("Fetching unseen jobs for user ID:", user.id);
         const response = await jobService.getUnseenJobs(user.id);
-        console.log("getUnseenJobs response:", response); // Log the jobs for debugging
+        console.log("getUnseenJobs response:", response); 
         if (response && response.length > 0) {
           setJobs(response);
           setFilteredJobs(response);
           setCurrentIndex(response.length - 1);
         } else {
           console.error("No jobs received.");
-          setJobs([]); // Eğer iş yoksa, jobları boş bir diziye set et
+          setJobs([]); 
         }
       } catch (error) {
         console.error("Error fetching jobs:", error);
-        setJobs([]); // Hata durumunda jobları boş bir diziye set et
+        setJobs([]); 
       }
     };
 

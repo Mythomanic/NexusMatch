@@ -24,7 +24,6 @@ const login = async (email, password) => {
     });
     if (response.data.token) {
       localStorage.setItem("user", JSON.stringify(response.data));
-      //başarılıysa buraya yönlendir
       window.location.href = "/";
     }
     return response.data;

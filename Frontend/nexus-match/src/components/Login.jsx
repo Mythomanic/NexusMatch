@@ -30,8 +30,7 @@ const Login = () => {
       setError(null);
       const response = await authService.login(email, password);
       console.log("Login successful:", response);
-      // Başarılı giriş işleminden sonra kullanıcıyı yönlendir
-      navigate("/app"); // Ana uygulama sayfasının URL'si buraya yazılmalı
+      navigate("/app"); 
     } catch (error) {
       setError("Invalid email or password");
       console.error("Login error:", error);
@@ -39,7 +38,7 @@ const Login = () => {
   };
 
   const handleSignUp = () => {
-    navigate("/register"); // Kayıt sayfasının URL'si buraya yazılmalı
+    navigate("/register");
   };
 
   return (

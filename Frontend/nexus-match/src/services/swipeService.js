@@ -11,10 +11,10 @@ const swipeJob = async (userId, jobId, direction) => {
       { direction },
       { headers }
     );
-    console.log("Swipe response:", response.data); // Başarıyla tamamlandığında konsola yazdır
+    console.log("Swipe response:", response.data); 
     return response.data;
   } catch (error) {
-    console.error("Error swiping job:", error); // Hata durumunda konsola yazdır
+    console.error("Error swiping job:", error); 
     throw error;
   }
 };
@@ -26,10 +26,10 @@ const checkMatch = async (userId, jobId) => {
       headers,
     });
     const likedUsers = response.data.likedUsers;
-    console.log("Check match response:", likedUsers); // Başarıyla tamamlandığında konsola yazdır
+    console.log("Check match response:", likedUsers); 
     return likedUsers.some((user) => user.id === userId);
   } catch (error) {
-    console.error("Error checking match:", error); // Hata durumunda konsola yazdır
+    console.error("Error checking match:", error); 
     throw error;
   }
 };

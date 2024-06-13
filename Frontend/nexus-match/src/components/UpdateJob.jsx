@@ -53,7 +53,7 @@ const UpdateJob = () => {
     try {
       setError(null);
       await jobService.updateJob(id, jobData);
-      navigate("/"); // İlan güncellendikten sonra ana sayfaya yönlendirme
+      navigate("/"); 
     } catch (error) {
       setError("Job update failed. Please try again.");
       console.error("Job update error:", error);

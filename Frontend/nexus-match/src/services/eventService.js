@@ -116,7 +116,7 @@ const getUnseenEvents = async (userId) => {
       }
     );
     console.log("API response:", response.data);
-    return response.data; // Burada doğrudan response.data döndürülüyor
+    return response.data; 
   } catch (error) {
     console.error("Error fetching unseen events:", error);
     throw error;

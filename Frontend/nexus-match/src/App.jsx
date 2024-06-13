@@ -7,18 +7,18 @@ import {
 } from "react-router-dom";
 import SimpleNavbar from "./Header";
 import JobCards from "./components/JobCards";
-import EventCards from "./components/EventCards"; // Import EventCards
+import EventCards from "./components/EventCards";
 import UserCards from "./components/UserCards";
 import Login from "./components/Login";
 import Register from "./components/Register";
 import CreateJob from "./components/CreateJob";
-import CreateEvent from "./components/CreateEvent"; // Import CreateEvent
+import CreateEvent from "./components/CreateEvent";
 import Profile from "./components/Profile";
 import MyJobs from "./components/MyJobs";
-import MyEvents from "./components/MyEvents"; // Import MyEvents
+import MyEvents from "./components/MyEvents";
 import { Snackbar, Alert, Button } from "@mui/material";
 import Applicants from "./components/Applicants";
-import EventApplicants from "./components/EventApplicants"; // Import EventApplicants
+import EventApplicants from "./components/EventApplicants";
 import Chats from "./components/Chats";
 import Chat from "./components/Chat";
 import styled from "styled-components";
@@ -26,7 +26,7 @@ import { Work, Group, Search, PersonAdd } from "@mui/icons-material";
 import DateCards from "./components/DateCards";
 import CreateDate from "./components/CreateDate";
 import MyDates from "./components/MyDates";
-import DateApplicants from "./components/DateApplicants"; // Import DateApplicants
+import DateApplicants from "./components/DateApplicants";
 
 const HomeContainer = styled.div`
   text-align: center;

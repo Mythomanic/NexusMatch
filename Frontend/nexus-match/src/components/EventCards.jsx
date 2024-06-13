@@ -129,18 +129,18 @@ function EventCards() {
         }
         console.log("Fetching unseen events for user ID:", user.id);
         const response = await eventService.getUnseenEvents(user.id);
-        console.log("getUnseenEvents response:", response); // Log the events for debugging
+        console.log("getUnseenEvents response:", response);
         if (response && response.length > 0) {
           setEvents(response);
           setFilteredEvents(response);
           setCurrentIndex(response.length - 1);
         } else {
           console.error("No events received.");
-          setEvents([]); // Eğer event yoksa, events boş bir diziye set et
+          setEvents([]);
         }
       } catch (error) {
         console.error("Error fetching events:", error);
-        setEvents([]); // Hata durumunda events boş bir diziye set et
+        setEvents([]);
       }
     };
 
@@ -185,7 +185,7 @@ function EventCards() {
 
       setTimeout(() => {
         setSwipeDirection("");
-      }, 500); // Background color reset delay
+      }, 500);
     }
   };
 

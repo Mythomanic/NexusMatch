@@ -32,7 +32,7 @@ const getUnseenDates = async (userId) => {
       `${API_URL}user/${userId}/dateOpportunities`,
       { headers }
     );
-    return response.data; // return response.data.dates; yapıldı
+    return response.data; 
   } catch (error) {
     throw error;
   }

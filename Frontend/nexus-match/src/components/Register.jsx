@@ -35,7 +35,7 @@ const Register = () => {
         passwordConfirmation
       );
       setMessage("Registration successful!");
-      navigate("/login"); // Redirect to login page after successful registration
+      navigate("/login"); 
     } catch (error) {
       setMessage("Registration failed: " + error.response.data.message);
     }
