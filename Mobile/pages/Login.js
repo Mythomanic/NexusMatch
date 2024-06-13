@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect } from 'react'
-import { TouchableOpacity } from 'react-native';
+import { StatusBar, TouchableOpacity } from 'react-native';
 import { View, Image, ImageBackground, Text } from 'react-native'
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import styles from '../App.styles';
@@ -54,7 +54,7 @@ function Login({ navigation }) {
         const response = await login(email, password);
         if (response.status === true) {
             console.log('User Logged In Successfully');
-            await AsyncStorage.setItem('usertoken',`Bearer ${response.token}`);
+            await AsyncStorage.setItem('usertoken', `Bearer ${response.token}`);
             await AsyncStorage.setItem('userid', JSON.stringify(response.id));
             navigation.navigate("Homepage")
 
@@ -96,7 +96,7 @@ function Login({ navigation }) {
     return (
 
         <SafeAreaView style={[styles.SafeAreaView, { backgroundColor: requestType === 1 ? "#1161a8" : "#7c0150", padding: 17.5, }]}>
-
+            <StatusBar></StatusBar>
 
 
             <View style={{ width: "100%", padding: 10, alignItems: "center", flex: 1, backgroundColor: "white", borderRadius: 20, }}>
@@ -139,7 +139,7 @@ function Login({ navigation }) {
                             <TextInput value={email} onChangeText={setEmail} id='girisemail' keyboardType='email-address' placeholder='E-posta' placeholderTextColor={requestType === 1 ? "#1161a8" : "#a6026b"} style={{ width: "100%" }} />
 
                         </View>
-                       {/*  <TouchableOpacity onPress={() => { console.log(password) }}><Text>TESTBUTON</Text></TouchableOpacity> */}
+                        {/*  <TouchableOpacity onPress={() => { console.log(password) }}><Text>TESTBUTON</Text></TouchableOpacity> */}
 
                         <View style={styles.LoginInputContainer}>
                             <Feather name="lock" style={{ fontSize: 20, color: requestType === 1 ? "#1161a8" : "#a6026b" }} />

@@ -73,7 +73,11 @@ function Profile({ navigation }) {
     const [userToken, setUserToken] = useState()
     const [userId, setUserId] = useState()
     const [loggedInUserJobInfo, setloggedInUserJobInfo] = useState({})
+    const [loggedInUserDateInfo, setloggedInUserDateInfo] = useState({})
+    const [loggedInUserEventInfo, setloggedInUserEventInfo] = useState({})
     const [loggedInUserJobTags, setloggedInUserJobTags] = useState([])
+    const [loggedInUserDateTags, setloggedInUserDateTags] = useState([])
+    const [loggedInUserEventTags, setloggedInUserEventTags] = useState([])
     const [selectedImage, setSelectedImage] = useState("");
     const [selectedImageDate, setSelectedImageDate] = useState("");
     const [selectedImageEvent, setSelectedImageEvent] = useState("");
@@ -108,12 +112,69 @@ function Profile({ navigation }) {
                 }
 
                 const data = await response.json();
+                console.log(data);
                 if (data.status) {
                     setloggedInUserJobInfo(data.jobProfile);
                     setloggedInUserJobTags(data.jobProfile.tagsJob);
                     setSelectedImage("https://nexusmain.onrender.com/storage/avatars/" + data.jobProfile.avatarJob);
-                    //setSelectedImageDate("https://nexusmain.onrender.com/storage/avatars/" + data.dateProfile.avatarDate);
-                    //setSelectedImageEvent("https://nexusmain.onrender.com/storage/avatars/" + data.eventProfile.avatarEvent);
+                }
+            }
+        } catch (e) {
+            console.error('Error fetching profile details:', e);
+        }
+    };
+
+    const getLoggedInUserDate = async () => {
+        try {
+            if (userToken !== null && userId !== null) {
+                const response = await fetch(`${API_PROFILE_DETAILS_URL}/${userId}/date-profile`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${userToken}` // Corrected Authorization header
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                console.log(data);
+                if (data.status) {
+                    setloggedInUserDateInfo(data.dateProfile);
+                    const parsedTagsDate = typeof data.dateProfile.tagsDate === 'string' ? JSON.parse(data.dateProfile.tagsDate) : (data.dateProfile.tagsDate || []);
+                    setloggedInUserDateTags(parsedTagsDate);
+                    setSelectedImageDate("https://nexusmain.onrender.com/storage/avatars/" + data.dateProfile.avatarDate);
+                }
+            }
+        } catch (e) {
+            console.error('Error fetching profile details:', e);
+        }
+    };
+
+    const getLoggedInUserEvent = async () => {
+        try {
+            if (userToken !== null && userId !== null) {
+                const response = await fetch(`${API_PROFILE_DETAILS_URL}/${userId}/event-profile`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${userToken}` // Corrected Authorization header
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                console.log(data);
+                if (data.status) {
+                    setloggedInUserEventInfo(data.eventProfile);
+                    const parsedTagsEvent = typeof data.eventProfile.tagsEvent === 'string' ? JSON.parse(data.eventProfile.tagsEvent) : (data.eventProfile.tagsEvent || []);
+                    setloggedInUserEventTags(parsedTagsEvent);
+                    setSelectedImageEvent("https://nexusmain.onrender.com/storage/avatars/" + data.eventProfile.avatarEvent);
                 }
             }
         } catch (e) {
@@ -129,6 +190,8 @@ function Profile({ navigation }) {
     useEffect(() => {
         if (userToken && userId) {
             getLoggedInUser();
+            getLoggedInUserDate();
+            getLoggedInUserEvent();
         }
 
     }, [userToken, userId]);
@@ -351,30 +414,30 @@ function Profile({ navigation }) {
                                 <View style={{ flex: 1, alignItems: "center", width: "100%", }}>
 
                                     <View style={{ flex: 1, alignItems: "center", justifyContent: "center", }}>
-                                        <TouchableOpacity onPress={handleImagePickAndUpload} style={{ width: 110, height: 110, borderRadius: 100, borderColor: "darkgrey", borderWidth: 1, alignItems: "center", justifyContent: "center" }}>
-                                            {selectedImage && (
-                                                <Image source={{ uri: selectedImage }} style={{ width: "100%", height: "100%", borderRadius: 100 }} />
+                                        <TouchableOpacity onPress={handleImagePickAndUploadDate} style={{ width: 110, height: 110, borderRadius: 100, borderColor: "darkgrey", borderWidth: 1, alignItems: "center", justifyContent: "center" }}>
+                                            {selectedImageDate && (
+                                                <Image source={{ uri: selectedImageDate }} style={{ width: "100%", height: "100%", borderRadius: 100 }} />
                                             )}
                                         </TouchableOpacity>
                                     </View>
 
                                     {/* <BioName text={loggedInUserJobInfo.name}></BioName> */}
                                     <View style={{ width: "100%", alignItems: "center", justifyContent: "center", }}>
-                                        <Text style={{ fontSize: 20, fontWeight: "bold", color: "black" }} fontSize="xs">Ahmet</Text>
+                                        <Text style={{ fontSize: 20, fontWeight: "bold", color: "black" }} fontSize="xs">{loggedInUserDateInfo.name}</Text>
                                     </View>
 
                                     {/* <BioJob text={loggedInUserJobInfo.userJob}></BioJob> */}
                                     <View style={{ width: "100%", alignItems: "center", justifyContent: "center", }}>
-                                        <Text style={{ fontSize: 17, color: "slategrey" }} fontSize="xs">my job</Text>
+                                        {/* <Text style={{ fontSize: 17, color: "slategrey" }} fontSize="xs">{loggedInUserDateInfo.name}</Text> */}
                                     </View>
 
-                                    <ProfileTags tags={loggedInUserJobTags}></ProfileTags>
+                                    <ProfileTags tags={loggedInUserDateTags}></ProfileTags>
 
                                     <View style={{ flex: 2, alignItems: "center", width: "100%", }}>
 
                                         <ScrollView contentContainerStyle={{ alignItems: "center", width: "100%", }} showsVerticalScrollIndicator={false}>
                                             <View style={{ flex: 1, minWidth: "100%", alignItems: "flex-start", paddingHorizontal: 10 }}>
-                                                <Text fontSize="xs">{loggedInUserJobInfo.descriptionJob}</Text>
+                                                <Text fontSize="xs">{loggedInUserDateInfo.descriptionDate}</Text>
                                             </View>
                                         </ScrollView>
 
@@ -387,30 +450,30 @@ function Profile({ navigation }) {
                                 <View style={{ flex: 1, alignItems: "center", width: "100%", }}>
 
                                     <View style={{ flex: 1, alignItems: "center", justifyContent: "center", }}>
-                                        <TouchableOpacity onPress={handleImagePickAndUpload} style={{ width: 110, height: 110, borderRadius: 100, borderColor: "darkgrey", borderWidth: 1, alignItems: "center", justifyContent: "center" }}>
-                                            {selectedImage && (
-                                                <Image source={{ uri: selectedImage }} style={{ width: "100%", height: "100%", borderRadius: 100 }} />
+                                        <TouchableOpacity onPress={handleImagePickAndUploadEvent} style={{ width: 110, height: 110, borderRadius: 100, borderColor: "darkgrey", borderWidth: 1, alignItems: "center", justifyContent: "center" }}>
+                                            {selectedImageEvent && (
+                                                <Image source={{ uri: selectedImageEvent }} style={{ width: "100%", height: "100%", borderRadius: 100 }} />
                                             )}
                                         </TouchableOpacity>
                                     </View>
 
                                     {/* <BioName text={loggedInUserJobInfo.name}></BioName> */}
                                     <View style={{ width: "100%", alignItems: "center", justifyContent: "center", }}>
-                                        <Text style={{ fontSize: 20, fontWeight: "bold", color: "black" }} fontSize="xs">Ahmet</Text>
+                                        <Text style={{ fontSize: 20, fontWeight: "bold", color: "black" }} fontSize="xs">{loggedInUserEventInfo.name}</Text>
                                     </View>
 
                                     {/* <BioJob text={loggedInUserJobInfo.userJob}></BioJob> */}
                                     <View style={{ width: "100%", alignItems: "center", justifyContent: "center", }}>
-                                        <Text style={{ fontSize: 17, color: "slategrey" }} fontSize="xs">my job</Text>
+                                        {/* <Text style={{ fontSize: 17, color: "slategrey" }} fontSize="xs">my job</Text> */}
                                     </View>
 
-                                    <ProfileTags tags={loggedInUserJobTags}></ProfileTags>
+                                    <ProfileTags tags={loggedInUserEventTags}></ProfileTags>
 
                                     <View style={{ flex: 2, alignItems: "center", width: "100%" }}>
 
                                         <ScrollView contentContainerStyle={{ alignItems: "center", width: "100%", }} showsVerticalScrollIndicator={false}>
                                             <View style={{ flex: 1, minWidth: "100%", alignItems: "flex-start", paddingHorizontal: 10 }}>
-                                                <Text fontSize="xs">{loggedInUserJobInfo.descriptionJob}</Text>
+                                                <Text fontSize="xs">{loggedInUserEventInfo.descriptionEvent}</Text>
                                             </View>
                                         </ScrollView>
 

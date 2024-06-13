@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import { View, Text, TouchableOpacity, Dimensions, TextInput, Button, ActivityIndicator, Alert, Modal } from 'react-native';
+import { View, Text, TouchableOpacity, Dimensions, TextInput, ActivityIndicator, Alert, Modal } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import styles from '../App.styles';
 import JobListItem from './JobListItemComponent';
@@ -44,15 +44,15 @@ function JobList({ navigation }) {
 
     useEffect(() => {
         if (userToken && userId) {
-            fetchJobs();
+            fetchJobs(filterPosition); // Call fetchJobs with filterPosition
         }
-    }, [userToken, userId, refreshKey]);
+    }, [userToken, userId, refreshKey, filterPosition]); // Also depend on filterPosition
 
     const fetchJobs = async (position = '') => {
         if (userToken && userId) {
             setLoading(true);
             try {
-                const response = await fetch(`${API_URL}/user/${userId}/jobs/filterJob?position=${position}`, {
+                const response = await fetch(`${API_URL}/user/${userId}/jobs/filterJob?position=${encodeURIComponent(position)}`, {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
@@ -81,7 +81,7 @@ function JobList({ navigation }) {
     };
 
     const applyFilter = () => {
-        fetchJobs(filterPosition);
+        fetchJobs(filterPosition); // Fetch jobs with the new filter
         toggleModal();
     };
 
@@ -107,12 +107,8 @@ function JobList({ navigation }) {
             {isModalVisible &&
                 <Modal animationType='slide' transparent={true} >
                     <View style={{ flex: 1, justifyContent: 'flex-end', alignItems: 'center', }}>
-                        <TouchableOpacity onPress={() => { setModalVisible(!isModalVisible) }} style={{ width: "100%", flex: 1.5 }}>
-
-                        </TouchableOpacity>
-
-                        <View style={{ flex: 1, width: "100%", justifyContent: 'center', alignItems: 'center', backgroundColor: "lightblue", borderTopLeftRadius: 75, borderTopRightRadius: 75,borderWidth:1,borderColor:"skyblue" }}>
-
+                        <TouchableOpacity onPress={toggleModal} style={{ width: "100%", flex: 1 }}></TouchableOpacity>
+                        <View style={{ flex: 1, width: "100%", justifyContent: 'center', alignItems: 'center', backgroundColor: "lightblue", borderTopLeftRadius: 75, borderTopRightRadius: 75, borderWidth: 1, borderColor: "skyblue" }}>
                             <Text style={{ marginBottom: 10 }}>Filter by Position</Text>
                             <TextInput
                                 style={{ height: 40, borderColor: '#6eb9c2', borderWidth: 1, marginBottom: 20, paddingLeft: 10, width: '80%', borderRadius: 10 }}
@@ -120,23 +116,17 @@ function JobList({ navigation }) {
                                 onChangeText={text => setFilterPosition(text)}
                                 value={filterPosition}
                             />
-                            <TouchableOpacity style={{ marginVertical: 5, padding: 10, borderWidth: 1, borderColor: "#6eb9c2", borderRadius: 15, alignItems: "center", justifyContent: "center" }} onPress={applyFilter} >
+                            <TouchableOpacity style={{ marginVertical: 5, padding: 10, borderWidth: 1, borderColor: "#6eb9c2", borderRadius: 15, alignItems: "center", justifyContent: "center" }} onPress={applyFilter}>
                                 <Text fontSize="xs">Apply Filter</Text>
-
                             </TouchableOpacity>
-                            <TouchableOpacity style={{ marginVertical: 10, padding: 10, borderWidth: 1, borderColor: "#6eb9c2", borderRadius: 15, alignItems: "center", justifyContent: "center" }} onPress={toggleModal} >
+                            <TouchableOpacity style={{ marginVertical: 10, padding: 10, borderWidth: 1, borderColor: "#6eb9c2", borderRadius: 15, alignItems: "center", justifyContent: "center" }} onPress={toggleModal}>
                                 <Text fontSize="xs">Cancel</Text>
-
                             </TouchableOpacity>
-
                         </View>
-
                     </View>
                 </Modal>
-
             }
-
-        </SafeAreaView >
+        </SafeAreaView>
     );
 }
 

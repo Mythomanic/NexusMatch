@@ -37,6 +37,15 @@ function ProfileSettings({ navigation }) {
     const [newTag, setNewTag] = useState("");
     const [tagRefreshKey, setTagRefreshKey] = useAtom(tagRefreshAtom);
 
+    const [loggedInUserDateInfo, setloggedInUserDateInfo] = useState({})
+    const [loggedInUserEventInfo, setloggedInUserEventInfo] = useState({})
+    const [loggedInUserDateTags, setloggedInUserDateTags] = useState([])
+    const [loggedInUserEventTags, setloggedInUserEventTags] = useState([])
+    const [selectedImageDate, setSelectedImageDate] = useState("");
+    const [selectedImageEvent, setSelectedImageEvent] = useState("");
+    const [selectedImage, setSelectedImage] = useState("");
+
+
     const getData = async () => {
         try {
             const userTokenValue = await AsyncStorage.getItem('usertoken');
@@ -77,6 +86,64 @@ function ProfileSettings({ navigation }) {
         }
     };
 
+    const getLoggedInUserDate = async () => {
+        try {
+            if (userToken !== null && userId !== null) {
+                const response = await fetch(`${API_PROFILE_DETAILS_URL}/${userId}/date-profile`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${userToken}` // Corrected Authorization header
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                console.log(data);
+                if (data.status) {
+                    setloggedInUserDateInfo(data.dateProfile);
+                    const parsedTagsDate = typeof data.dateProfile.tagsDate === 'string' ? JSON.parse(data.dateProfile.tagsDate) : (data.dateProfile.tagsDate || []);
+                    setloggedInUserDateTags(parsedTagsDate);
+                    setSelectedImageDate("https://nexusmain.onrender.com/storage/avatars/" + data.dateProfile.avatarDate);
+                }
+            }
+        } catch (e) {
+            console.error('Error fetching profile details:', e);
+        }
+    };
+
+    const getLoggedInUserEvent = async () => {
+        try {
+            if (userToken !== null && userId !== null) {
+                const response = await fetch(`${API_PROFILE_DETAILS_URL}/${userId}/event-profile`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${userToken}` // Corrected Authorization header
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                console.log(data);
+                if (data.status) {
+                    setloggedInUserEventInfo(data.eventProfile);
+                    const parsedTagsEvent = typeof data.eventProfile.tagsEvent === 'string' ? JSON.parse(data.eventProfile.tagsEvent) : (data.eventProfile.tagsEvent || []);
+                    setloggedInUserEventTags(parsedTagsEvent);
+                    setSelectedImageEvent("https://nexusmain.onrender.com/storage/avatars/" + data.eventProfile.avatarEvent);
+                }
+            }
+        } catch (e) {
+            console.error('Error fetching profile details:', e);
+        }
+    };
+
 
     useEffect(() => {
         getData();
@@ -85,6 +152,8 @@ function ProfileSettings({ navigation }) {
     useEffect(() => {
         if (userToken && userId) {
             getLoggedInUser();
+            getLoggedInUserDate();
+            getLoggedInUserEvent();
         }
     }, [userToken, userId]);
 
@@ -109,7 +178,49 @@ function ProfileSettings({ navigation }) {
             if (data.status) {
                 setloggedInUserJobTags(data.tagsJob);
                 setNewTag("");
-                setTagRefreshKey((prevKey)=>(prevKey+1))
+                setTagRefreshKey((prevKey) => (prevKey + 1))
+            }
+        } catch (error) {
+            console.error("Failed to add tag", error);
+        }
+    };
+
+    const handleAddTagDate = async () => {
+        try {
+            const response = await fetch(`https://nexusmain.onrender.com/api/user/${userId}/update-profile`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${userToken}`
+                },
+                body: JSON.stringify({ tagDate: newTag })
+            });
+            const data = await response.json();
+            if (data.status) {
+                setloggedInUserDateTags(data.tagsDate);
+                setNewTag("");
+                setTagRefreshKey((prevKey) => (prevKey + 1))
+            }
+        } catch (error) {
+            console.error("Failed to add tag", error);
+        }
+    };
+
+    const handleAddTagEvent = async () => {
+        try {
+            const response = await fetch(`https://nexusmain.onrender.com/api/user/${userId}/update-profile`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${userToken}`
+                },
+                body: JSON.stringify({ tagEvent: newTag })
+            });
+            const data = await response.json();
+            if (data.status) {
+                setloggedInUserEventTags(data.tagsEvent);
+                setNewTag("");
+                setTagRefreshKey((prevKey) => (prevKey + 1))
             }
         } catch (error) {
             console.error("Failed to add tag", error);
@@ -129,16 +240,52 @@ function ProfileSettings({ navigation }) {
             const data = await response.json();
             if (data.status) {
                 setloggedInUserJobTags(data.tagsJob);
-                setTagRefreshKey((prevKey)=>(prevKey+1))
+                setTagRefreshKey((prevKey) => (prevKey + 1))
             }
         } catch (error) {
             console.error("Failed to remove tag", error);
         }
     };
 
-  
+    const handleRemoveTagDate = async (tagToRemove) => {
+        try {
+            const response = await fetch(`https://nexusmain.onrender.com/api/user/${userId}/update-profile`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${userToken}`
+                },
+                body: JSON.stringify({ removeTagDate: tagToRemove })
+            });
+            const data = await response.json();
+            if (data.status) {
+                setloggedInUserDateTags(data.tagsDate);
+                setTagRefreshKey((prevKey) => (prevKey + 1))
+            }
+        } catch (error) {
+            console.error("Failed to remove tag", error);
+        }
+    };
 
-
+    const handleRemoveTagEvent = async (tagToRemove) => {
+        try {
+            const response = await fetch(`https://nexusmain.onrender.com/api/user/${userId}/update-profile`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${userToken}`
+                },
+                body: JSON.stringify({ removeTagEvent: tagToRemove })
+            });
+            const data = await response.json();
+            if (data.status) {
+                setloggedInUserEventTags(data.tagsEvent);
+                setTagRefreshKey((prevKey) => (prevKey + 1))
+            }
+        } catch (error) {
+            console.error("Failed to remove tag", error);
+        }
+    };
 
     const [fontsLoaded] = useFonts({
         'Kaushan': require('../assets/fonts/KaushanScript-Regular.ttf'),
@@ -219,7 +366,7 @@ function ProfileSettings({ navigation }) {
                                 <TextInput value={loggedInUserJobInfo.descriptionJob} style={{ width: "100%", paddingHorizontal: 10, fontSize: 13 }} placeholder='Açıklama'></TextInput>
                             </View>
 
-                            <View style={[styles.CreateContentContainer,{minHeight:40}]}>
+                            <View style={[styles.CreateContentContainer, { minHeight: 40 }]}>
                                 {loggedInUserJobTags.map((tag, index) => (
                                     <View key={index} style={{ flexDirection: 'row', alignItems: 'center' }}>
                                         <Text>{tag}</Text>
@@ -243,6 +390,18 @@ function ProfileSettings({ navigation }) {
                                 <Text style={{ color: "#03A9F4bb", fontWeight: "bold" }} fontSize="xs">Kaydet</Text>
                             </TouchableOpacity>
 
+                            <TouchableOpacity onPress={() => { console.log(loggedInUserJobInfo); }} style={{ padding: 10, paddingHorizontal: 25, borderRadius: 15, alignItems: "center", justifyContent: "center", borderWidth: 2, borderColor: "#03A9F4bb" }}>
+                                <Text style={{ color: "#03A9F4bb", fontWeight: "bold" }} fontSize="xs">CONSOLE</Text>
+                            </TouchableOpacity>
+
+                            <TouchableOpacity onPress={() => { console.log(loggedInUserDateInfo); }} style={{ padding: 10, paddingHorizontal: 25, borderRadius: 15, alignItems: "center", justifyContent: "center", borderWidth: 2, borderColor: "#03A9F4bb" }}>
+                                <Text style={{ color: "#03A9F4bb", fontWeight: "bold" }} fontSize="xs">CONSOLE</Text>
+                            </TouchableOpacity>
+
+                            <TouchableOpacity onPress={() => { console.log(loggedInUserEventInfo); }} style={{ padding: 10, paddingHorizontal: 25, borderRadius: 15, alignItems: "center", justifyContent: "center", borderWidth: 2, borderColor: "#03A9F4bb" }}>
+                                <Text style={{ color: "#03A9F4bb", fontWeight: "bold" }} fontSize="xs">CONSOLE</Text>
+                            </TouchableOpacity>
+
                         </ScrollView>
 
 
@@ -256,31 +415,35 @@ function ProfileSettings({ navigation }) {
                         <ScrollView contentContainerStyle={{ width: "100%", alignItems: "center", padding: 10, rowGap: 15, }} showsVerticalScrollIndicator={false}>
 
                             <View style={styles.CreateContentContainer}>
-                                <TextInput style={{ width: "100%", paddingHorizontal: 10, fontSize: 13 }} placeholder='Şirket adı'></TextInput>
+                                <TextInput value={loggedInUserDateInfo.name} style={{ width: "100%", paddingHorizontal: 10, fontSize: 13 }} placeholder='İsim'></TextInput>
                             </View>
 
                             <View style={styles.CreateContentContainer}>
-                                <TextInput style={{ width: "100%", paddingHorizontal: 10, fontSize: 13 }} placeholder='Aday iş pozisyonu adı (Örn: Yazılımcı)'></TextInput>
+                                <TextInput value={loggedInUserDateInfo.descriptionDate} style={{ width: "100%", paddingHorizontal: 10, fontSize: 13 }} placeholder='Açıklama'></TextInput>
+                            </View>
+
+                            <View style={[styles.CreateContentContainer, { minHeight: 40 }]}>
+                                {loggedInUserDateTags.map((tag, index) => (
+                                    <View key={index} style={{ flexDirection: 'row', alignItems: 'center' }}>
+                                        <Text>{tag}</Text>
+                                        <TouchableOpacity onPress={() => handleRemoveTagDate(tag)}>
+                                            <Text style={{ color: 'red', marginLeft: 5 }}>X</Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                ))}
                             </View>
 
                             <View style={styles.CreateContentContainer}>
-                                <TextInput style={{ width: "100%", paddingHorizontal: 10, fontSize: 13 }} placeholder='Aranılan yetenekler'></TextInput>
+                                <TextInput
+                                    style={{ width: "100%", paddingHorizontal: 10, fontSize: 13 }}
+                                    placeholder='Yeni Tag'
+                                    value={newTag}
+                                    onChangeText={setNewTag}
+                                />
                             </View>
 
-                            <View style={styles.CreateContentContainer}>
-                                <TextInput style={{ width: "100%", paddingHorizontal: 10, fontSize: 13 }} placeholder='Aranılan Deneyim'></TextInput>
-                            </View>
-
-                            <View style={styles.CreateContentContainer}>
-                                <TextInput style={{ width: "100%", paddingHorizontal: 10, fontSize: 13 }} placeholder='Maaş aralığı'></TextInput>
-                            </View>
-
-                            <View style={styles.CreateContentContainer}>
-                                <TextInput style={{ width: "100%", paddingHorizontal: 10, fontSize: 13 }} placeholder='Çalışma stili (Ofis / Hibrit / Remote)'></TextInput>
-                            </View>
-
-                            <TouchableOpacity onPress={() => { }} style={{ padding: 10, paddingHorizontal: 25, borderRadius: 15, alignItems: "center", justifyContent: "center", borderWidth: 2, borderColor: "#FF6B6Bbb" }}>
-                                <Text style={{ color: "#FF6B6Bbb", fontWeight: "bold" }} fontSize="xs">Oluştur</Text>
+                            <TouchableOpacity onPress={handleAddTagDate} style={{ padding: 10, paddingHorizontal: 25, borderRadius: 15, alignItems: "center", justifyContent: "center", borderWidth: 2, borderColor: "#03A9F4bb" }}>
+                                <Text style={{ color: "#03A9F4bb", fontWeight: "bold" }} fontSize="xs">Kaydet</Text>
                             </TouchableOpacity>
 
                         </ScrollView>
@@ -295,31 +458,36 @@ function ProfileSettings({ navigation }) {
                         <ScrollView contentContainerStyle={{ width: "100%", alignItems: "center", padding: 10, rowGap: 15, }} showsVerticalScrollIndicator={false}>
 
                             <View style={styles.CreateContentContainer}>
-                                <TextInput style={{ width: "100%", paddingHorizontal: 10, fontSize: 13 }} placeholder='Şirket adı'></TextInput>
+                                <TextInput value={loggedInUserEventInfo.name} style={{ width: "100%", paddingHorizontal: 10, fontSize: 13 }} placeholder='İsim'></TextInput>
+                            </View>
+
+
+                            <View style={styles.CreateContentContainer}>
+                                <TextInput value={loggedInUserEventInfo.descriptionEvent} style={{ width: "100%", paddingHorizontal: 10, fontSize: 13 }} placeholder='Açıklama'></TextInput>
+                            </View>
+
+                            <View style={[styles.CreateContentContainer, { minHeight: 40 }]}>
+                                {loggedInUserEventTags.map((tag, index) => (
+                                    <View key={index} style={{ flexDirection: 'row', alignItems: 'center' }}>
+                                        <Text>{tag}</Text>
+                                        <TouchableOpacity onPress={() => handleRemoveTagEvent(tag)}>
+                                            <Text style={{ color: 'red', marginLeft: 5 }}>X</Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                ))}
                             </View>
 
                             <View style={styles.CreateContentContainer}>
-                                <TextInput style={{ width: "100%", paddingHorizontal: 10, fontSize: 13 }} placeholder='Aday iş pozisyonu adı (Örn: Yazılımcı)'></TextInput>
+                                <TextInput
+                                    style={{ width: "100%", paddingHorizontal: 10, fontSize: 13 }}
+                                    placeholder='Yeni Tag'
+                                    value={newTag}
+                                    onChangeText={setNewTag}
+                                />
                             </View>
 
-                            <View style={styles.CreateContentContainer}>
-                                <TextInput style={{ width: "100%", paddingHorizontal: 10, fontSize: 13 }} placeholder='Aranılan yetenekler'></TextInput>
-                            </View>
-
-                            <View style={styles.CreateContentContainer}>
-                                <TextInput style={{ width: "100%", paddingHorizontal: 10, fontSize: 13 }} placeholder='Aranılan Deneyim'></TextInput>
-                            </View>
-
-                            <View style={styles.CreateContentContainer}>
-                                <TextInput style={{ width: "100%", paddingHorizontal: 10, fontSize: 13 }} placeholder='Maaş aralığı'></TextInput>
-                            </View>
-
-                            <View style={styles.CreateContentContainer}>
-                                <TextInput style={{ width: "100%", paddingHorizontal: 10, fontSize: 13 }} placeholder='Çalışma stili (Ofis / Hibrit / Remote)'></TextInput>
-                            </View>
-
-                            <TouchableOpacity onPress={() => { }} style={{ padding: 10, paddingHorizontal: 25, borderRadius: 15, alignItems: "center", justifyContent: "center", borderWidth: 2, borderColor: "#4CAF50bb" }}>
-                                <Text style={{ color: "#4CAF50bb", fontWeight: "bold" }} fontSize="xs">Oluştur</Text>
+                            <TouchableOpacity onPress={handleAddTagEvent} style={{ padding: 10, paddingHorizontal: 25, borderRadius: 15, alignItems: "center", justifyContent: "center", borderWidth: 2, borderColor: "#03A9F4bb" }}>
+                                <Text style={{ color: "#03A9F4bb", fontWeight: "bold" }} fontSize="xs">Kaydet</Text>
                             </TouchableOpacity>
 
                         </ScrollView>

@@ -21,7 +21,7 @@ const UserCreatedJobs = ({ navigation }) => {
             const userTokenValue = await AsyncStorage.getItem('usertoken');
             const userIdValue = await AsyncStorage.getItem('userid');
             if (userTokenValue && userIdValue) {
-                const response = await axios.get(`${API_PROFILE_DETAILS_URL}/${userIdValue}/jobs`, {
+                const response = await axios.get(`${API_PROFILE_DETAILS_URL}/${userIdValue}/dates`, {
                     headers: {
                         Authorization: `Bearer ${userTokenValue}`,
                     },
@@ -56,7 +56,7 @@ const UserCreatedJobs = ({ navigation }) => {
                     keyExtractor={(item) => item.id.toString()}
                     renderItem={({ item }) => (
                         <TouchableOpacity
-                            onPress={() => navigation.navigate('JobLikeDislikeUsers', { jobId: item.id })}
+                            onPress={() => navigation.navigate('DateLikeDislikeUsers', { dateId: item.id })}
                             style={{
                                 width: "90%", flex: 1, alignItems: "center",
                                 justifyContent: "center",

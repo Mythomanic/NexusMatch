@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react'
-import { View, Image, ImageBackground, Text, ScrollView, TouchableOpacity, Dimensions, Alert } from 'react-native'
+import { View, Image, ImageBackground, Text, ScrollView, TouchableOpacity, Dimensions, Alert, StatusBar } from 'react-native'
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import styles from '../App.styles';
 import { TextInput } from 'react-native';
@@ -80,6 +80,7 @@ function Homepage({ navigation }) {
     return (
 
         <SafeAreaView style={[styles.SafeAreaView]}>
+            <StatusBar></StatusBar>
 
             {/* <TopBar title={"NexusMatch"} titleFont={"Montserrat-SemiBold"} navigation={navigation} backColor={"#3F51B5"}></TopBar> */}
             <View style={[styles.HomepageTopbar, { backgroundColor: "#3F51B5" }]}>

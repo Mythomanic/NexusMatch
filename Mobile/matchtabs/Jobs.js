@@ -6,16 +6,20 @@ import styles from '../App.styles';
 import BottomBar from '../pages/BottomBar';
 
 const Jobs = ({ route, navigation }) => {
-    const userId = route?.params?.userId;
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [chats, setChats] = useState([]);
     const [selectedImage, setSelectedImage] = useState("");
+    const [loggedinuserId, setLoggedinuserId] = useState(null)
+    const userId = route?.params?.userId;
+
 
 
     const fetchChats = async () => {
         try {
             const userTokenValue = await AsyncStorage.getItem('usertoken');
+            const userid = await AsyncStorage.getItem('userid');
+            setLoggedinuserId(userid)
             if (userTokenValue) {
                 const response = await axios.get(`https://nexusmain.onrender.com/api/chats`, {
                     headers: {
@@ -38,6 +42,8 @@ const Jobs = ({ route, navigation }) => {
             setLoading(false);
         }
     };
+
+
 
     useEffect(() => {
         fetchChats();
@@ -78,7 +84,8 @@ const Jobs = ({ route, navigation }) => {
                     }} style={{ width: "100%", height: "100%", borderRadius: 100 }} />
                 </View>
 
-                <Text style={{ textAlign: "justify" }}>Chat with {item.user2.name}</Text>
+
+                <Text style={{ textAlign: "justify" }}>Chat with {item.user1.id == loggedinuserId ? item.user2.name : item.user1.name}</Text>
             </View>
 
 
@@ -94,7 +101,6 @@ const Jobs = ({ route, navigation }) => {
                 keyExtractor={(item) => item.id.toString()}
                 showsVerticalScrollIndicator={false}
             />
-
             <BottomBar selectMenu={1} navigation={navigation} />
         </SafeAreaView >
     );

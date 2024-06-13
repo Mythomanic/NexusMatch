@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from 'react'
 import { View, Image, ImageBackground, Text, ScrollView, TouchableOpacity, Dimensions } from 'react-native'
-import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaProvider, SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import styles from '../App.styles';
 import { TextInput } from 'react-native';
 import { useFonts } from 'expo-font';
@@ -10,13 +10,25 @@ import TopBar from '../pages/TopBar';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Carousel } from 'react-native-basic-carousel'
 import MessageComponent from '../MessageComponent';
+import { useAtom } from 'jotai';
+import { refreshAtom } from '../JotaiAtoms';
+import JobListItem from '../pages/JobListItemComponent';
+import UserCreatedJobs from '../pages/UserCreatedDates';
 
-
-function DateRequester({ navigation }) {
+function JobsRequester({ navigation }) {
 
     const [showPassword, setShowPassword] = useState(true);
 
+    const [refreshKey, setRefreshKey] = useAtom(refreshAtom); // State to manage the refresh key
+
+    const handleRefresh = () => {
+        // Update the refresh key to trigger a re-render of the Swiper component
+        setRefreshKey(prevKey => prevKey + 1);
+    };
+
     const screenWidth = Dimensions.get('window').width;
+
+    const insets = useSafeAreaInsets();
 
     const [fontsLoaded] = useFonts({
         'Kaushan': require('../assets/fonts/KaushanScript-Regular.ttf'),
@@ -47,43 +59,30 @@ function DateRequester({ navigation }) {
         return null;
     }
 
-   
+
     return (
         <SafeAreaProvider>
 
-            <SafeAreaView style={styles.SafeAreaView}>
+            <SafeAreaView style={[styles.SafeAreaView, {}]}>
 
-                <TopBar navigation={navigation} backColor={"#FF6B6B"} title={"İlişkilerim"}></TopBar>
 
                 <View style={{ width: "100%", flex: 1, alignItems: "center", }}>
 
-                    <ScrollView contentContainerStyle={{ alignItems: "center", }} style={{ flex: 1, width: "100%", padding: 5 }} showsVerticalScrollIndicator={false}>
+                    <View style={{ flex: 1, width: "100%", }}>
 
-                        <MessageComponent navigation={navigation} personName={"Necati"} messageDate={"20.02.2024"} backColor={"#FF6B6B11"}></MessageComponent>
-                        <MessageComponent navigation={navigation} personName={"Necati"} messageDate={"20.02.2024"} backColor={"#FF6B6B11"}></MessageComponent>
-                        <MessageComponent navigation={navigation} personName={"Necati"} messageDate={"20.02.2024"} backColor={"#FF6B6B11"}></MessageComponent>
-                        <MessageComponent navigation={navigation} personName={"Necati"} messageDate={"20.02.2024"} backColor={"#FF6B6B11"}></MessageComponent>
-                        <MessageComponent navigation={navigation} personName={"Necati"} messageDate={"20.02.2024"} backColor={"#FF6B6B11"}></MessageComponent>
-                        <MessageComponent navigation={navigation} personName={"Necati"} messageDate={"20.02.2024"} backColor={"#FF6B6B11"}></MessageComponent>
-                        <MessageComponent navigation={navigation} personName={"Necati"} messageDate={"20.02.2024"} backColor={"#FF6B6B11"}></MessageComponent>
-                        <MessageComponent navigation={navigation} personName={"Necati"} messageDate={"20.02.2024"} backColor={"#FF6B6B11"}></MessageComponent>
-                        <MessageComponent navigation={navigation} personName={"Necati"} messageDate={"20.02.2024"} backColor={"#FF6B6B11"}></MessageComponent>
-                        <MessageComponent navigation={navigation} personName={"Necati"} messageDate={"20.02.2024"} backColor={"#FF6B6B11"}></MessageComponent>
-                        <MessageComponent navigation={navigation} personName={"Necati"} messageDate={"20.02.2024"} backColor={"#FF6B6B11"}></MessageComponent>
-                        <MessageComponent navigation={navigation} personName={"Necati"} messageDate={"20.02.2024"} backColor={"#FF6B6B11"}></MessageComponent>
-                        <MessageComponent navigation={navigation} personName={"Necati"} messageDate={"20.02.2024"} backColor={"#FF6B6B11"}></MessageComponent>
-
-                    </ScrollView>
+                        <UserCreatedJobs navigation={navigation} />
+                    </View>
 
 
                 </View>
 
-                <BottomBar selectMenu={1} navigation={navigation}></BottomBar>
+                <BottomBar selectMenu={11} navigation={navigation}></BottomBar>
 
 
             </SafeAreaView >
         </SafeAreaProvider>
 
+
     )
 };
-export default DateRequester;
+export default JobsRequester;

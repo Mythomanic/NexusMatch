@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Alert, ActivityIndicator } from 'react-native';
+import { View, Text, Alert, ActivityIndicator, FlatList } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from "react-native-vector-icons";
 import { TouchableOpacity } from 'react-native';
@@ -15,6 +15,8 @@ function JobListItem({ navigation, jobs, setRefreshKey }) {
     const [loading, setLoading] = useState(false);
     const [userToken, setUserToken] = useState(null);
     const [userId, setUserId] = useState(null);
+
+
 
     const API_URL = 'https://nexusmain.onrender.com/api';
 
@@ -33,6 +35,9 @@ function JobListItem({ navigation, jobs, setRefreshKey }) {
         };
         getData();
     }, []);
+
+   
+    
 
     const handleSwipe = async (jobId, direction) => {
         if (userToken && userId) {
@@ -71,8 +76,12 @@ function JobListItem({ navigation, jobs, setRefreshKey }) {
                         job ? (
                             <View style={[styles.cardContainer]}>
                                 <Text style={styles.companyName}>{job.title}</Text>
+
                                 <View>
                                     <Text numberOfLines={22} style={styles.companyDescription}>{job.description}</Text>
+                                </View>
+                                <View>
+                                    <Text numberOfLines={22} style={styles.companyDescription}>{job.position}</Text>
                                 </View>
                             </View>
                         ) : null
@@ -97,6 +106,7 @@ function JobListItem({ navigation, jobs, setRefreshKey }) {
                     backgroundColor={'white'}
                     verticalSwipe={false}
                     cardVerticalMargin={0}
+                    stackSize={2}
                 />
             )}
         </View>

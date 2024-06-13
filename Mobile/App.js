@@ -145,7 +145,7 @@ export default function App({ navigation }) {
           <NavigationContainer>
             <Stack.Navigator screenOptions={
               {
-                headerShown: false,
+                headerShown: true,
                 cardStyle: {} // Set the background color here
               }
             } initialRouteName='SplashScreen'>

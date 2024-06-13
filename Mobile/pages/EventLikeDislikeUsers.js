@@ -6,7 +6,7 @@ import Swiper from 'react-native-deck-swiper';
 import styles from '../App.styles';
 
 const JobLikeDislikeUsers = ({ route, navigation }) => {
-    const { jobId } = route.params;
+    const { eventId } = route.params;
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -17,7 +17,7 @@ const JobLikeDislikeUsers = ({ route, navigation }) => {
             const userTokenValue = await AsyncStorage.getItem('usertoken');
             if (userTokenValue) {
                 setLoading(true);
-                const response = await axios.get(`https://nexusmain.onrender.com/api/job/${jobId}/likes`, {
+                const response = await axios.get(`https://nexusmain.onrender.com/api/date/${eventId}/likes`, {
                     headers: {
                         Authorization: `Bearer ${userTokenValue}`,
                     },
@@ -69,7 +69,7 @@ const JobLikeDislikeUsers = ({ route, navigation }) => {
         try {
             const userTokenValue = await AsyncStorage.getItem('usertoken');
             if (userTokenValue) {
-                await axios.post(`https://nexusmain.onrender.com/api/jobs/${jobId}/move-user/${userId}`, {}, {
+                await axios.post(`https://nexusmain.onrender.com/api/jobs/${eventId}/move-user/${userId}`, {}, {
                     headers: {
                         Authorization: `Bearer ${userTokenValue}`,
                     },

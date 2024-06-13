@@ -115,6 +115,8 @@ function Create({ navigation }) {
 
     //İş Stateleri
     const JOB_CREATE_URL = "https://nexusmain.onrender.com/api/jobs"
+    const DATE_CREATE_URL = "https://nexusmain.onrender.com/api/dates"
+    const EVENT_CREATE_URL = "https://nexusmain.onrender.com/api/events"
 
     const [title, setTitle] = useState('');
     const [location, setLocation] = useState('');
@@ -122,6 +124,11 @@ function Create({ navigation }) {
     const [requirements, setRequirements] = useState('');
     const [salary, setSalary] = useState('');
     const [description, setDescription] = useState('');
+
+    const [ownGender, setownGender] = useState('');
+    const [desiredGender, setdesiredGender] = useState('');
+
+
 
     const createJob = async () => {
         const jobData = {
@@ -161,6 +168,82 @@ function Create({ navigation }) {
             }
         } catch (error) {
             console.error('Error creating job:', error);
+        }
+    };
+
+    const createDate = async () => {
+        const dateData = {
+            title,
+            ownGender,
+            desiredGender,
+            description,
+            location,
+        };
+
+        console.log('Sending date data:', dateData);
+
+        try {
+            const response = await fetch(DATE_CREATE_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${userToken}`
+                },
+                body: JSON.stringify(dateData),
+            });
+
+            if (response.ok) {
+                const jsonResponse = await response.json();
+                console.log('Date created successfully:', jsonResponse);
+                // Clear the input fields or navigate to another screen if necessary
+                setTitle['']
+                setownGender['']
+                setdesiredGender['']
+                setDescription['']
+                setLocation['']
+            } else {
+                const errorResponse = await response.text();
+                console.error('Failed to create date:', errorResponse);
+            }
+        } catch (error) {
+            console.error('Error creating date:', error);
+        }
+    };
+
+    const createEvent = async () => {
+        const eventData = {
+            title,
+            location,
+            requirements,
+            description,
+        };
+
+        console.log('Sending event data:', eventData);
+
+        try {
+            const response = await fetch(EVENT_CREATE_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${userToken}`
+                },
+                body: JSON.stringify(eventData),
+            });
+
+            if (response.ok) {
+                const jsonResponse = await response.json();
+                console.log('Event created successfully:', jsonResponse);
+                // Clear the input fields or navigate to another screen if necessary
+                setTitle('');
+                setDescription('');
+                setLocation('');
+                setRequirements('');
+            } else {
+                const errorResponse = await response.text();
+                console.error('Failed to create event:', errorResponse);
+            }
+        } catch (error) {
+            console.error('Error creating event:', error);
         }
     };
 
@@ -277,29 +360,58 @@ function Create({ navigation }) {
                     <View style={{ flex: 1, width: "100%", margin: 10 }}>
 
                         <ScrollView contentContainerStyle={{ width: "100%", alignItems: "center", padding: 10, rowGap: 15, }} showsVerticalScrollIndicator={false}>
-
                             <View style={styles.CreateContentContainer}>
-                                <TextInput multiline={true} style={{ width: "100%", paddingHorizontal: 10, fontSize: 12 }} placeholder='Şirket adı'></TextInput>
+                                <TextInput
+                                    value={title}
+                                    onChangeText={setTitle}
+                                    multiline={true}
+                                    style={{ width: "100%", paddingHorizontal: 10, fontSize: 12 }}
+                                    placeholder='Adınız'
+                                />
                             </View>
 
                             <View style={styles.CreateContentContainer}>
-                                <TextInput multiline={true} style={{ width: "100%", paddingHorizontal: 10, fontSize: 12 }} placeholder='Aday iş pozisyonu adı (Örn: Yazılımcı)'></TextInput>
+                                <TextInput
+                                    value={ownGender}
+                                    onChangeText={setownGender}
+                                    multiline={true}
+                                    style={{ width: "100%", paddingHorizontal: 10, fontSize: 12 }}
+                                    placeholder='Cinsiyetiniz'
+                                />
                             </View>
 
                             <View style={styles.CreateContentContainer}>
-                                <TextInput multiline={true} style={{ width: "100%", paddingHorizontal: 10, fontSize: 12 }} placeholder='Aranılan yetenekler, deneyim ve iş açıklaması'></TextInput>
+                                <TextInput
+                                    value={desiredGender}
+                                    onChangeText={setdesiredGender}
+                                    multiline={true}
+                                    style={{ width: "100%", paddingHorizontal: 10, fontSize: 12 }}
+                                    placeholder='Eşleşmek istediğiniz cinsiyet'
+                                />
                             </View>
 
                             <View style={styles.CreateContentContainer}>
-                                <TextInput multiline={true} style={{ width: "100%", paddingHorizontal: 10, fontSize: 12 }} placeholder='Maaş'></TextInput>
+                                <TextInput
+                                    value={description}
+                                    onChangeText={setDescription}
+                                    multiline={true}
+                                    style={{ width: "100%", paddingHorizontal: 10, fontSize: 12 }}
+                                    placeholder='Açıklama'
+                                />
                             </View>
 
                             <View style={styles.CreateContentContainer}>
-                                <TextInput multiline={true} style={{ width: "100%", paddingHorizontal: 10, fontSize: 12 }} placeholder='İş açıklaması'></TextInput>
+                                <TextInput
+                                    value={location}
+                                    onChangeText={setLocation}
+                                    multiline={true}
+                                    style={{ width: "100%", paddingHorizontal: 10, fontSize: 12 }}
+                                    placeholder='Konum'
+                                />
                             </View>
 
-                            <TouchableOpacity onPress={() => { }} style={{ padding: 10, paddingHorizontal: 25, borderRadius: 15, alignItems: "center", justifyContent: "center", borderWidth: 2, borderColor: "#03A9F4bb" }}>
-                                <Text style={{ color: "#03A9F4bb", fontWeight: "bold" }} fontSize="xs">Oluştur</Text>
+                            <TouchableOpacity onPress={createDate} style={{ padding: 10, paddingHorizontal: 25, borderRadius: 15, alignItems: "center", justifyContent: "center", borderWidth: 2, borderColor: "#FFD166" }}>
+                                <Text style={{ color: "#FFD166", fontWeight: "bold" }} fontSize="xs">Oluştur</Text>
                             </TouchableOpacity>
 
                         </ScrollView>
@@ -308,33 +420,53 @@ function Create({ navigation }) {
 
                     </View>
 
-                ) : (
+                ) : createCategory == 2 ? (
                     <View style={{ flex: 1, width: "100%", margin: 10 }}>
 
                         <ScrollView contentContainerStyle={{ width: "100%", alignItems: "center", padding: 10, rowGap: 15, }} showsVerticalScrollIndicator={false}>
 
                             <View style={styles.CreateContentContainer}>
-                                <TextInput multiline={true} style={{ width: "100%", paddingHorizontal: 10, fontSize: 12 }} placeholder='Şirket adı'></TextInput>
+                                <TextInput
+                                    value={title}
+                                    onChangeText={setTitle}
+                                    multiline={true}
+                                    style={{ width: "100%", paddingHorizontal: 10, fontSize: 12 }}
+                                    placeholder='Etkinlik Başlığı'
+                                />
                             </View>
 
                             <View style={styles.CreateContentContainer}>
-                                <TextInput multiline={true} style={{ width: "100%", paddingHorizontal: 10, fontSize: 12 }} placeholder='Aday iş pozisyonu adı (Örn: Yazılımcı)'></TextInput>
+                                <TextInput
+                                    value={description}
+                                    onChangeText={setDescription}
+                                    multiline={true}
+                                    style={{ width: "100%", paddingHorizontal: 10, fontSize: 12 }}
+                                    placeholder='Açıklama'
+                                />
                             </View>
 
                             <View style={styles.CreateContentContainer}>
-                                <TextInput multiline={true} style={{ width: "100%", paddingHorizontal: 10, fontSize: 12 }} placeholder='Aranılan yetenekler, deneyim ve iş açıklaması'></TextInput>
+                                <TextInput
+                                    value={location}
+                                    onChangeText={setLocation}
+                                    multiline={true}
+                                    style={{ width: "100%", paddingHorizontal: 10, fontSize: 12 }}
+                                    placeholder='Etkinlik Konumu'
+                                />
                             </View>
 
                             <View style={styles.CreateContentContainer}>
-                                <TextInput multiline={true} style={{ width: "100%", paddingHorizontal: 10, fontSize: 12 }} placeholder='Maaş'></TextInput>
+                                <TextInput
+                                    value={requirements}
+                                    onChangeText={setRequirements}
+                                    multiline={true}
+                                    style={{ width: "100%", paddingHorizontal: 10, fontSize: 12 }}
+                                    placeholder='Etkinlik şartları/aranan özellikler'
+                                />
                             </View>
 
-                            <View style={styles.CreateContentContainer}>
-                                <TextInput multiline={true} style={{ width: "100%", paddingHorizontal: 10, fontSize: 12 }} placeholder='İş açıklaması'></TextInput>
-                            </View>
-
-                            <TouchableOpacity onPress={() => { }} style={{ padding: 10, paddingHorizontal: 25, borderRadius: 15, alignItems: "center", justifyContent: "center", borderWidth: 2, borderColor: "#03A9F4bb" }}>
-                                <Text style={{ color: "#03A9F4bb", fontWeight: "bold" }} fontSize="xs">Oluştur</Text>
+                            <TouchableOpacity onPress={createEvent} style={{ padding: 10, paddingHorizontal: 25, borderRadius: 15, alignItems: "center", justifyContent: "center", borderWidth: 2, borderColor: "#8BC34A" }}>
+                                <Text style={{ color: "#8BC34A", fontWeight: "bold" }} fontSize="xs">Oluştur</Text>
                             </TouchableOpacity>
 
                         </ScrollView>
@@ -342,7 +474,7 @@ function Create({ navigation }) {
 
 
                     </View>
-                )
+                ) : null
                 }
 
 

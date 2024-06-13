@@ -1,77 +1,110 @@
-import React, { useState, useCallback, useEffect } from 'react'
-import { View, Image, ImageBackground, Text, ScrollView, TouchableOpacity, Dimensions, Button } from 'react-native'
-import { SafeAreaProvider, SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
+import React, { useState, useEffect } from 'react';
+import { View, Text, Alert, ActivityIndicator } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { Ionicons } from "react-native-vector-icons";
+import { TouchableOpacity } from 'react-native';
+import Modal from 'react-native-modal';
 import styles from '../App.styles';
-import { TextInput } from 'react-native';
-import { useFonts } from 'expo-font';
-import { Ionicons, Fontisto, FontAwesome, FontAwesome5, Entypo, EvilIcons, Feather, MaterialCommunityIcons, MaterialIcons, AntDesign } from "react-native-vector-icons"
-import TopBar from './TopBar';
-import BottomBar from './BottomBar';
-import { LinearGradient } from 'expo-linear-gradient';
-import { Carousel } from 'react-native-basic-carousel'
-import Collapsible from 'react-native-collapsible';
 import Swiper from 'react-native-deck-swiper';
 import { useAtom } from 'jotai';
 import { refreshAtom } from '../JotaiAtoms';
-import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-function EventListItem({ navigation }) {
+function EventListItem({ navigation, events, setRefreshKey }) {
+    const [swipedCount, setSwipedCount] = useState(0);
+    const [loading, setLoading] = useState(false);
+    const [userToken, setUserToken] = useState(null);
+    const [userId, setUserId] = useState(null);
 
-    const [refreshKey] = useAtom(refreshAtom);
-    const [myCardIndex, setMyCardIndex] = useState(0);
-    const [imageUrls, setImageUrls] = useState([]);
-    const [swipedCount, setSwipedCount] = useState(0)
+    const API_URL = 'https://nexusmain.onrender.com/api';
 
     useEffect(() => {
-        // Fetch random image URLs from the API
-        const fetchImageUrls = async () => {
-            const response = await fetch('https://picsum.photos/200');
-            const imageUrl = response.url;
-            setImageUrls(Array.from({ length: 5 }, () => imageUrl)); // Generate 5 random image URLs
+        const getData = async () => {
+            try {
+                const userTokenValue = await AsyncStorage.getItem('usertoken');
+                const userIdValue = await AsyncStorage.getItem('userid');
+                if (userTokenValue !== null && userIdValue !== null) {
+                    setUserToken(userTokenValue);
+                    setUserId(userIdValue);
+                }
+            } catch (e) {
+                console.error("Error reading token or user ID from AsyncStorage", e);
+            }
         };
-        fetchImageUrls();
-    }, [swipedCount]); // Trigger fetch on component mount and when refreshKey changes
+        getData();
+    }, []);
 
+    const handleSwipe = async (eventId, direction) => {
+        if (userToken && userId) {
+            try {
+                const response = await fetch(`${API_URL}/user/${userId}/events/${eventId}/swipeEvent`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${userToken}`
+                    },
+                    body: JSON.stringify({ direction })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                console.log("Swipe Response: ", JSON.stringify(data, null, 2));
+
+            } catch (error) {
+                console.error("Error swiping event:", error);
+                Alert.alert('Error', 'Failed to swipe event');
+            }
+        }
+    };
 
     return (
-        <View style={{ flex: 1, width: "100%", alignItems: "center", justifyContent: "flex-start", }}>
-            <Swiper
-                key={refreshKey} // Set key to trigger re-render when refreshKey changes
-                cards={['Event A', 'Event B', 'Event C', 'Event D', 'Event E']}
-                renderCard={(card, index) => {
-                    return (
-                        <View style={[styles.cardContainer]}>
-                            <Image source={{ uri: imageUrls[index] }} style={styles.companyLogo} />
-                            <Text style={styles.companyName}>{card}</Text>
-
-                            <View>
-                                <Text numberOfLines={22} style={styles.companyDescription}>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce sed malesuada ligula, vel vehicula dolor. Integer ac lorem vestibulum, pharetra felis non, convallis nisl. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce sed malesuada ligula, vel vehicula dolor. Integer ac lorem vestibulum, pharetra felis non, convallis nisl. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce sed malesuada ligula, vel vehicula dolor. Integer ac lorem vestibulum, pharetra felis non, convallis nisl. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce sed malesuada ligula, vel vehicula dolor. Integer ac lorem vestibulum, pharetra felis non, convallis nisl. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce sed malesuada ligula, vel vehicula dolor. Integer ac lorem vestibulum, pharetra felis non, convallis nisl. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce sed malesuada ligula, vel vehicula dolor. Integer ac lorem vestibulum, pharetra felis non, convallis nisl. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce sed malesuada ligula, vel vehicula dolor. Integer ac lorem vestibulum, pharetra felis non, convallis nisl. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce sed malesuada ligula, vel vehicula dolor. Integer ac lorem vestibulum, pharetra felis non, convallis nisl. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce sed malesuada ligula, vel vehicula dolor. Integer ac lorem vestibulum, pharetra felis non, convallis nisl.  </Text>
+        <View style={{ flex: 1, width: "100%", alignItems: "center", justifyContent: "flex-start" }}>
+            {loading ? (
+                <ActivityIndicator size="large" color="#0000ff" />
+            ) : (
+                <Swiper
+                    cards={events}
+                    renderCard={(event, index) => (
+                        event ? (
+                            <View style={[styles.cardContainer]}>
+                                <Text style={styles.companyName}>{event.title}</Text>
+                                <View>
+                                    <Text numberOfLines={22} style={styles.companyDescription}>{event.description}</Text>
+                                </View>
+                                <View>
+                                    <Text numberOfLines={22} style={styles.companyDescription}>{event.category}</Text>
+                                </View>
                             </View>
-
-                            <View style={{ width: "100%", alignSelf: "center", alignItems: "center", justifyContent: "center", padding: 10, margin: 5 }}>
-                                <TouchableOpacity style={{ borderWidth: 1, borderColor: "grey", borderRadius: 20, alignItems: "center", justifyContent: "center", padding: 12.5 }}>
-                                    <Text style={{ fontSize: 12 }} fontSize="xs">Detayları Gör</Text>
-                                </TouchableOpacity>
-                            </View>
-
-                        </View>
-                    )
-                }}
-                infinite={true}
-                onSwipedLeft={(cardIndex) => { [console.log(cardIndex + " Swiped Left"), setSwipedCount((swipeCount) => (swipeCount + 1))] }}
-                onSwipedRight={(cardIndex) => { [console.log(cardIndex + " Swiped Right"), setSwipedCount((swipeCount) => (swipeCount + 1))] }}
-                onSwipedAll={() => { console.log('onSwipedAll') }}
-                cardIndex={0}
-                backgroundColor={'white'}
-                stackSize={3}
-                verticalSwipe={false}
-                cardVerticalMargin={0}
-            ></Swiper>
-
+                        ) : null
+                    )}
+                    infinite={false}
+                    onSwipedLeft={(cardIndex) => {
+                        setSwipedCount(swipedCount + 1);
+                        console.log(cardIndex + " Swiped Left");
+                        if (events[cardIndex]) {
+                            handleSwipe(events[cardIndex].id, 'dislike');
+                        }
+                    }}
+                    onSwipedRight={(cardIndex) => {
+                        setSwipedCount(swipedCount + 1);
+                        console.log(cardIndex + " Swiped Right");
+                        if (events[cardIndex]) {
+                            handleSwipe(events[cardIndex].id, 'like');
+                        }
+                    }}
+                    onSwipedAll={() => { console.log('onSwipedAll'); }}
+                    cardIndex={0}
+                    backgroundColor={'white'}
+                    verticalSwipe={false}
+                    cardVerticalMargin={0}
+                    stackSize={2}
+                />
+            )}
         </View>
-
-    )
-
+    );
 }
 
-export default EventListItem
+export default EventListItem;
