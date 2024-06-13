@@ -13,35 +13,55 @@ import Register from "./components/Register";
 import CreateJob from "./components/CreateJob";
 import Profile from "./components/Profile";
 import MyJobs from "./components/MyJobs";
-import { Snackbar, Alert } from "@mui/material";
+import { Snackbar, Alert, Button } from "@mui/material";
 import Applicants from "./components/Applicants";
 import Chats from "./components/Chats";
 import Chat from "./components/Chat";
 import styled from "styled-components";
+import { Work, Group, Search, PersonAdd } from "@mui/icons-material";
 
 const HomeContainer = styled.div`
   text-align: center;
   padding: 60px;
+  background: linear-gradient(135deg, #7eb0cc 0%, #bef8ff 100%);
+  min-height: 100vh;
 `;
 
 const Section = styled.div`
   margin: 20px 0;
   padding: 20px;
-  background: #bef8ff;
+  background: white;
   border: 1px solid #5f757f;
   border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 `;
 
 const Heading = styled.h2`
   color: #37657f;
+  margin-bottom: 20px;
 `;
 
 const SubHeading = styled.h3`
   color: #256dd9;
+  display: flex;
+  align-items: center;
+  gap: 10px;
 `;
 
 const Text = styled.p`
   color: #333;
+  text-align: left;
+`;
+
+const StyledButton = styled(Button)`
+  && {
+    background-color: #37657f;
+    color: white;
+    margin-top: 10px;
+    &:hover {
+      background-color: #256dd9;
+    }
+  }
 `;
 
 function App() {
@@ -81,27 +101,37 @@ function App() {
               <HomeContainer>
                 <Heading>Welcome to Nexus Match!</Heading>
                 <SubHeading>
-                  Your Ultimate Job and Talent Matching Platform
+                  <Work /> Your Ultimate Job and Talent Matching Platform
                 </SubHeading>
 
                 <Section>
-                  <SubHeading>Discover Your Dream Job</SubHeading>
+                  <SubHeading>
+                    <Search /> Discover Your Dream Job
+                  </SubHeading>
                   <Text>
                     Join Nexus Match today and explore countless job
                     opportunities tailored to your skills and interests. Our
                     intelligent matching algorithm connects you with employers
                     looking for talents just like you.
                   </Text>
+                  <StyledButton variant="contained" href="/find-jobs">
+                    Find Jobs
+                  </StyledButton>
                 </Section>
 
                 <Section>
-                  <SubHeading>Hire Top Talent</SubHeading>
+                  <SubHeading>
+                    <PersonAdd /> Hire Top Talent
+                  </SubHeading>
                   <Text>
                     Are you an employer seeking the best candidates? Nexus Match
                     offers a seamless and efficient way to find qualified
                     professionals. Post your job listings and let us help you
                     find the perfect fit for your company.
                   </Text>
+                  <StyledButton variant="contained" href="/create-job">
+                    Post a Job
+                  </StyledButton>
                 </Section>
               </HomeContainer>
             }
