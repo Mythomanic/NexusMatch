@@ -14,7 +14,6 @@ class JobController extends Controller
     {
         return Job::all();
     }
-
     public function store(Request $request)
     {
         $request->validate([
@@ -41,14 +40,10 @@ class JobController extends Controller
 
         return response()->json($job, 201);
     }
-
-    
     public function show(Job $job)
     {
         return $job;
     }
-
-    
     public function update(Request $request,  Job $job)
     {
         $request->validate([
@@ -64,7 +59,6 @@ class JobController extends Controller
 
         return response()->json($job);
     }
-
     /**
      * Remove the specified resource from storage.
      */
@@ -74,8 +68,6 @@ class JobController extends Controller
 
         return response()->json(null, 204);
     }
-
-
     public function getLikedUsers($jobId)
     {
         $job = Job::find($jobId);
@@ -101,8 +93,6 @@ class JobController extends Controller
             'likedUsers' => $likedUsers
         ], 200);
     }
-
-
     public function moveUserFromLikesToDislikes($jobId, $userId)
     {
         $job = Job::findOrFail($jobId);
@@ -123,7 +113,6 @@ class JobController extends Controller
 
         return response()->json(['message' => 'User moved from likes to dislikes successfully.']);
     }
-
     public function filterByPosition(Request $request, $userId)
     {
         $position = strtolower($request->input('position'));

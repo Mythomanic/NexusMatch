@@ -7,9 +7,6 @@ use App\Http\Controllers\ChatController;
 use App\Http\Controllers\Api\JobController;
 use App\Http\Controllers\Api\EventController;
 use App\Http\Controllers\Api\DateController;
-use App\Http\Controllers\Api\SwipeController;
-use App\Http\Controllers\Api\MatchController;
-use App\Http\Controllers\Api\JobFilterController;
 use App\Http\Controllers\MessageController;
 use Illuminate\Support\Facades\Auth;
 
@@ -27,15 +24,6 @@ use Illuminate\Support\Facades\Auth;
 
 Route::post('/auth/register', [UserController::class, 'create'])->name('register');
 Route::post('/auth/login', [UserController::class, 'login'])->name('login');
-
-Route::post('messages', [ChatController::class, 'message']);
-
-Route::get('/userjob/{id}', [UserController::class,'show'])->name('get.user');
-Route::get('/user', [UserController::class,'showAll'])->name('getAll.user');
-Route::post('/user/edit/{id}', [UserController::class,'edit'])->name('edit.user');
-Route::delete('/user/delete/{id}', [UserController::class,'destroy'])->name('delete.user');
-
-
 
 // auth içindeki kullanımlar için:
 /* 
