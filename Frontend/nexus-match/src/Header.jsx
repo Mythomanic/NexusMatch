@@ -8,6 +8,7 @@ import {
 } from "@mui/icons-material";
 import authService from "./services/authService";
 import logo from "./assets/nexuslogo.png"; // Import the logo image
+import { GiSelfLove } from "react-icons/gi";
 
 const GlobalStyle = createGlobalStyle`
   @import url('https://fonts.googleapis.com/css?family=Work+Sans:400,600');
@@ -58,7 +59,9 @@ const Nav = styled.ul`
 `;
 
 const NavItem = styled.li`
-  display: inline-block;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   margin-left: 70px;
   padding-top: 23px;
   position: relative;
@@ -68,7 +71,7 @@ const NavLink = styled(Link)`
   color: white;
   text-decoration: none;
   text-transform: uppercase;
-  font-size: 14px;
+  font-size: 18px;
   &:hover {
     color: #000;
   }
@@ -170,6 +173,25 @@ function SimpleNavbar({ showSnackbar, userId }) {
                   </DropdownItem>
                   <DropdownItem to="/create-job">
                     <LogoutIcon /> Create Job
+                  </DropdownItem>
+                </DropdownContent>
+              </NavDropdown>
+            </NavItem>
+            <NavItem>
+              <NavDropdown>
+                <NavLink to="#">
+                  <GiSelfLove />
+                  Date
+                </NavLink>
+                <DropdownContent className="dropdown-content">
+                  <DropdownItem to="/find-dates">
+                    <PersonIcon /> Find Dates
+                  </DropdownItem>
+                  <DropdownItem to="/my-dates">
+                    <PersonIcon /> My Dates
+                  </DropdownItem>
+                  <DropdownItem to="/create-date">
+                    <LogoutIcon /> Create Date
                   </DropdownItem>
                 </DropdownContent>
               </NavDropdown>

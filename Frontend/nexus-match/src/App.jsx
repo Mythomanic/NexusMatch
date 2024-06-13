@@ -23,12 +23,17 @@ import Chats from "./components/Chats";
 import Chat from "./components/Chat";
 import styled from "styled-components";
 import { Work, Group, Search, PersonAdd } from "@mui/icons-material";
+import DateCards from "./components/DateCards";
+import CreateDate from "./components/CreateDate";
+import MyDates from "./components/MyDates";
+import DateApplicants from "./components/DateApplicants"; // Import DateApplicants
 
 const HomeContainer = styled.div`
   text-align: center;
   padding: 60px;
   background: linear-gradient(135deg, #7eb0cc 0%, #bef8ff 100%);
   min-height: 100vh;
+  font-family: "Roboto", sans-serif;
 `;
 
 const Section = styled.div`
@@ -100,6 +105,10 @@ function App() {
           <Route path="/my-jobs" element={<MyJobs userId={userId} />} />
           <Route path="/my-events" element={<MyEvents userId={userId} />} />
           <Route path="/applicants/:jobId" element={<Applicants />} />
+          <Route path="/my-dates" element={<MyDates userId={userId} />} />
+          <Route path="/find-dates" element={<DateCards />} />
+          <Route path="/create-date" element={<CreateDate />} />
+          <Route path="/date-applicants/:dateId" element={<DateApplicants />} />
           <Route
             path="/event-applicants/:eventId"
             element={<EventApplicants />}
