@@ -133,12 +133,12 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::apiResource('events', EventController::class);
         Route::get('/event/{event}/likes', [EventController::class, 'getLikedUsers']);
         Route::post('/events/{eventId}/move-user/{userId}', [EventController::class, 'moveUserFromLikesToDislikes']);
-        Route::get('/user/{userId}/events/filterEvent', [EventController::class, 'filterByPosition']);
+        Route::get('/user/{userId}/events/filterEvent', [EventController::class, 'filterByTitle']);
 
         Route::apiResource('dates', DateController::class);
         Route::get('/date/{date}/likes', [DateController::class, 'getLikedUsers']);
         Route::post('/dates/{dateId}/move-user/{userId}', [DateController::class, 'moveUserFromLikesToDislikes']);
-        Route::get('/user/{userId}/dates/filterDate', [DateController::class, 'filterByPosition']);
+        Route::get('/user/{userId}/dates/filterDate', [DateController::class, 'filterByOwnGender']);
         
         });
 
