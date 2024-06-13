@@ -19,47 +19,45 @@ function SignUp({ navigation, route }) {
     const [password, setPassword] = useState('');
     const [passwordConfirmation, setPasswordConfirmation] = useState('');
     const [message, setMessage] = useState('');
+    const [showPassword, setShowPassword] = useState(true);
+    const [showPasswordConfirm, setShowPasswordConfirm] = useState(true);
+
 
     const handleSignup = async () => {
         const response = await signup(name, email, password, passwordConfirmation);
         if (response.status === true) {
-          setMessage('User Created Successfully');
-          console.log('User Created Successfully');
-          navigation.navigate("Login");
+            setMessage('User Created Successfully');
+            console.log('User Created Successfully');
+            navigation.navigate("Login");
         } else {
-          setMessage(response.message);
-          console.log(message);
+            setMessage(response.message);
+            console.log(message);
         }
-      };
-
-    /*  <View>
-     <TextInput
-       placeholder="Name"
-       value={name}
-       onChangeText={setName}
-     />
-     <TextInput
-       placeholder="Email"
-       value={email}
-       onChangeText={setEmail}
-     />
-     <TextInput
-       placeholder="Password"
-       value={password}
-       onChangeText={setPassword}
-       secureTextEntry */
+    };
 
     const [rememberCheckbox, setRememberCheckbox] = useState(false);
     const { requestType } = route.params;
 
     const EyeNoEye = ({ placeholder, id, onChangeTextFunction, value }) => {
-        const [showPassword, setShowPassword] = useState(true);
         return (
             <>
-                <TextInput value={value} onChangeText={onChangeTextFunction} multiline={false} id={id} secureTextEntry={showPassword} keyboardType='default' placeholder={placeholder} placeholderTextColor={requestType === 1 ? "#1161a8" : "#a6026b"} style={{ width: "75%" }} />
+                <TextInput value={value} onChangeText={() => { onChangeTextFunction }} multiline={false} id={id} secureTextEntry={showPassword} keyboardType='default' placeholder={placeholder} placeholderTextColor={requestType === 1 ? "#1161a8" : "#a6026b"} style={{ width: "75%" }} />
 
                 <TouchableOpacity onPress={() => { setShowPassword(!showPassword) }} style={{ position: "absolute", width: 25, height: 25, alignItems: "center", justifyContent: "center", right: 0, }}>
                     <Entypo style={{ fontSize: 20, color: requestType === 1 ? "#1161a8" : "#a6026b" }} name={showPassword === true ? "eye-with-line" : "eye"} />
+                </TouchableOpacity>
+
+            </>
+        )
+    }
+
+    const EyeNoEyeConfirm = ({ placeholder, id, onChangeTextFunction, value }) => {
+        return (
+            <>
+                <TextInput value={value} onChangeText={onChangeTextFunction} multiline={false} id={id} secureTextEntry={showPasswordConfirm} keyboardType='default' placeholder={placeholder} placeholderTextColor={requestType === 1 ? "#1161a8" : "#a6026b"} style={{ width: "75%" }} />
+
+                <TouchableOpacity onPress={() => { setShowPasswordConfirm(!showPasswordConfirm) }} style={{ position: "absolute", width: 25, height: 25, alignItems: "center", justifyContent: "center", right: 0, }}>
+                    <Entypo style={{ fontSize: 20, color: requestType === 1 ? "#1161a8" : "#a6026b" }} name={showPasswordConfirm === true ? "eye-with-line" : "eye"} />
                 </TouchableOpacity>
 
             </>
@@ -122,35 +120,32 @@ function SignUp({ navigation, route }) {
 
                     <View style={styles.SignupInputContainer}>
                         <Feather name="mail" style={{ fontSize: 20, color: requestType === 1 ? "#1161a8" : "#a6026b" }} />
-                        <TextInput value={email} onChangeText={  setEmail } id='kayitemail' keyboardType='email-address' placeholder='E-posta' placeholderTextColor={requestType === 1 ? "#1161a8" : "#a6026b"} style={{ width: "100%" }} />
+                        <TextInput value={email} onChangeText={setEmail} id='kayitemail' keyboardType='email-address' placeholder='E-posta' placeholderTextColor={requestType === 1 ? "#1161a8" : "#a6026b"} style={{ width: "100%" }} />
                     </View>
 
                     <View style={styles.SignupInputContainer}>
                         <Feather name="user" style={{ fontSize: 20, color: requestType === 1 ? "#1161a8" : "#a6026b" }} />
-                        <TextInput value={name} onChangeText={ setName } id='kayitnick' keyboardType='default' placeholder='Kullanıcı Adı' placeholderTextColor={requestType === 1 ? "#1161a8" : "#a6026b"} style={{ width: "100%" }} />
+                        <TextInput value={name} onChangeText={setName} id='kayitnick' keyboardType='default' placeholder='Kullanıcı Adı' placeholderTextColor={requestType === 1 ? "#1161a8" : "#a6026b"} style={{ width: "100%" }} />
                     </View>
 
                     <View style={styles.SignupInputContainer}>
                         <Feather name="lock" style={{ fontSize: 20, color: requestType === 1 ? "#1161a8" : "#a6026b" }} />
 
+                        <TextInput value={password} onChangeText={setPassword} multiline={false} id={"kayitsifre"} secureTextEntry={showPassword} inputMode='default' placeholder={"Şifre"} placeholderTextColor={requestType === 1 ? "#1161a8" : "#a6026b"} style={{ width: "75%" }} />
 
-                        <EyeNoEye value={password} onChangeTextFunction={setPassword} placeholder={"Şifre"} id={"kayitsifre"} />
-
-                        {/* <TouchableOpacity onPress={() => { setShowPassword(!showPassword) }} style={{ position: "absolute", width: 25, height: 25, alignItems: "center", justifyContent: "center", right: 0, }}>
+                        <TouchableOpacity onPress={() => { setShowPassword(!showPassword) }} style={{ position: "absolute", width: 25, height: 25, alignItems: "center", justifyContent: "center", right: 0, }}>
                             <Entypo style={{ fontSize: 20, color: requestType === 1 ? "#1161a8" : "#a6026b" }} name={showPassword === true ? "eye-with-line" : "eye"} />
-                        </TouchableOpacity> */}
+                        </TouchableOpacity>
+
                     </View>
 
                     <View style={styles.SignupInputContainer}>
                         <Feather name="lock" style={{ fontSize: 20, color: requestType === 1 ? "#1161a8" : "#a6026b" }} />
+                        <TextInput value={passwordConfirmation} onChangeText={setPasswordConfirmation} multiline={false} id={"kayitsifretekrar"} secureTextEntry={showPasswordConfirm} inputMode='default' placeholder={"Şifre Tekrar"} placeholderTextColor={requestType === 1 ? "#1161a8" : "#a6026b"} style={{ width: "75%" }} />
 
-                        {/*                         <TextInput id='kayitsifretekrar' secureTextEntry={showPassword} keyboardType='default' placeholder='Şifre Tekrar' placeholderTextColor={requestType === 1 ? "#1161a8" : "#a6026b"} style={{ width: "100%" }} />
- */}
-                        <EyeNoEye value={passwordConfirmation} onChangeTextFunction={setPasswordConfirmation} placeholder={"Şifre Tekrar"} id={"kayitsifretekrar"} />
-
-                        {/* <TouchableOpacity onPress={() => { setShowPassword(!showPassword) }} style={{ position: "absolute", width: 25, height: 25, alignItems: "center", justifyContent: "center", right: 0, }}>
-                            <Entypo style={{ fontSize: 20, color: requestType === 1 ? "#1161a8" : "#a6026b" }} name={showPassword === true ? "eye-with-line" : "eye"} />
-                        </TouchableOpacity> */}
+                        <TouchableOpacity onPress={() => { setShowPasswordConfirm(!showPasswordConfirm) }} style={{ position: "absolute", width: 25, height: 25, alignItems: "center", justifyContent: "center", right: 0, }}>
+                            <Entypo style={{ fontSize: 20, color: requestType === 1 ? "#1161a8" : "#a6026b" }} name={showPasswordConfirm === true ? "eye-with-line" : "eye"} />
+                        </TouchableOpacity>
                     </View>
 
                 </View>

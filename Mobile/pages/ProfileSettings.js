@@ -390,18 +390,6 @@ function ProfileSettings({ navigation }) {
                                 <Text style={{ color: "#03A9F4bb", fontWeight: "bold" }} fontSize="xs">Kaydet</Text>
                             </TouchableOpacity>
 
-                            <TouchableOpacity onPress={() => { console.log(loggedInUserJobInfo); }} style={{ padding: 10, paddingHorizontal: 25, borderRadius: 15, alignItems: "center", justifyContent: "center", borderWidth: 2, borderColor: "#03A9F4bb" }}>
-                                <Text style={{ color: "#03A9F4bb", fontWeight: "bold" }} fontSize="xs">CONSOLE</Text>
-                            </TouchableOpacity>
-
-                            <TouchableOpacity onPress={() => { console.log(loggedInUserDateInfo); }} style={{ padding: 10, paddingHorizontal: 25, borderRadius: 15, alignItems: "center", justifyContent: "center", borderWidth: 2, borderColor: "#03A9F4bb" }}>
-                                <Text style={{ color: "#03A9F4bb", fontWeight: "bold" }} fontSize="xs">CONSOLE</Text>
-                            </TouchableOpacity>
-
-                            <TouchableOpacity onPress={() => { console.log(loggedInUserEventInfo); }} style={{ padding: 10, paddingHorizontal: 25, borderRadius: 15, alignItems: "center", justifyContent: "center", borderWidth: 2, borderColor: "#03A9F4bb" }}>
-                                <Text style={{ color: "#03A9F4bb", fontWeight: "bold" }} fontSize="xs">CONSOLE</Text>
-                            </TouchableOpacity>
-
                         </ScrollView>
 
 
