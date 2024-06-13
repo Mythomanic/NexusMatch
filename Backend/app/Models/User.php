@@ -47,6 +47,8 @@ class User extends Authenticatable
         'password' => 'hashed',
         'tags'=>'array',
         'tagsJob'=>'array',
+        'tagsDate'=>'array',
+        'tagsEvent'=>'array',
         'jobGallery'=>'array',
     ];
 }
