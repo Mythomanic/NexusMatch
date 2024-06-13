@@ -20,7 +20,7 @@ const GlobalStyle = createGlobalStyle`
   body {
     margin: 0;
     background: linear-gradient(to right, #ffffff, #e6f0f5);
-    font-family: 'Work+Sans', sans-serif;
+    font-family: "Ubuntu", sans-serif;
     font-weight: 800;
   }
 `;
@@ -75,7 +75,7 @@ const NavLink = styled(Link)`
   color: white;
   text-decoration: none;
   text-transform: uppercase;
-  font-size: 18px;
+  font-size: 15px;
   &:hover {
     color: grey;
   }
