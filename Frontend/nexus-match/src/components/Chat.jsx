@@ -190,6 +190,12 @@ function Chat() {
     }
   };
 
+  const handleKeyPress = (event) => {
+    if (event.key === "Enter") {
+      handleSendMessage();
+    }
+  };
+
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
@@ -214,6 +220,7 @@ function Chat() {
           type="text"
           value={newMessage}
           onChange={(e) => setNewMessage(e.target.value)}
+          onKeyPress={handleKeyPress}
           placeholder="Type a message..."
         />
         <SendButton onClick={handleSendMessage}>Send</SendButton>

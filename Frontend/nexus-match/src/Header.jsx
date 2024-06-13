@@ -140,9 +140,6 @@ function SimpleNavbar({ showSnackbar, userId }) {
           </Logo>
           <Nav>
             <NavItem>
-              <NavLink to="/find-jobs">Find Jobs</NavLink>
-            </NavItem>
-            <NavItem>
               <NavLink to="/chats">Chats</NavLink>
             </NavItem>
             <NavItem>
@@ -163,8 +160,11 @@ function SimpleNavbar({ showSnackbar, userId }) {
             </NavItem>
             <NavItem>
               <NavDropdown>
-                <NavLink to="#">Create Job</NavLink>
+                <NavLink to="#">Job</NavLink>
                 <DropdownContent className="dropdown-content">
+                  <DropdownItem to="/find-jobs">
+                    <PersonIcon /> Find Jobs
+                  </DropdownItem>
                   <DropdownItem to="/my-jobs">
                     <PersonIcon /> My Jobs
                   </DropdownItem>
