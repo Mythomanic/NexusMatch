@@ -425,7 +425,7 @@ class UserController extends Controller
     public function updateAvatarJob(Request $request, User $user){
         
             $request->validate([
-                'avatarJob' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+                'avatarJob' => 'nullable|image|mimes:jpeg,png,jpg',
             ]);
         
             $user = Auth::user();
