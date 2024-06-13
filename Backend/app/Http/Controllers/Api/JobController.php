@@ -128,7 +128,11 @@ class JobController extends Controller
     {
         $position = strtolower($request->input('position'));
 
-        $allJobs = Job::whereRaw('LOWER(position) = ?', [$position])->get();
+        if (empty($position)) {
+            $allJobs = Job::all();
+        } else {
+            $allJobs = Job::whereRaw('LOWER(position) = ?', [$position])->get();
+        }
 
         $unseenJobs = $allJobs->filter(function($job) use ($userId) {
             $likes = $job->likes ?? [];

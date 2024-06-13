@@ -115,12 +115,14 @@ class DateController extends Controller
     }
 
 
-    public function filterByTitle(Request $request, $userId)
+    public function filterByOwnGender(Request $request, $userId)
     {
-        $title = strtolower($request->input('title'));
-
-        $allDates = Date::whereRaw('LOWER(title) = ?', [$title])->get();
-
+        $ownGender = strtolower($request->input('ownGender'));
+        if (empty($ownGender)) {
+            $allDates = Date::all();
+        } else {
+            $allDates = Date::whereRaw('LOWER(own$ownGender) = ?', [$ownGender])->get();
+        }
         $unseenDates = $allDates->filter(function($dates) use ($userId) {
             $likes = $dates->likes ?? [];
             $dislikes = $dates->dislikes ?? [];

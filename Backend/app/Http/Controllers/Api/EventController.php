@@ -118,7 +118,11 @@ class EventController extends Controller
     {
         $title = strtolower($request->input('title'));
 
-        $allEvents = Event::whereRaw('LOWER(title) = ?', [$title])->get();
+        if (empty($title)) {
+            $allEvents = Event::all();
+        } else {
+            $allEvents = Event::whereRaw('LOWER(title) = ?', [$title])->get();
+        }
 
         $unseenEvents = $allEvents->filter(function($event) use ($userId) {
             $likes = $event->likes ?? [];
