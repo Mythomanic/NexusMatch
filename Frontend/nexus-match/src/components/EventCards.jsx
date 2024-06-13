@@ -148,13 +148,21 @@ function EventCards() {
   }, []);
 
   useEffect(() => {
-    const results = events.filter(
-      (event) =>
-        event.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        event.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        event.location.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        event.date.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    const results = events.filter((event) => {
+      const title = event.title ? event.title.toLowerCase() : "";
+      const description = event.description
+        ? event.description.toLowerCase()
+        : "";
+      const location = event.location ? event.location.toLowerCase() : "";
+      const date = event.date ? event.date.toLowerCase() : "";
+
+      return (
+        title.includes(searchTerm.toLowerCase()) ||
+        description.includes(searchTerm.toLowerCase()) ||
+        location.includes(searchTerm.toLowerCase()) ||
+        date.includes(searchTerm.toLowerCase())
+      );
+    });
     setFilteredEvents(results);
     setCurrentIndex(results.length - 1);
   }, [searchTerm, events]);
