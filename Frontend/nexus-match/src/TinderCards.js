@@ -40,10 +40,12 @@ const CardContent = styled.div`
 
 const Title = styled.h3`
   margin: 0;
+  color: #37657f;
 `;
 
 const Description = styled.p`
   margin: 5px 0;
+  color: #5f757f;
 `;
 
 const Buttons = styled.div`
@@ -56,7 +58,7 @@ const Button = styled.button`
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  background-color: ${(props) => (props.danger ? "#e74c3c" : "#2ecc71")};
+  background-color: ${(props) => (props.danger ? "#e74c3c" : "#7EB0CC")};
   color: white;
 `;
 
@@ -112,7 +114,7 @@ function TinderCards() {
 
   return (
     <Container>
-      <h1>Match Cards</h1>
+      <h1 style={{ color: "#37657F" }}>Match Cards</h1>
       <CardContainer>
         {users.map((user, index) => (
           <TinderCard

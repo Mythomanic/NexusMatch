@@ -3,33 +3,54 @@ import TinderCard from "react-tinder-card";
 import jobService from "../services/jobService";
 import authService from "../services/authService";
 import swipeService from "../services/swipeService";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
+import { ThumbUp, ThumbDown } from "@mui/icons-material";
 
 const Container = styled.div`
   text-align: center;
+  background: linear-gradient(135deg, #37657f 0%, #5f757f 100%);
+  min-height: 100vh;
+  padding: 20px 0;
+  transition: background-color 0.5s ease;
+  ${({ swipeDirection }) =>
+    swipeDirection === "like" &&
+    css`
+      background-color: rgba(46, 204, 113, 0.2);
+    `}
+  ${({ swipeDirection }) =>
+    swipeDirection === "dislike" &&
+    css`
+      background-color: rgba(231, 76, 60, 0.2);
+    `}
 `;
 
 const CardContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  gap: 20px;
-  margin-top: 20px;
+  position: relative;
+  width: 600px;
+  max-width: 85vw;
+  height: 60vh;
+  margin: 20px auto;
 `;
 
 const Card = styled.div`
+  position: absolute;
+  width: 400px;
+  height: 400px;
+  border-radius: 25px;
   background-size: cover;
   background-position: center;
-  background-color: #f5f5f5;
-  border-radius: 10px;
-  width: 300px;
-  height: 400px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  background-color: #5c6373;
+  background-image: ${(props) => `url(${props.backgroundImage})`};
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   padding: 20px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  transition: transform 0.3s ease;
-  background-image: ${(props) => `url(${props.backgroundImage})`};
+  color: black;
+  &:hover {
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+  }
 `;
 
 const CardContent = styled.div`
@@ -37,32 +58,50 @@ const CardContent = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
+  text-align: left;
+  color: white;
 `;
 
 const Title = styled.h3`
-  margin: 0;
+  font-size: 1.5em;
+  margin-bottom: 10px;
 `;
 
-const Description = styled.p`
-  margin: 5px 0;
-`;
-
-const Location = styled.p`
+const Detail = styled.p`
   margin: 5px 0;
 `;
 
 const Buttons = styled.div`
   display: flex;
   justify-content: space-between;
+  margin-top: 20px;
 `;
 
 const Button = styled.button`
+  display: flex;
+  align-items: center;
+  justify-content: center;
   padding: 10px 20px;
   border: none;
   border-radius: 5px;
   cursor: pointer;
   background-color: ${(props) => (props.danger ? "#e74c3c" : "#2ecc71")};
   color: white;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+  &:hover {
+    background-color: ${(props) => (props.danger ? "#c0392b" : "#27ae60")};
+  }
+`;
+
+const EmptyState = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 60vh;
+  color: white;
+  font-size: 1.2em;
 `;
 
 function JobCards() {
@@ -103,7 +142,6 @@ function JobCards() {
 
     try {
       await swipeService.swipeJob(user.id, jobId, direction);
-      // Match kontrolü kaldırıldı
     } catch (error) {
       console.error("Error handling swipe:", error);
     }
@@ -120,13 +158,16 @@ function JobCards() {
         );
         setCurrentIndex((prevIndex) => prevIndex - 1);
         setSwipeDirection("");
-      }, 300); // Animation duration
+      }, 300);
+
+      setTimeout(() => {
+        setSwipeDirection("");
+      }, 500); // Background color reset delay
     }
   };
 
   return (
-    <Container>
-      <h1>Job Opportunities</h1>
+    <Container swipeDirection={swipeDirection}>
       <CardContainer>
         {jobs && jobs.length > 0 ? (
           jobs.map((job, index) => (
@@ -138,23 +179,32 @@ function JobCards() {
               onSwipe={(dir) => swiped(dir, job.id)}
               preventSwipe={["up", "down"]}
             >
-              <Card backgroundImage={job.imageUrl || "default_image_url"}>
+              <Card
+                backgroundImage={job.imageUrl || "default_image_url"}
+                style={{ zIndex: jobs.length - index }}
+              >
                 <CardContent>
                   <Title>{job.title}</Title>
-                  <Description>{job.description}</Description>
-                  <Location>{job.location}</Location>
+                  <Detail>{job.description}</Detail>
+                  <Detail>{job.location}</Detail>
+                  <Detail>{job.salary}</Detail>
+                  <Detail>{job.requirements}</Detail>
                 </CardContent>
                 <Buttons>
                   <Button danger onClick={() => swipe("dislike")}>
+                    <ThumbDown style={{ marginRight: 8 }} />
                     Dislike
                   </Button>
-                  <Button onClick={() => swipe("like")}>Like</Button>
+                  <Button onClick={() => swipe("like")}>
+                    <ThumbUp style={{ marginRight: 8 }} />
+                    Like
+                  </Button>
                 </Buttons>
               </Card>
             </TinderCard>
           ))
         ) : (
-          <p>No jobs available</p>
+          <EmptyState>No jobs available</EmptyState>
         )}
       </CardContainer>
     </Container>

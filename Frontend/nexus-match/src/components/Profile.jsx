@@ -10,6 +10,8 @@ import Box from "@mui/material/Box";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
+import Grid from "@mui/material/Grid";
+import Paper from "@mui/material/Paper";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 
 const defaultTheme = createTheme();
@@ -101,7 +103,7 @@ const Profile = () => {
 
   return (
     <ThemeProvider theme={defaultTheme}>
-      <Container component="main" maxWidth="xs">
+      <Container component="main" maxWidth="md">
         <CssBaseline />
         <Box
           sx={{
@@ -118,143 +120,164 @@ const Profile = () => {
               style={{ width: "100px", height: "100px", borderRadius: "50%" }}
             />
           )}
-          <Typography component="h1" variant="h5">
+          <Typography component="h1" variant="h5" style={{ color: "#37657F" }}>
             Profile
           </Typography>
           {message && <Typography color="primary">{message}</Typography>}
-          <Box component="form" noValidate sx={{ mt: 1 }}>
-            <TextField
-              margin="normal"
-              fullWidth
-              id="name"
-              label="Name"
-              name="name"
-              autoComplete="name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-            />
-            <Button
-              fullWidth
-              variant="contained"
-              sx={{ mt: 2, mb: 2 }}
-              onClick={handleNameUpdate}
-            >
-              Update Name
-            </Button>
-            <TextField
-              margin="normal"
-              fullWidth
-              id="email"
-              label="Email"
-              name="email"
-              autoComplete="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-            <Button
-              fullWidth
-              variant="contained"
-              sx={{ mt: 2, mb: 2 }}
-              onClick={handleEmailUpdate}
-            >
-              Update Email
-            </Button>
-            <TextField
-              margin="normal"
-              fullWidth
-              name="password"
-              label="Password"
-              type="password"
-              id="password"
-              autoComplete="current-password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-            <TextField
-              margin="normal"
-              fullWidth
-              name="passwordConfirmation"
-              label="Confirm Password"
-              type="password"
-              id="passwordConfirmation"
-              autoComplete="new-password"
-              value={passwordConfirmation}
-              onChange={(e) => setPasswordConfirmation(e.target.value)}
-            />
-            <Button
-              fullWidth
-              variant="contained"
-              sx={{ mt: 2, mb: 2 }}
-              onClick={handlePasswordUpdate}
-            >
-              Update Password
-            </Button>
-            <TextField
-              margin="normal"
-              fullWidth
-              id="tag"
-              label="Tag"
-              name="tag"
-              autoComplete="tag"
-              value={tag}
-              onChange={(e) => setTag(e.target.value)}
-            />
-            <Button
-              fullWidth
-              variant="contained"
-              sx={{ mt: 2, mb: 2 }}
-              onClick={handleAddTag}
-            >
-              Add Tag
-            </Button>
-            <div>
-              {tags.length > 0 ? (
-                tags.map((t) => (
-                  <div
-                    key={t}
-                    style={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                    }}
+          <Box component="form" noValidate sx={{ mt: 3 }}>
+            <Grid container spacing={2}>
+              <Grid item xs={12} sm={6}>
+                <Paper elevation={3} sx={{ padding: 2 }}>
+                  <TextField
+                    margin="normal"
+                    fullWidth
+                    id="name"
+                    label="Name"
+                    name="name"
+                    autoComplete="name"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                  />
+                  <Button
+                    fullWidth
+                    variant="contained"
+                    sx={{ mt: 2, mb: 2, backgroundColor: "#37657F" }}
+                    onClick={handleNameUpdate}
                   >
-                    <TextField
-                      margin="normal"
-                      fullWidth
-                      id="tags"
-                      label="Tags"
-                      name="tags"
-                      autoComplete="tags"
-                      value={t}
-                      disabled
-                    />
-                    <Button
-                      variant="contained"
-                      color="secondary"
-                      onClick={() => handleRemoveTag(t)}
-                    >
-                      Remove
-                    </Button>
+                    Update Name
+                  </Button>
+                </Paper>
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <Paper elevation={3} sx={{ padding: 2 }}>
+                  <TextField
+                    margin="normal"
+                    fullWidth
+                    id="email"
+                    label="Email"
+                    name="email"
+                    autoComplete="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                  />
+                  <Button
+                    fullWidth
+                    variant="contained"
+                    sx={{ mt: 2, mb: 2, backgroundColor: "#37657F" }}
+                    onClick={handleEmailUpdate}
+                  >
+                    Update Email
+                  </Button>
+                </Paper>
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <Paper elevation={3} sx={{ padding: 2 }}>
+                  <TextField
+                    margin="normal"
+                    fullWidth
+                    name="password"
+                    label="Password"
+                    type="password"
+                    id="password"
+                    autoComplete="current-password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                  />
+                  <TextField
+                    margin="normal"
+                    fullWidth
+                    name="passwordConfirmation"
+                    label="Confirm Password"
+                    type="password"
+                    id="passwordConfirmation"
+                    autoComplete="new-password"
+                    value={passwordConfirmation}
+                    onChange={(e) => setPasswordConfirmation(e.target.value)}
+                  />
+                  <Button
+                    fullWidth
+                    variant="contained"
+                    sx={{ mt: 2, mb: 2, backgroundColor: "#37657F" }}
+                    onClick={handlePasswordUpdate}
+                  >
+                    Update Password
+                  </Button>
+                </Paper>
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <Paper elevation={3} sx={{ padding: 2 }}>
+                  <TextField
+                    margin="normal"
+                    fullWidth
+                    id="tag"
+                    label="Tag"
+                    name="tag"
+                    autoComplete="tag"
+                    value={tag}
+                    onChange={(e) => setTag(e.target.value)}
+                  />
+                  <Button
+                    fullWidth
+                    variant="contained"
+                    sx={{ mt: 2, mb: 2, backgroundColor: "#37657F" }}
+                    onClick={handleAddTag}
+                  >
+                    Add Tag
+                  </Button>
+                  <div>
+                    {tags.length > 0 ? (
+                      tags.map((t) => (
+                        <div
+                          key={t}
+                          style={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                            marginTop: "10px",
+                          }}
+                        >
+                          <TextField
+                            margin="normal"
+                            fullWidth
+                            id="tags"
+                            label="Tags"
+                            name="tags"
+                            autoComplete="tags"
+                            value={t}
+                            disabled
+                          />
+                          <Button
+                            variant="contained"
+                            color="secondary"
+                            onClick={() => handleRemoveTag(t)}
+                          >
+                            Remove
+                          </Button>
+                        </div>
+                      ))
+                    ) : (
+                      <Typography>No tags available</Typography>
+                    )}
                   </div>
-                ))
-              ) : (
-                <Typography>No tags available</Typography>
-              )}
-            </div>
-            <input
-              type="file"
-              accept="image/*"
-              onChange={(e) => setSelectedAvatar(e.target.files[0])}
-            />
-            <Button
-              fullWidth
-              variant="contained"
-              component="label"
-              sx={{ mt: 2, mb: 2 }}
-              onClick={handleAvatarUpload}
-            >
-              Save Avatar
-            </Button>
+                </Paper>
+              </Grid>
+            </Grid>
+            <Paper elevation={3} sx={{ padding: 2, marginTop: 2 }}>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={(e) => setSelectedAvatar(e.target.files[0])}
+              />
+              <Button
+                fullWidth
+                variant="contained"
+                component="label"
+                sx={{ mt: 2, mb: 2, backgroundColor: "#37657F" }}
+                onClick={handleAvatarUpload}
+              >
+                Save Avatar
+              </Button>
+            </Paper>
           </Box>
         </Box>
       </Container>

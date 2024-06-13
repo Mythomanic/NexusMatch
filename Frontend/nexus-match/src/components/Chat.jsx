@@ -28,7 +28,7 @@ const MessageContent = styled.div`
   max-width: 70%;
   padding: 10px;
   border-radius: 10px;
-  background-color: ${(props) => (props.sent ? "#25A6D9" : "#9CB5DB")};
+  background-color: ${(props) => (props.sent ? "#37657F" : "#7EB0CC")};
   color: white;
   display: flex;
   flex-direction: column;

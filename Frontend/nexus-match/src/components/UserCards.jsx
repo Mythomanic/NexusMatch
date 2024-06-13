@@ -1,13 +1,74 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import TinderCard from "react-tinder-card";
 import userService from "../services/userService";
 import authService from "../services/authService";
 import swipeService from "../services/swipeService";
-import "../TinderCards.css";
+import styled from "styled-components";
+
+const Container = styled.div`
+  text-align: center;
+  padding: 20px;
+`;
+
+const CardContainer = styled.div`
+  position: relative;
+  width: 300px;
+  height: 400px;
+  margin: 0 auto;
+`;
+
+const Card = styled.div`
+  position: absolute;
+  background-size: cover;
+  background-position: center;
+  background-color: #f5f5f5;
+  border-radius: 10px;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease;
+  background-image: ${(props) => `url(${props.backgroundImage})`};
+`;
+
+const CardContent = styled.div`
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+`;
+
+const Title = styled.h3`
+  margin: 0;
+  color: #37657f;
+`;
+
+const Description = styled.p`
+  margin: 5px 0;
+  color: #5f757f;
+`;
+
+const Buttons = styled.div`
+  display: flex;
+  justify-content: space-between;
+`;
+
+const Button = styled.button`
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  background-color: ${(props) => (props.danger ? "#e74c3c" : "#7EB0CC")};
+  color: white;
+`;
 
 function UserCards() {
   const [users, setUsers] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const currentIndexRef = useRef(currentIndex);
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -23,6 +84,11 @@ function UserCards() {
     fetchUsers();
   }, []);
 
+  const updateCurrentIndex = (val) => {
+    setCurrentIndex(val);
+    currentIndexRef.current = val;
+  };
+
   const swiped = async (direction, userId) => {
     const user = authService.getCurrentUser();
     if (!user) return;
@@ -35,6 +101,7 @@ function UserCards() {
           alert("Match!");
         }
       }
+      updateCurrentIndex(currentIndex - 1);
     } catch (error) {
       console.error("Error handling swipe:", error);
     }
@@ -44,17 +111,13 @@ function UserCards() {
     if (currentIndex >= 0) {
       const userId = users[currentIndex].id;
       await swiped(dir, userId);
-      setUsers((prevUsers) =>
-        prevUsers.filter((_, index) => index !== currentIndex)
-      );
-      setCurrentIndex((prevIndex) => prevIndex - 1);
     }
   };
 
   return (
-    <div>
+    <Container>
       <h1>User Cards</h1>
-      <div className="tinderCards__cardContainer">
+      <CardContainer>
         {users.map((user, index) => (
           <TinderCard
             className="swipe"
@@ -62,27 +125,29 @@ function UserCards() {
             onSwipe={(dir) => swiped(dir, user.id)}
             preventSwipe={["up", "down"]}
           >
-            <div
-              style={{
-                backgroundImage: `url(${
-                  user.avatarJob
-                    ? `https://nexusmain.onrender.com/storage/avatars/${user.avatarJob}`
-                    : "default_image_url"
-                })`,
-              }}
-              className="card"
+            <Card
+              backgroundImage={
+                user.avatarJob
+                  ? `https://nexusmain.onrender.com/storage/avatars/${user.avatarJob}`
+                  : "default_image_url"
+              }
+              style={{ zIndex: users.length - index }}
             >
-              <h3>{user.name}</h3>
-              <p>{user.descriptionJob}</p>
-            </div>
+              <CardContent>
+                <Title>{user.name}</Title>
+                <Description>{user.descriptionJob}</Description>
+              </CardContent>
+              <Buttons>
+                <Button danger onClick={() => swipe("dislike")}>
+                  Dislike
+                </Button>
+                <Button onClick={() => swipe("like")}>Like</Button>
+              </Buttons>
+            </Card>
           </TinderCard>
         ))}
-      </div>
-      <div className="buttons">
-        <button onClick={() => swipe("dislike")}>Dislike</button>
-        <button onClick={() => swipe("like")}>Like</button>
-      </div>
-    </div>
+      </CardContainer>
+    </Container>
   );
 }
 

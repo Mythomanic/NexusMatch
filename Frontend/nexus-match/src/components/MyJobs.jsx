@@ -13,13 +13,13 @@ const JobsContainer = styled.div`
   align-items: center;
   gap: 20px;
   padding: 20px;
-  background-color: #f9f9f9;
+  background-color: #f5f5f5;
 `;
 
 const JobCard = styled(Card)`
   width: 100%;
   max-width: 600px;
-  background-color: #25a6d9;
+  background-color: #7eb0cc;
   border: 1px solid #ddd;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 `;
@@ -32,7 +32,7 @@ const JobCardBody = styled(Card.Body)`
 
 const JobTitle = styled(Card.Title)`
   font-size: 1.5em;
-  color: #256dd9;
+  color: #37657f;
 `;
 
 const JobText = styled(Card.Text)`
@@ -45,7 +45,7 @@ const ButtonContainer = styled.div`
 `;
 
 const StyledButton = styled(Button)`
-  background-color: #256dd9;
+  background-color: #37657f;
   border: none;
   &:hover {
     background-color: #2534d9;

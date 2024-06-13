@@ -25,7 +25,7 @@ const Login = () => {
 
   const handleLogin = async (event) => {
     event.preventDefault();
-    
+
     try {
       setError(null);
       const response = await authService.login(email, password);
@@ -54,10 +54,10 @@ const Login = () => {
             alignItems: "center",
           }}
         >
-          <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
+          <Avatar sx={{ m: 1, bgcolor: "#256dd9" }}>
             <LockOutlinedIcon />
           </Avatar>
-          <Typography component="h1" variant="h5">
+          <Typography component="h1" variant="h5" style={{ color: "#37657F" }}>
             Sign in
           </Typography>
           {error && <Typography color="error">{error}</Typography>}
@@ -99,7 +99,7 @@ const Login = () => {
               type="submit"
               fullWidth
               variant="contained"
-              sx={{ mt: 3, mb: 2 }}
+              sx={{ mt: 3, mb: 2, backgroundColor: "#37657F" }}
             >
               Sign In
             </Button>
