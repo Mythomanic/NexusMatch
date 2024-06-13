@@ -11,13 +11,13 @@ const Container = styled.div`
   min-height: 100vh;
   padding: 20px 0;
   transition: background-color 0.5s ease;
-  ${({ swipedirection }) =>
-    swipedirection === "like" &&
+  ${({ swipeDirection }) =>
+    swipeDirection === "like" &&
     css`
       background-color: rgba(46, 204, 113, 0.2);
     `}
-  ${({ swipedirection }) =>
-    swipedirection === "dislike" &&
+  ${({ swipeDirection }) =>
+    swipeDirection === "dislike" &&
     css`
       background-color: rgba(231, 76, 60, 0.2);
     `}

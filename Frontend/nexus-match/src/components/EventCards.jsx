@@ -10,10 +10,7 @@ const Container = styled.div`
   text-align: center;
   background: linear-gradient(135deg, #37657f 0%, #5f757f 100%);
   min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 20px;
+  padding: 20px 0;
   transition: background-color 0.5s ease;
   ${({ swipeDirection }) =>
     swipeDirection === "like" &&
@@ -29,12 +26,10 @@ const Container = styled.div`
 
 const CardContainer = styled.div`
   position: relative;
-  width: 400px;
-  max-width: 90vw;
+  width: 600px;
+  max-width: 85vw;
   height: 60vh;
-  margin: 20px 0;
-  display: flex;
-  justify-content: center;
+  margin: 20px auto;
 `;
 
 const Card = styled.div`
@@ -112,7 +107,7 @@ const EmptyState = styled.div`
 const SearchInput = styled.input`
   padding: 10px;
   margin: 20px 0;
-  width: 300px;
+  width: 600px;
   border: 1px solid #ddd;
   border-radius: 5px;
 `;

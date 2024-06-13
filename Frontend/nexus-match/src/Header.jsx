@@ -9,6 +9,10 @@ import {
 import authService from "./services/authService";
 import logo from "./assets/nexuslogo.png"; // Import the logo image
 import { GiSelfLove } from "react-icons/gi";
+import { MdOutlineBusinessCenter } from "react-icons/md";
+import { IoMdSettings } from "react-icons/io";
+import { MdEvent } from "react-icons/md";
+import { IoChatboxEllipsesOutline } from "react-icons/io5";
 
 const GlobalStyle = createGlobalStyle`
   @import url('https://fonts.googleapis.com/css?family=Work+Sans:400,600');
@@ -143,11 +147,17 @@ function SimpleNavbar({ showSnackbar, userId }) {
           </Logo>
           <Nav>
             <NavItem>
-              <NavLink to="/chats">Chats</NavLink>
+              <NavLink to="/chats">
+                <IoChatboxEllipsesOutline />
+                Chats
+              </NavLink>
             </NavItem>
             <NavItem>
               <NavDropdown>
-                <NavLink to="#">Event</NavLink>
+                <NavLink to="#">
+                  <MdEvent />
+                  Event
+                </NavLink>
                 <DropdownContent className="dropdown-content">
                   <DropdownItem to="/find-events">
                     <PersonIcon /> Find Events
@@ -163,7 +173,17 @@ function SimpleNavbar({ showSnackbar, userId }) {
             </NavItem>
             <NavItem>
               <NavDropdown>
-                <NavLink to="#">Job</NavLink>
+                <NavLink
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                  to="#"
+                >
+                  <MdOutlineBusinessCenter />
+                  Job
+                </NavLink>
                 <DropdownContent className="dropdown-content">
                   <DropdownItem to="/find-jobs">
                     <PersonIcon /> Find Jobs
@@ -198,7 +218,10 @@ function SimpleNavbar({ showSnackbar, userId }) {
             </NavItem>
             <NavItem>
               <NavDropdown>
-                <NavLink to="#">Settings</NavLink>
+                <NavLink to="#">
+                  <IoMdSettings />
+                  Settings
+                </NavLink>
                 <DropdownContent className="dropdown-content">
                   <DropdownItem to="/profile">
                     <PersonIcon /> Profile
