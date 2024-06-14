@@ -1,58 +1,45 @@
 import React, { useState, useCallback, useEffect } from 'react'
-import { View, Image, ImageBackground, Text, ScrollView, TouchableOpacity, Dimensions } from 'react-native'
-import { SafeAreaProvider, SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
+import { View, Text, ScrollView, TouchableOpacity, Dimensions } from 'react-native'
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import styles from '../App.styles';
 import { TextInput } from 'react-native';
 import { useFonts } from 'expo-font';
-import { Ionicons, Fontisto, FontAwesome, FontAwesome5, Entypo, EvilIcons, Feather, MaterialCommunityIcons, MaterialIcons, AntDesign } from "react-native-vector-icons"
+import { LinearGradient } from 'expo-linear-gradient';
 import BottomBar from '../pages/BottomBar';
 import TopBar from '../pages/TopBar';
-import { LinearGradient } from 'expo-linear-gradient';
-import { Carousel } from 'react-native-basic-carousel'
-import MessageComponent from '../MessageComponent';
-import { CollapsibleCard } from "react-native-btr";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useAtom } from 'jotai';
 import { tagRefreshAtom } from '../JotaiAtoms';
 
 function ProfileSettings({ navigation }) {
-
-    const [createCategory, setcreateCategory] = useState(0)
-
+    const [createCategory, setcreateCategory] = useState(0);
     const [showPassword, setShowPassword] = useState(true);
-
     const screenWidth = Dimensions.get('window').width;
-
     const insets = useSafeAreaInsets();
-
-
     const API_URL = 'https://nexusmain.onrender.com/update-profile';
-
-    // API_PROFILE_DETAILS_URL LINK IS SUBJECT TO CHANGE 
     const API_PROFILE_DETAILS_URL = 'https://nexusmain.onrender.com/api/user';
-    const [userToken, setUserToken] = useState()
-    const [userId, setUserId] = useState()
-    const [loggedInUserJobInfo, setloggedInUserJobInfo] = useState({})
-    const [loggedInUserJobTags, setloggedInUserJobTags] = useState([])
+    const [userToken, setUserToken] = useState();
+    const [userId, setUserId] = useState();
+    const [loggedInUserJobInfo, setloggedInUserJobInfo] = useState({});
+    const [loggedInUserJobTags, setloggedInUserJobTags] = useState([]);
     const [newTag, setNewTag] = useState("");
     const [tagRefreshKey, setTagRefreshKey] = useAtom(tagRefreshAtom);
 
-    const [loggedInUserDateInfo, setloggedInUserDateInfo] = useState({})
-    const [loggedInUserEventInfo, setloggedInUserEventInfo] = useState({})
-    const [loggedInUserDateTags, setloggedInUserDateTags] = useState([])
-    const [loggedInUserEventTags, setloggedInUserEventTags] = useState([])
+    const [loggedInUserDateInfo, setloggedInUserDateInfo] = useState({});
+    const [loggedInUserEventInfo, setloggedInUserEventInfo] = useState({});
+    const [loggedInUserDateTags, setloggedInUserDateTags] = useState([]);
+    const [loggedInUserEventTags, setloggedInUserEventTags] = useState([]);
     const [selectedImageDate, setSelectedImageDate] = useState("");
     const [selectedImageEvent, setSelectedImageEvent] = useState("");
     const [selectedImage, setSelectedImage] = useState("");
-
 
     const getData = async () => {
         try {
             const userTokenValue = await AsyncStorage.getItem('usertoken');
             const userIdValue = await AsyncStorage.getItem('userid');
             if (userTokenValue !== null && userIdValue !== null) {
-                setUserToken(userTokenValue)
-                setUserId(userIdValue)
+                setUserToken(userTokenValue);
+                setUserId(userIdValue);
             }
         } catch (e) {
             // error reading value
@@ -93,7 +80,7 @@ function ProfileSettings({ navigation }) {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${userToken}` // Corrected Authorization header
+                        'Authorization': `Bearer ${userToken}`
                     }
                 });
 
@@ -122,7 +109,7 @@ function ProfileSettings({ navigation }) {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${userToken}` // Corrected Authorization header
+                        'Authorization': `Bearer ${userToken}`
                     }
                 });
 
@@ -144,7 +131,6 @@ function ProfileSettings({ navigation }) {
         }
     };
 
-
     useEffect(() => {
         getData();
     }, []);
@@ -157,12 +143,40 @@ function ProfileSettings({ navigation }) {
         }
     }, [userToken, userId]);
 
-    /* useEffect(() => {
-        if (userId && userToken) {
-            setloggedInUserJobTags(loggedInUserJobInfo.tagsJob);
+    const updateUserProfile = async (userId, updateData) => {
+        const headers = {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${userToken}` // Assuming userToken is available in your context
+        };
+        try {
+            const response = await fetch(`https://nexusmain.onrender.com/api/user/${userId}/update-profile`, {
+                method: 'PUT',
+                headers,
+                body: JSON.stringify(updateData),
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            return await response.json();
+        } catch (error) {
+            console.error("Error updating user profile:", error);
+            throw error;
         }
-    }, [userToken, userId]);
- */
+    };
+
+    // Usage in your component
+    const handleUpdateProfile = (updatedInfo) => {
+        updateUserProfile(userId, updatedInfo)
+            .then(data => {
+                console.log("Profile updated successfully", data);
+                // Update your local state or perform any other necessary actions
+            })
+            .catch(error => {
+                console.error("Failed to update profile", error);
+            });
+    };
 
     const handleAddTag = async () => {
         try {
@@ -178,7 +192,7 @@ function ProfileSettings({ navigation }) {
             if (data.status) {
                 setloggedInUserJobTags(data.tagsJob);
                 setNewTag("");
-                setTagRefreshKey((prevKey) => (prevKey + 1))
+                setTagRefreshKey((prevKey) => (prevKey + 1));
             }
         } catch (error) {
             console.error("Failed to add tag", error);
@@ -199,7 +213,7 @@ function ProfileSettings({ navigation }) {
             if (data.status) {
                 setloggedInUserDateTags(data.tagsDate);
                 setNewTag("");
-                setTagRefreshKey((prevKey) => (prevKey + 1))
+                setTagRefreshKey((prevKey) => (prevKey + 1));
             }
         } catch (error) {
             console.error("Failed to add tag", error);
@@ -220,7 +234,7 @@ function ProfileSettings({ navigation }) {
             if (data.status) {
                 setloggedInUserEventTags(data.tagsEvent);
                 setNewTag("");
-                setTagRefreshKey((prevKey) => (prevKey + 1))
+                setTagRefreshKey((prevKey) => (prevKey + 1));
             }
         } catch (error) {
             console.error("Failed to add tag", error);
@@ -240,7 +254,7 @@ function ProfileSettings({ navigation }) {
             const data = await response.json();
             if (data.status) {
                 setloggedInUserJobTags(data.tagsJob);
-                setTagRefreshKey((prevKey) => (prevKey + 1))
+                setTagRefreshKey((prevKey) => (prevKey + 1));
             }
         } catch (error) {
             console.error("Failed to remove tag", error);
@@ -260,7 +274,7 @@ function ProfileSettings({ navigation }) {
             const data = await response.json();
             if (data.status) {
                 setloggedInUserDateTags(data.tagsDate);
-                setTagRefreshKey((prevKey) => (prevKey + 1))
+                setTagRefreshKey((prevKey) => (prevKey + 1));
             }
         } catch (error) {
             console.error("Failed to remove tag", error);
@@ -280,7 +294,7 @@ function ProfileSettings({ navigation }) {
             const data = await response.json();
             if (data.status) {
                 setloggedInUserEventTags(data.tagsEvent);
-                setTagRefreshKey((prevKey) => (prevKey + 1))
+                setTagRefreshKey((prevKey) => (prevKey + 1));
             }
         } catch (error) {
             console.error("Failed to remove tag", error);
@@ -317,15 +331,12 @@ function ProfileSettings({ navigation }) {
     }
 
     return (
-
         <SafeAreaView style={styles.SafeAreaView}>
-
             <TopBar title={"Düzenle"} titleFont={"Montserrat-SemiBold"} navigation={navigation} backColor={"#3F51B5"}></TopBar>
 
             <View style={{ width: "100%", flex: 1, alignItems: "center", }}>
-
                 <View style={{ width: "100%", alignItems: "center", justifyContent: "center", margin: 10 }}>
-                    <Text >Değiştirmek istediğiniz profilinizi seçiniz:</Text>
+                    <Text>Değiştirmek istediğiniz profilinizi seçiniz:</Text>
                 </View>
 
                 <View style={{ minHeight: 30, width: "100%", alignItems: "center", justifyContent: "space-evenly", flexDirection: "row", columnGap: 20, margin: 10, paddingHorizontal: 15, }}>
@@ -349,21 +360,42 @@ function ProfileSettings({ navigation }) {
                 </View>
 
                 {createCategory == 0 ? (
-
                     <View style={{ flex: 1, width: "100%", margin: 10 }}>
-
                         <ScrollView contentContainerStyle={{ width: "100%", alignItems: "center", padding: 10, rowGap: 15, }} showsVerticalScrollIndicator={false}>
-
                             <View style={styles.CreateContentContainer}>
-                                <TextInput value={loggedInUserJobInfo.name} style={{ width: "100%", paddingHorizontal: 10, fontSize: 13 }} placeholder='İsim'></TextInput>
+                                <TextInput
+                                    value={loggedInUserJobInfo.name}
+                                    style={{ width: "100%", paddingHorizontal: 10, fontSize: 13 }}
+                                    placeholder='İsim'
+                                    onChangeText={(e) => {
+                                        setloggedInUserJobInfo({ ...loggedInUserJobInfo, name: e });
+                                        handleUpdateProfile({ name: e });
+                                    }}
+                                />
                             </View>
 
                             <View style={styles.CreateContentContainer}>
-                                <TextInput value={loggedInUserJobInfo.userJob} style={{ width: "100%", paddingHorizontal: 10, fontSize: 13 }} placeholder='Meslek'></TextInput>
+                                <TextInput
+                                    value={loggedInUserJobInfo.userJob}
+                                    style={{ width: "100%", paddingHorizontal: 10, fontSize: 13 }}
+                                    placeholder='Meslek'
+                                    onChangeText={(e) => {
+                                        setloggedInUserJobInfo({ ...loggedInUserJobInfo, userJob: e });
+                                        handleUpdateProfile({ userJob: e });
+                                    }}
+                                />
                             </View>
 
                             <View style={styles.CreateContentContainer}>
-                                <TextInput value={loggedInUserJobInfo.descriptionJob} style={{ width: "100%", paddingHorizontal: 10, fontSize: 13 }} placeholder='Açıklama'></TextInput>
+                                <TextInput
+                                    value={loggedInUserJobInfo.descriptionJob}
+                                    style={{ width: "100%", paddingHorizontal: 10, fontSize: 13 }}
+                                    placeholder='Açıklama'
+                                    onChangeText={(e) => {
+                                        setloggedInUserJobInfo({ ...loggedInUserJobInfo, descriptionJob: e });
+                                        handleUpdateProfile({ descriptionJob: e });
+                                    }}
+                                />
                             </View>
 
                             <View style={[styles.CreateContentContainer, { minHeight: 40 }]}>
@@ -382,32 +414,40 @@ function ProfileSettings({ navigation }) {
                                     style={{ width: "100%", paddingHorizontal: 10, fontSize: 13 }}
                                     placeholder='Yeni Tag'
                                     value={newTag}
-                                    onChangeText={setNewTag}
+                                    onChangeText={(e) => setNewTag(e)}
                                 />
                             </View>
 
                             <TouchableOpacity onPress={handleAddTag} style={{ padding: 10, paddingHorizontal: 25, borderRadius: 15, alignItems: "center", justifyContent: "center", borderWidth: 2, borderColor: "#03A9F4bb" }}>
                                 <Text style={{ color: "#03A9F4bb", fontWeight: "bold" }} fontSize="xs">Kaydet</Text>
                             </TouchableOpacity>
-
                         </ScrollView>
-
-
-
                     </View>
-
                 ) : createCategory == 1 ? (
-
                     <View style={{ flex: 1, width: "100%", margin: 10 }}>
-
                         <ScrollView contentContainerStyle={{ width: "100%", alignItems: "center", padding: 10, rowGap: 15, }} showsVerticalScrollIndicator={false}>
-
                             <View style={styles.CreateContentContainer}>
-                                <TextInput value={loggedInUserDateInfo.name} style={{ width: "100%", paddingHorizontal: 10, fontSize: 13 }} placeholder='İsim'></TextInput>
+                                <TextInput
+                                    value={loggedInUserDateInfo.name}
+                                    style={{ width: "100%", paddingHorizontal: 10, fontSize: 13 }}
+                                    placeholder='İsim'
+                                    onChangeText={(e) => {
+                                        setloggedInUserDateInfo({ ...loggedInUserDateInfo, name: e });
+                                        handleUpdateProfile({ name: e });
+                                    }}
+                                />
                             </View>
 
                             <View style={styles.CreateContentContainer}>
-                                <TextInput value={loggedInUserDateInfo.descriptionDate} style={{ width: "100%", paddingHorizontal: 10, fontSize: 13 }} placeholder='Açıklama'></TextInput>
+                                <TextInput
+                                    value={loggedInUserDateInfo.descriptionDate}
+                                    style={{ width: "100%", paddingHorizontal: 10, fontSize: 13 }}
+                                    placeholder='Açıklama'
+                                    onChangeText={(e) => {
+                                        setloggedInUserDateInfo({ ...loggedInUserDateInfo, descriptionDate: e });
+                                        handleUpdateProfile({ descriptionDate: e });
+                                    }}
+                                />
                             </View>
 
                             <View style={[styles.CreateContentContainer, { minHeight: 40 }]}>
@@ -426,32 +466,40 @@ function ProfileSettings({ navigation }) {
                                     style={{ width: "100%", paddingHorizontal: 10, fontSize: 13 }}
                                     placeholder='Yeni Tag'
                                     value={newTag}
-                                    onChangeText={setNewTag}
+                                    onChangeText={(e) => setNewTag(e)}
                                 />
                             </View>
 
                             <TouchableOpacity onPress={handleAddTagDate} style={{ padding: 10, paddingHorizontal: 25, borderRadius: 15, alignItems: "center", justifyContent: "center", borderWidth: 2, borderColor: "#03A9F4bb" }}>
                                 <Text style={{ color: "#03A9F4bb", fontWeight: "bold" }} fontSize="xs">Kaydet</Text>
                             </TouchableOpacity>
-
                         </ScrollView>
-
-
-
                     </View>
-
                 ) : (
                     <View style={{ flex: 1, width: "100%", margin: 10 }}>
-
                         <ScrollView contentContainerStyle={{ width: "100%", alignItems: "center", padding: 10, rowGap: 15, }} showsVerticalScrollIndicator={false}>
-
                             <View style={styles.CreateContentContainer}>
-                                <TextInput value={loggedInUserEventInfo.name} style={{ width: "100%", paddingHorizontal: 10, fontSize: 13 }} placeholder='İsim'></TextInput>
+                                <TextInput
+                                    value={loggedInUserEventInfo.name}
+                                    style={{ width: "100%", paddingHorizontal: 10, fontSize: 13 }}
+                                    placeholder='İsim'
+                                    onChangeText={(e) => {
+                                        setloggedInUserEventInfo({ ...loggedInUserEventInfo, name: e });
+                                        handleUpdateProfile({ name: e });
+                                    }}
+                                />
                             </View>
 
-
                             <View style={styles.CreateContentContainer}>
-                                <TextInput value={loggedInUserEventInfo.descriptionEvent} style={{ width: "100%", paddingHorizontal: 10, fontSize: 13 }} placeholder='Açıklama'></TextInput>
+                                <TextInput
+                                    value={loggedInUserEventInfo.descriptionEvent}
+                                    style={{ width: "100%", paddingHorizontal: 10, fontSize: 13 }}
+                                    placeholder='Açıklama'
+                                    onChangeText={(e) => {
+                                        setloggedInUserEventInfo({ ...loggedInUserEventInfo, descriptionEvent: e });
+                                        handleUpdateProfile({ descriptionEvent: e });
+                                    }}
+                                />
                             </View>
 
                             <View style={[styles.CreateContentContainer, { minHeight: 40 }]}>
@@ -470,31 +518,21 @@ function ProfileSettings({ navigation }) {
                                     style={{ width: "100%", paddingHorizontal: 10, fontSize: 13 }}
                                     placeholder='Yeni Tag'
                                     value={newTag}
-                                    onChangeText={setNewTag}
+                                    onChangeText={(e) => setNewTag(e)}
                                 />
                             </View>
 
                             <TouchableOpacity onPress={handleAddTagEvent} style={{ padding: 10, paddingHorizontal: 25, borderRadius: 15, alignItems: "center", justifyContent: "center", borderWidth: 2, borderColor: "#03A9F4bb" }}>
                                 <Text style={{ color: "#03A9F4bb", fontWeight: "bold" }} fontSize="xs">Kaydet</Text>
                             </TouchableOpacity>
-
                         </ScrollView>
-
-
-
                     </View>
-                )
-                }
-
-
-
+                )}
             </View>
-
 
             <BottomBar selectMenu={12} navigation={navigation} ></BottomBar>
         </SafeAreaView>
-
-    )
+    );
 }
 
-export default ProfileSettings
+export default ProfileSettings;
